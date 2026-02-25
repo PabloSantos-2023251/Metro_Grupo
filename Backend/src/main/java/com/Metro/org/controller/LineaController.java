@@ -1,7 +1,7 @@
-package com.DavidQuintanilla.metroSubterraneo.controller;
+package com.Metro.org.controller;
 
-import com.DavidQuintanilla.metroSubterraneo.entity.Linea;
-import com.DavidQuintanilla.metroSubterraneo.service.LineaService;
+import com.Metro.org.entity.Linea;
+import com.Metro.org.service.LineaService;
 import jakarta.validation.Valid;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
