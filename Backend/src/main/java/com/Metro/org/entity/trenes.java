@@ -2,6 +2,8 @@ package com.Metro.org.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity // una clase anotada , represeta una tabla relacionar , actua comom un puente entre la programacion orientada a objetos y SQL (JPA ivernes)prermitiendo mapiar automaticamente atrivutos a columnas
 @Table(name = "trenes")
@@ -12,13 +14,15 @@ public class trenes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tren")
     private Integer idTren;
-
+    @NotBlank(message = "El campo de texto no debe de estar vacio")
     @Column(name = "modelo")
     private String modelo;
 
+    @NotNull(message = "El campo no puede estar vacio")
     @Column(name = "capacidad_pasajeros")
     private Integer capacidadPasajeros;
 
+    @NotBlank(message = "El campo de texto no debe de estar vacio")
     @Column(name = "estado")
     private String estado;
 
