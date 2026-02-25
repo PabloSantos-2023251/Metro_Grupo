@@ -46,7 +46,7 @@ public class ConductoresServiceImplements implements ConductoresService {
 
         existingConductores.setNombre(conductores.getNombre());
         existingConductores.setLicencia(conductores.getLicencia());
-        existingConductores.setAnosExperencia(conductores.getAnosExperencia());
+        existingConductores.setAniosExperencia(conductores.getAniosExperencia());
 
         return ConductoresRepository.save(existingConductores);
     }

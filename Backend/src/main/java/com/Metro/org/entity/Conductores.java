@@ -3,30 +3,30 @@ package com.Metro.org.entity;
 import jakarta.persistence.*;
 
 @Entity // una clase anotada , represeta una tabla relacionar , actua comom un puente entre la programacion orientada a objetos y SQL (JPA ivernes)prermitiendo mapiar automaticamente atrivutos a columnas
-@Table(name = "Conductores")
+@Table(name = "conductores")
 
 public class Conductores {
     @Id
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_Conductores")
-    private Integer idConductores;
+    @Column(name = "id_conductor")
+    private Integer idConductor;
 
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "licencia")
+    @Column(name = "Licencia")
     private Integer licencia;
 
-    @Column(name = "anos_experencia")
-    private String anosExperencia;
+    @Column(name = "anios_experencia")
+    private String aniosExperencia;
 
-    public Integer getIdConductores() {
-        return idConductores;
+    public Integer getIdConductor() {
+        return idConductor;
     }
 
-    public void setIdConductores(Integer idConductores) {
-        this.idConductores = idConductores;
+    public void setIdConductor(Integer idConductor) {
+        this.idConductor = idConductor;
     }
 
     public String getNombre() {
@@ -37,19 +37,19 @@ public class Conductores {
         this.nombre = nombre;
     }
 
-    public String getAnosExperencia() {
-        return anosExperencia;
-    }
-
-    public void setAnosExperencia(String anosExperencia) {
-        this.anosExperencia = anosExperencia;
-    }
-
     public Integer getLicencia() {
         return licencia;
     }
 
     public void setLicencia(Integer licencia) {
         this.licencia = licencia;
+    }
+
+    public String getAniosExperencia() {
+        return aniosExperencia;
+    }
+
+    public void setAniosExperencia(String aniosExperencia) {
+        this.aniosExperencia = aniosExperencia;
     }
 }

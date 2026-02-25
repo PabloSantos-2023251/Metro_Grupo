@@ -1,7 +1,7 @@
 package com.Metro.org.controller;
 
 
-import com.Metro.org.entity.Tren;
+import com.Metro.org.entity.trenes;
 import com.Metro.org.service.TrenService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ public class TrenController {
     }
 
     @GetMapping
-    public List<Tren> getAllTren(){return trenService.getAllTren();}
+    public List<trenes> getAllTren(){return trenService.getAllTren();}
 
     @PostMapping
-    public ResponseEntity<Object> createTren(@Valid @RequestBody Tren tren){
+    public ResponseEntity<Object> createTren(@Valid @RequestBody trenes trenes){
         try{
-            Tren createdTren = trenService.saveTren(tren);
-            return new ResponseEntity<>(createdTren, HttpStatus.CREATED);
+            trenes createdTrenes = trenService.saveTren(trenes);
+            return new ResponseEntity<>(createdTrenes, HttpStatus.CREATED);
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -45,10 +45,10 @@ public class TrenController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTren(@PathVariable Integer id, @RequestBody Tren tren) {
+    public ResponseEntity<?> updateTren(@PathVariable Integer id, @RequestBody trenes trenes) {
 
         try {
-            Tren actualizado = trenService.updateTren(id, tren);
+            trenes actualizado = trenService.updateTren(id, trenes);
             return ResponseEntity.ok(actualizado);
 
         } catch (RuntimeException e) {
