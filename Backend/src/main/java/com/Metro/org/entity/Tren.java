@@ -1,4 +1,4 @@
-package com.Metro.org.Entity;
+package com.Metro.org.entity;
 
 
 import jakarta.persistence.*;
@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Entity // una clase anotada , represeta una tabla relacionar , actua comom un puente entre la programacion orientada a objetos y SQL (JPA ivernes)prermitiendo mapiar automaticamente atrivutos a columnas
 @Table(name = "Tren")
 
-public class tren {
+public class Tren {
     @Id
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

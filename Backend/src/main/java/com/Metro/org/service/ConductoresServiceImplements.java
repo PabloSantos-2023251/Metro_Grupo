@@ -1,33 +1,33 @@
-package com.Metro.org.Service;
+package com.Metro.org.service;
 
 
-import com.Metro.org.Entity.conductores;
-import com.Metro.org.Repository.conductoresRepository;
+import com.Metro.org.entity.Conductores;
+import com.Metro.org.repository.ConductoresRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class conductoresServiceImplements implements conductoresService {
-    private final conductoresRepository ConductoresRepository;
+public class ConductoresServiceImplements implements ConductoresService {
+    private final ConductoresRepository ConductoresRepository;
 
 
-    public conductoresServiceImplements(conductoresRepository conductoresRepository) {
+    public ConductoresServiceImplements(ConductoresRepository conductoresRepository) {
         ConductoresRepository = conductoresRepository;
     }
 
     @Override
-    public List<conductores> getAllConductores() {
+    public List<Conductores> getAllConductores() {
         return ConductoresRepository.findAll();
     }
 
     @Override
-    public conductores getConductoresById(Integer id) {
+    public Conductores getConductoresById(Integer id) {
         return ConductoresRepository.findById(id).orElse(null);
     }
 
     @Override
-    public conductores saveConductores(conductores conductores) throws RuntimeException {
+    public Conductores saveConductores(Conductores conductores) throws RuntimeException {
         return ConductoresRepository.save(conductores);
     }
 
@@ -41,8 +41,8 @@ public class conductoresServiceImplements implements conductoresService {
     }
 
     @Override
-    public conductores updateConductores(Integer id, conductores conductores) {
-        conductores existingConductores = ConductoresRepository.findById(id).orElseThrow(() -> new RuntimeException("El Conductores no existe"));
+    public Conductores updateConductores(Integer id, Conductores conductores) {
+        Conductores existingConductores = ConductoresRepository.findById(id).orElseThrow(() -> new RuntimeException("El Conductores no existe"));
 
         existingConductores.setNombre(conductores.getNombre());
         existingConductores.setLicencia(conductores.getLicencia());
