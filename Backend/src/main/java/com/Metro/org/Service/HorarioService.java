@@ -8,5 +8,5 @@ public interface HorarioService {
     Horario getHorarioById(Integer id);
     Horario saveHorario(Horario horario);
     Horario updateHorario(Integer id, Horario horario);
-    void deleteHorario(Integer id);
+    boolean deleteHorario(Integer id); // Cambiado a boolean
 }

@@ -31,18 +31,20 @@ public class HorarioServiceImplements implements HorarioService {
 
     @Override
     public Horario updateHorario(Integer id, Horario horario) {
-        Horario existente = horarioRepository.findById(id).orElse(null);
-        if (existente != null) {
+        return horarioRepository.findById(id).map(existente -> {
             existente.setHoraSalida(horario.getHoraSalida());
             existente.setHoraLlegada(horario.getHoraLlegada());
             existente.setIdTren(horario.getIdTren());
             return horarioRepository.save(existente);
-        }
-        return null;
+        }).orElse(null);
     }
 
     @Override
-    public void deleteHorario(Integer id) {
-        horarioRepository.deleteById(id);
+    public boolean deleteHorario(Integer id) {
+        if (horarioRepository.existsById(id)) {
+            horarioRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
