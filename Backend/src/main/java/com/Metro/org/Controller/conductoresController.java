@@ -1,7 +1,7 @@
 package com.Metro.org.Controller;
 
-import com.Metro.org.Entity.Conductores;
-import com.Metro.org.Service.ConductoresService;
+import com.Metro.org.Entity.conductores;
+import com.Metro.org.Service.conductoresService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,19 +13,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/Conductores")
 
-public class ConductoresController {
-    private final ConductoresService conductoresService;
-    public ConductoresController (ConductoresService ConductoresService){
+public class conductoresController {
+    private final conductoresService conductoresService;
+    public conductoresController(conductoresService ConductoresService){
         this.conductoresService = ConductoresService;
     }
 
     @GetMapping
-    public List<Conductores> getAllConductores(){return conductoresService.getAllConductores();}
+    public List<conductores> getAllConductores(){return conductoresService.getAllConductores();}
 
     @PostMapping
-    public ResponseEntity<Object> createConductores(@Valid @RequestBody Conductores conductores){
+    public ResponseEntity<Object> createConductores(@Valid @RequestBody conductores conductores){
         try{
-            Conductores createdConductores = conductoresService.saveConductores(conductores);
+            conductores createdConductores = conductoresService.saveConductores(conductores);
             return new ResponseEntity<>(createdConductores, HttpStatus.CREATED);
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -44,10 +44,10 @@ public class ConductoresController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateConductores(@PathVariable Integer id, @RequestBody Conductores conductores) {
+    public ResponseEntity<?> updateConductores(@PathVariable Integer id, @RequestBody conductores conductores) {
 
         try {
-            Conductores actualizado = conductoresService.updateConductores(id, conductores);
+            conductores actualizado = conductoresService.updateConductores(id, conductores);
             return ResponseEntity.ok(actualizado);
 
         } catch (RuntimeException e) {

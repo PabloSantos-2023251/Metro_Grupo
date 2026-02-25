@@ -1,41 +1,41 @@
 package com.Metro.org.Service;
 
 
-import com.Metro.org.Entity.Tren;
-import com.Metro.org.Repository.TrenRepository;
+import com.Metro.org.Entity.tren;
+import com.Metro.org.Repository.trenRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TrenServiceImplements implements TrenService {
-    private final TrenRepository TrenRepository;
+public class trenServiceImplements implements trenService {
+    private final trenRepository TrenRepository;
 
 
-    public TrenServiceImplements(TrenRepository trenRepository) {
+    public trenServiceImplements(trenRepository trenRepository) {
         TrenRepository = trenRepository;
     }
 
     @Override
-    public List<Tren> getAllTren() {
+    public List<tren> getAllTren() {
         return TrenRepository.findAll();
     }
 
     @Override
-    public Tren getTrenById(Integer id) {
+    public tren getTrenById(Integer id) {
         return TrenRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Tren saveTren(Tren tren) throws RuntimeException {
+    public tren saveTren(tren tren) throws RuntimeException {
         return TrenRepository.save(tren);
     }
 
 
 
     @Override
-    public Tren updateTren(Integer id, Tren tren) {
-        Tren existingTren = TrenRepository.findById(id).orElseThrow(() -> new RuntimeException("El Tren no existe"));
+    public tren updateTren(Integer id, tren tren) {
+        tren existingTren = TrenRepository.findById(id).orElseThrow(() -> new RuntimeException("El Tren no existe"));
 
         existingTren.setModelo(tren.getModelo());
         existingTren.setCapacidadPasajeros(tren.getCapacidadPasajeros());

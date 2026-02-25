@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Entity // una clase anotada , represeta una tabla relacionar , actua comom un puente entre la programacion orientada a objetos y SQL (JPA ivernes)prermitiendo mapiar automaticamente atrivutos a columnas
 @Table(name = "Tren")
 
-public class Tren {
+public class tren {
     @Id
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
