@@ -1,6 +1,6 @@
-package com.DavidQuintanilla.metroSubterraneo.repository;
+package com.Metro.org.repository;
 
-import com.DavidQuintanilla.metroSubterraneo.entity.Linea;
+import com.Metro.org.entity.Linea;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
