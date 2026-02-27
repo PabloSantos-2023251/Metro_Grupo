@@ -1,7 +1,7 @@
-package com.Metro.org.Controller;
+package com.Metro.org.controller;
 
-import com.Metro.org.Entity.Mantenimiento;
-import com.Metro.org.Service.MantenimientoService;
+import com.Metro.org.entity.Mantenimiento;
+import com.Metro.org.service.MantenimientoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

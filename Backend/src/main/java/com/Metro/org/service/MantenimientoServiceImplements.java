@@ -1,7 +1,7 @@
-package com.Metro.org.Service;
+package com.Metro.org.service;
 
-import com.Metro.org.Entity.Mantenimiento;
-import com.Metro.org.Repository.MantenimientoRepository;
+import com.Metro.org.entity.Mantenimiento;
+import com.Metro.org.repository.MantenimientoRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.Metro.org.Controller;
+package com.Metro.org.controller;
 
-import com.Metro.org.Entity.Horario;
-import com.Metro.org.Service.HorarioService;
+import com.Metro.org.entity.Horario;
+import com.Metro.org.service.HorarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +52,7 @@ public class HorarioController {
         return ResponseEntity.ok(updated);
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
         try {
@@ -65,6 +66,7 @@ public class HorarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error técnico al intentar eliminar el registro.");
+
         }
     }
 }

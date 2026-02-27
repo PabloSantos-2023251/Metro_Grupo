@@ -1,6 +1,6 @@
-package com.Metro.org.Repository;
+package com.Metro.org.repository;
 
-import com.Metro.org.Entity.Mantenimiento;
+import com.Metro.org.entity.Mantenimiento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.Metro.org.Entity;
+package com.Metro.org.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,8 +10,8 @@ import java.time.LocalDate;
 public class Mantenimiento {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Generación automática del ID
     @Column(name = "id_mantenimiento")
-    @NotNull(message = "El ID de mantenimiento es obligatorio")
     private Integer idMantenimiento;
 
     @Column(name = "fecha")
@@ -25,6 +25,9 @@ public class Mantenimiento {
     @Column(name = "id_tren")
     @NotNull(message = "El ID del tren es obligatorio")
     private Integer idTren;
+
+    // Constructor vacío (necesario para JPA)
+    public Mantenimiento() {}
 
     // Getters y Setters
     public Integer getIdMantenimiento() { return idMantenimiento; }

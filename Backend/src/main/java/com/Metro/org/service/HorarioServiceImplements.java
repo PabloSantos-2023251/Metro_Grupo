@@ -1,7 +1,7 @@
-package com.Metro.org.Service;
+package com.Metro.org.service;
 
-import com.Metro.org.Entity.Horario;
-import com.Metro.org.Repository.HorarioRepository;
+import com.Metro.org.entity.Horario;
+import com.Metro.org.repository.HorarioRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

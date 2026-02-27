@@ -1,6 +1,6 @@
-package com.Metro.org.Service;
+package com.Metro.org.service;
 
-import com.Metro.org.Entity.Mantenimiento;
+import com.Metro.org.entity.Mantenimiento;
 import java.util.List;
 
 public interface MantenimientoService {
