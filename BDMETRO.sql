@@ -33,8 +33,6 @@ create table conductores (
     anios_experiencia int not null
 );
 
-
-
 create table impacto_trafico (
     id_impacto int primary key auto_increment,
     zona varchar(100),
