@@ -14,17 +14,17 @@ public class Estaciones {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 3, max = 50, message = "El nombre debe tener entre 3 y 50 caracteres")
-    @Column(name = "nombre")
+    @Column(name = "nombre",nullable = false)
     private String nombre;
 
     @NotBlank(message = "La zona es obligatoria")
     @Size(min = 1, max = 30, message = "La zona debe tener máximo 30 caracteres")
-    @Column (name = "zona")
+    @Column (name = "zona",nullable = false)
     private String zona;
 
     @NotNull(message = "El id de la línea es obligatorio")
     @Positive(message = "El id de la línea debe ser un número positivo")
-    @Column(name = "id_linea")
+    @Column(name = "id_linea",nullable = false)
     private Integer idLinea;
 
     // generar getter an setter
