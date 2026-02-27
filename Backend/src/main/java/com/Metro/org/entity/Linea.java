@@ -1,6 +1,7 @@
 package com.Metro.org.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "Linea")
@@ -11,13 +12,19 @@ public class Linea {
     @Column(name = "id_linea")
     private Integer idLinea;
 
-    @Column (name = "nombre_linea")
+    @NotBlank(message = "El nombre de la línea es obligatorio")
+    @Size(min = 3, max = 50, message = "El nombre de la línea debe tener entre 3 y 50 caracteres")
+    @Column (name = "nombre_linea", nullable = false)
     private String nombreLinea;
 
-    @Column (name = "color")
+    @NotBlank(message = "El color es obligatorio")
+    @Size(min = 3, max = 30, message = "El color debe tener entre 3 y 30 caracteres")
+    @Column (name = "color", nullable = false)
     private String color;
 
-    @Column (name = "longitud_km")
+    @NotNull(message = "La longitud es obligatoria")
+    @Positive(message = "La longitud debe ser un número positivo")
+    @Column (name = "longitud_km", nullable = false)
     private Integer logitudKm;
 
     // generar getter an setter
