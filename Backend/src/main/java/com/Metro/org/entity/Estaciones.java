@@ -1,6 +1,7 @@
 package com.Metro.org.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "Estaciones")
@@ -11,12 +12,18 @@ public class Estaciones {
     @Column(name = "id_estacion")
     private Integer idEstacion;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(min = 3, max = 50, message = "El nombre debe tener entre 3 y 50 caracteres")
     @Column(name = "nombre")
     private String nombre;
 
+    @NotBlank(message = "La zona es obligatoria")
+    @Size(min = 1, max = 30, message = "La zona debe tener máximo 30 caracteres")
     @Column (name = "zona")
     private String zona;
 
+    @NotNull(message = "El id de la línea es obligatorio")
+    @Positive(message = "El id de la línea debe ser un número positivo")
     @Column(name = "id_linea")
     private Integer idLinea;
 
