@@ -1,7 +1,7 @@
 package com.Metro.org.service;
 
-import com.PabloSantos.org.entity.Personal;
-import com.PabloSantos.org.repository.PersonalRepository;
+import com.Metro.org.entity.Personal;
+import com.Metro.org.repository.PersonalRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

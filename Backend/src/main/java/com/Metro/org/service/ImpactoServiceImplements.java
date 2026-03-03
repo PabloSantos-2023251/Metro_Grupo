@@ -1,7 +1,7 @@
 package com.Metro.org.service;
 
-import com.PabloSantos.org.entity.ImpactoTrafico;
-import com.PabloSantos.org.repository.ImpactoRepository;
+import com.Metro.org.entity.ImpactoTrafico;
+import com.Metro.org.repository.ImpactoRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

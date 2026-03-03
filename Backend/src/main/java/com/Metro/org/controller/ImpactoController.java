@@ -1,7 +1,7 @@
 package com.Metro.org.controller;
 
-import com.PabloSantos.org.entity.ImpactoTrafico;
-import com.PabloSantos.org.service.ImpactoService;
+import com.Metro.org.entity.ImpactoTrafico;
+import com.Metro.org.service.ImpactoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

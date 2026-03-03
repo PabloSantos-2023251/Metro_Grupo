@@ -1,6 +1,6 @@
 package com.Metro.org.service;
 
-import com.PabloSantos.org.entity.ImpactoTrafico;
+import com.Metro.org.entity.ImpactoTrafico;
 import java.util.List;
 
 public interface ImpactoService {

@@ -1,6 +1,6 @@
 package com.Metro.org.service;
 
-import com.PabloSantos.org.entity.Personal;
+import com.Metro.org.entity.Personal;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

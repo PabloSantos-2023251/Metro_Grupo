@@ -1,7 +1,7 @@
 package com.Metro.org.controller;
 
-import com.PabloSantos.org.entity.Personal;
-import com.PabloSantos.org.service.PersonalService;
+import com.Metro.org.entity.Personal;
+import com.Metro.org.service.PersonalService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
