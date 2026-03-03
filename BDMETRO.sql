@@ -3,7 +3,7 @@ create database proyecto_metro_in5cm;
 use proyecto_metro_in5cm;
 
 create table personal (
-    id_personal int primary key,
+    id_personal int primary key auto_increment,
     nombre varchar(100),
     cargo varchar(50)
 );

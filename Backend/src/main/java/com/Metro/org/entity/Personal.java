@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "personal")
 public class Personal {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_personal")
     private Integer id_personal; // Nota: No tiene Auto-increment en tu SQL
 
