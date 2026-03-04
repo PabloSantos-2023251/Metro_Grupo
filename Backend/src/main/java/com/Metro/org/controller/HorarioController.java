@@ -2,7 +2,6 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Horario;
 import com.Metro.org.service.HorarioService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,46 +26,50 @@ public class HorarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Horario> getById(@PathVariable Integer id) {
+    public ResponseEntity<Object> getById(@PathVariable Integer id) {
         Horario horario = horarioService.getHorarioById(id);
         if (horario == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error: El horario con ID " + id + " no existe en la base de datos.");
         }
         return ResponseEntity.ok(horario);
     }
 
     @PostMapping
-    public ResponseEntity<Horario> create(@Valid @RequestBody Horario horario) {
-        // @Valid atrapará si faltan campos o si el formato es incorrecto
+    public ResponseEntity<Object> create(@RequestBody Horario horario) {
+        if (horario.getHoraSalida() == null || horario.getHoraLlegada() == null) {
+            return ResponseEntity.badRequest().body("Error: Los campos de hora salida y llegada son obligatorios.");
+        }
+
+        if (horario.getIdTren() == null || horario.getIdTren() <= 0) {
+            return ResponseEntity.badRequest().body("Error: El ID del tren proporcionado no es válido o no existe.");
+        }
+
         Horario nuevo = horarioService.saveHorario(horario);
         return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Horario> update(@PathVariable Integer id, @Valid @RequestBody Horario horario) {
+    public ResponseEntity<Object> update(@PathVariable Integer id, @RequestBody Horario horario) {
+        if (horario.getIdTren() == null || horario.getIdTren() <= 0) {
+            return ResponseEntity.badRequest().body("Error: Debe proporcionar un ID de tren válido para actualizar.");
+        }
+
         Horario updated = horarioService.updateHorario(id, horario);
         if (updated == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null); // El ID no existía
+                    .body("Error: No se pudo actualizar. El horario con ID " + id + " no existe.");
         }
         return ResponseEntity.ok(updated);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
-        try {
-            // Verificamos primero si existe para dar una respuesta coherente
-            if (horarioService.getHorarioById(id) == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No se puede eliminar: El horario con ID " + id + " no existe.");
-            }
-            horarioService.deleteHorario(id);
-            return ResponseEntity.ok("Horario eliminado correctamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error técnico al intentar eliminar el registro.");
-
+        if (horarioService.getHorarioById(id) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error: No se puede eliminar. El horario con ID " + id + " no existe.");
         }
+        horarioService.deleteHorario(id);
+        return ResponseEntity.ok("Horario eliminado correctamente");
     }
 }

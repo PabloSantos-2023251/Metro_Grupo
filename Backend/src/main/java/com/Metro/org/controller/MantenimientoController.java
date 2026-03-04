@@ -2,7 +2,6 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Mantenimiento;
 import com.Metro.org.service.MantenimientoService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,24 +26,35 @@ public class MantenimientoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mantenimiento> getById(@PathVariable Integer id) {
+    public ResponseEntity<Object> getById(@PathVariable Integer id) {
         Mantenimiento mantenimiento = mantenimientoService.getMantenimientoById(id);
-        return mantenimiento != null
-                ? ResponseEntity.ok(mantenimiento)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (mantenimiento == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error: No se encontró registro de mantenimiento con el ID " + id);
+        }
+        return ResponseEntity.ok(mantenimiento);
     }
 
     @PostMapping
-    public ResponseEntity<Mantenimiento> create(@Valid @RequestBody Mantenimiento mantenimiento) {
+    public ResponseEntity<Object> create(@RequestBody Mantenimiento mantenimiento) {
+        if (mantenimiento.getDescripcion() == null || mantenimiento.getDescripcion().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Error: La descripción del mantenimiento es obligatoria y no puede estar vacía.");
+        }
+
+        if (mantenimiento.getIdTren() == null || mantenimiento.getIdTren() <= 0) {
+            return ResponseEntity.badRequest().body("Error: El ID del tren debe ser un número positivo y existir en el sistema.");
+        }
+
         Mantenimiento nuevo = mantenimientoService.saveMantenimiento(mantenimiento);
         return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Mantenimiento> update(@PathVariable Integer id, @Valid @RequestBody Mantenimiento mantenimiento) {
+    public ResponseEntity<Object> update(@PathVariable Integer id, @RequestBody Mantenimiento mantenimiento) {
         Mantenimiento actualizado = mantenimientoService.updateMantenimiento(id, mantenimiento);
         if (actualizado == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error: No se puede editar. El registro de mantenimiento con ID " + id + " no existe.");
         }
         return ResponseEntity.ok(actualizado);
     }
@@ -53,7 +63,7 @@ public class MantenimientoController {
     public ResponseEntity<String> delete(@PathVariable Integer id) {
         if (mantenimientoService.getMantenimientoById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Error: No existe mantenimiento con ID " + id);
+                    .body("Error: No se puede eliminar. No existe mantenimiento con el ID " + id);
         }
         mantenimientoService.deleteMantenimiento(id);
         return ResponseEntity.ok("Mantenimiento eliminado exitosamente");
