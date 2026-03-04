@@ -36,7 +36,6 @@ public class boletoserviceimplements implements boletoservice {
         Optional<boleto> boletoExistente = boletoRepository.findById(id);
         if (boletoExistente.isPresent()) {
             boleto newBoleto = boletoExistente.get();
-            newBoleto.setIdBoleto(boleto.getIdBoleto());
             newBoleto.setFecha(boleto.getFecha());
             newBoleto.setPrecio(boleto.getPrecio());
             newBoleto.setPasajero(boleto.getPasajero());
