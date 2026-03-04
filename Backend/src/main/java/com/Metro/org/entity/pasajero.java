@@ -1,6 +1,7 @@
 package com.Metro.org.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "Pasajeros")
@@ -11,9 +12,11 @@ public class pasajero {
     @Column(name = "id_pasajero")
     private Integer idPasajero;
 
+    @NotBlank(message = "El nombre del pasajero es obligatorio")
     @Column(name = "nombre_pasajero", nullable = false, length = 50)
     private String nombrePasajero;
 
+    @NotBlank(message = "El tipo de pasajero es obligatorio")
     @Column(name = "tipo_pasajero", nullable = false, length = 30)
     private String tipoPasajero;
 
