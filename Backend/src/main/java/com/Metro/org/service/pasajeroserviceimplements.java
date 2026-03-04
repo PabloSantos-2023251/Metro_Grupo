@@ -36,7 +36,6 @@ public  class pasajeroserviceimplements implements pasajeroservice {
         Optional<pasajero> pasajeroExistente = pasajeroRepository.findById(id);
         if (pasajeroExistente.isPresent()) {
             pasajero newPasajero = pasajeroExistente.get();
-            newPasajero.setIdPasajero(pasajero.getIdPasajero());
             newPasajero.setTipoPasajero(pasajero.getTipoPasajero());
             newPasajero.setNombrePasajero(pasajero.getNombrePasajero());
             return pasajeroRepository.save(newPasajero);
