@@ -2,73 +2,69 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.ImpactoTrafico;
 import com.Metro.org.service.ImpactoService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/impacto-trafico")
+@Controller
 public class ImpactoController {
+
     private final ImpactoService impactoService;
 
-    public ImpactoController(ImpactoService impactoService) {
-        this.impactoService = impactoService;
+    public ImpactoController(ImpactoService service) {
+        this.impactoService = service;
     }
 
-    @GetMapping
-    public List<ImpactoTrafico> getAllImpactos() {
-        return impactoService.getAllImpactos();
+    @GetMapping("/api/impacto-trafico")
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
+        List<ImpactoTrafico> impactos = impactoService.getAllImpactos();
+
+        if (buscar != null && !buscar.isEmpty()) {
+            impactos = impactos.stream()
+                    .filter(i -> i.getZona().toLowerCase().contains(buscar.toLowerCase()) ||
+                            i.getId_impacto().toString().contains(buscar))
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("impactos", impactos);
+        model.addAttribute("impactoObj", new ImpactoTrafico());
+        return "Impacto";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createImpacto(@Valid @RequestBody ImpactoTrafico impacto) {
-        try {
+    @PostMapping("/api/impacto-trafico/guardar")
+    public String guardar(@ModelAttribute ImpactoTrafico impacto, RedirectAttributes redirectAttrs) {
+        if (impacto.getReduccionTraficoPorcentaje() != null) {
             double porcentaje = impacto.getReduccionTraficoPorcentaje().doubleValue();
             if (porcentaje < 0 || porcentaje > 100) {
-                throw new IllegalArgumentException("El porcentaje debe estar entre 0 y 100.");
+                redirectAttrs.addFlashAttribute("mensajeError", "El porcentaje debe estar entre 0 y 100.");
+                return "redirect:/api/impacto-trafico";
             }
-
-            ImpactoTrafico createdImpacto = impactoService.saveImpacto(impacto);
-            return new ResponseEntity<>(createdImpacto, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         }
+
+        impactoService.saveImpacto(impacto);
+        return "redirect:/api/impacto-trafico";
     }
 
-    @PutMapping
-    public ResponseEntity<Object> updateImpacto(@Valid @RequestBody ImpactoTrafico impacto) {
-        try {
-            Integer id = impacto.getId_impacto();
-            if (id == null) {
-                return ResponseEntity.badRequest().body("Error: El ID del impacto es obligatorio en el JSON.");
-            }
-
-            double porcentaje = impacto.getReduccionTraficoPorcentaje().doubleValue();
-            if (porcentaje < 0 || porcentaje > 100) {
-                throw new IllegalArgumentException("El porcentaje debe estar entre 0 y 100.");
-            }
-
-            ImpactoTrafico updatedImpacto = impactoService.updateImpacto(id, impacto);
-            return new ResponseEntity<>(updatedImpacto, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @GetMapping("/api/impacto-trafico/editar/{id}")
+    public String precargarEdicion(@PathVariable Integer id, Model model) {
+        ImpactoTrafico impacto = impactoService.getImpactoById(id);
+        model.addAttribute("impactos", impactoService.getAllImpactos());
+        model.addAttribute("impactoObj", impacto);
+        model.addAttribute("editando", true);
+        return "Impacto";
     }
 
-    @DeleteMapping
-    public ResponseEntity<Object> deleteImpacto(@Valid @RequestBody ImpactoTrafico impacto) {
+    @GetMapping("/api/impacto-trafico/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
         try {
-            Integer id = impacto.getId_impacto();
-            if (id == null) {
-                return ResponseEntity.badRequest().body("Error: El ID del impacto es obligatorio en el JSON.");
-            }
             impactoService.deleteImpacto(id);
-            return ResponseEntity.ok().body("Impacto eliminado correctamente");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se puede eliminar el registro de impacto.");
         }
+        return "redirect:/api/impacto-trafico";
     }
 }
