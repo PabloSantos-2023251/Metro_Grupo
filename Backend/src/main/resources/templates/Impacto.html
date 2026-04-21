@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Impacto en Tráfico</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<div class="container">
+    <a href="PaginaPrincipal.html" class="btn btn-secondary">← Volver</a>
+
+    <h2>Gestión de Impacto en Tráfico</h2>
+    <hr>
+
+    <div class="card">
+        <form id="formImpacto">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Zona</label>
+                    <input type="text" class="form-control" placeholder="Ej: Zona 2" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Reducción (%)</label>
+                    <input type="text" class="form-control" placeholder="Ej: 20%" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Guardar Impacto</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID Impacto</th>
+            <th>Zona</th>
+            <th>Reducción</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Zona 2</td>
+            <td>20%</td>
+            <td>
+                <button class="btn btn-warning">Editar</button>
+                <button class="btn btn-danger">Borrar</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+
+</html>
