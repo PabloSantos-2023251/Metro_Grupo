@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estaciones</title>
+    <link rel="stylesheet" href="../static/estacion.css">
+</head>
+
+<body>
+<div class="container">
+
+    <a href="PaginaPrincipal.html" class="btn btn-secondary">← Volver</a>
+
+    <h2>Gestión de Estaciones</h2>
+    <hr>
+
+    <div class="card">
+        <form id="formEstaciones">
+            <div class="row">
+
+                <div class="col-md-6">
+                    <label class="form-label">Nombre de Estación</label>
+                    <input type="text" name="nombre" class="form-control" placeholder="Ej: Estación Central" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Zona</label>
+                    <input type="text" name="zona" class="form-control" placeholder="Ej: Zona 1">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Línea</label>
+                    <select name="id_linea" class="form-control" required>
+                        <option value="">Seleccione una línea</option>
+                        <option value="1">Línea 1</option>
+                        <option value="2">Línea 2</option>
+                        <option value="3">Línea 3</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Guardar Estación</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID Estación</th>
+            <th>Nombre</th>
+            <th>Zona</th>
+            <th>Línea</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Estación Central</td>
+            <td>Zona 1</td>
+            <td>Línea 1</td>
+            <td>
+                <button class="btn btn-warning">Editar</button>
+                <button class="btn btn-danger">Borrar</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+
+</html>
