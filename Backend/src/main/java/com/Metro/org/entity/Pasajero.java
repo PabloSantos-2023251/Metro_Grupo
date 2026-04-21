@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "Pasajeros")
-public class pasajero {
+public class Pasajero {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,29 +20,11 @@ public class pasajero {
     @Column(name = "tipo_pasajero", nullable = false, length = 30)
     private String tipoPasajero;
 
-    // Getters y Setters //
-
-    public Integer getIdPasajero() {
-        return idPasajero;
-    }
-
-    public void setIdPasajero(Integer idPasajero) {
-        this.idPasajero = idPasajero;
-    }
-
-    public String getNombrePasajero() {
-        return nombrePasajero;
-    }
-
-    public void setNombrePasajero(String nombrePasajero) {
-        this.nombrePasajero = nombrePasajero;
-    }
-
-    public String getTipoPasajero() {
-        return tipoPasajero;
-    }
-
-    public void setTipoPasajero(String tipoPasajero) {
-        this.tipoPasajero = tipoPasajero;
-    }
+    // Getters y Setters
+    public Integer getIdPasajero() { return idPasajero; }
+    public void setIdPasajero(Integer idPasajero) { this.idPasajero = idPasajero; }
+    public String getNombrePasajero() { return nombrePasajero; }
+    public void setNombrePasajero(String nombrePasajero) { this.nombrePasajero = nombrePasajero; }
+    public String getTipoPasajero() { return tipoPasajero; }
+    public void setTipoPasajero(String tipoPasajero) { this.tipoPasajero = tipoPasajero; }
 }
