@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/api/impacto-trafico")
 public class ImpactoController {
 
     private final ImpactoService impactoService;
@@ -19,14 +20,14 @@ public class ImpactoController {
         this.impactoService = service;
     }
 
-    @GetMapping("/api/impacto-trafico")
+    @GetMapping
     public String listar(@RequestParam(required = false) String buscar, Model model) {
         List<ImpactoTrafico> impactos = impactoService.getAllImpactos();
 
         if (buscar != null && !buscar.isEmpty()) {
             impactos = impactos.stream()
-                    .filter(i -> i.getZona().toLowerCase().contains(buscar.toLowerCase()) ||
-                            i.getId_impacto().toString().contains(buscar))
+                    .filter(i -> (i.getZona() != null && i.getZona().toLowerCase().contains(buscar.toLowerCase())) ||
+                            (i.getId_impacto() != null && i.getId_impacto().toString().contains(buscar)))
                     .collect(Collectors.toList());
         }
 
@@ -35,7 +36,7 @@ public class ImpactoController {
         return "Impacto";
     }
 
-    @PostMapping("/api/impacto-trafico/guardar")
+    @PostMapping("/guardar")
     public String guardar(@ModelAttribute ImpactoTrafico impacto, RedirectAttributes redirectAttrs) {
         if (impacto.getReduccionTraficoPorcentaje() != null) {
             double porcentaje = impacto.getReduccionTraficoPorcentaje().doubleValue();
@@ -49,21 +50,24 @@ public class ImpactoController {
         return "redirect:/api/impacto-trafico";
     }
 
-    @GetMapping("/api/impacto-trafico/editar/{id}")
+    @GetMapping("/editar/{id}")
     public String precargarEdicion(@PathVariable Integer id, Model model) {
         ImpactoTrafico impacto = impactoService.getImpactoById(id);
+        if (impacto == null) {
+            return "redirect:/api/impacto-trafico";
+        }
         model.addAttribute("impactos", impactoService.getAllImpactos());
         model.addAttribute("impactoObj", impacto);
         model.addAttribute("editando", true);
         return "Impacto";
     }
 
-    @GetMapping("/api/impacto-trafico/eliminar/{id}")
+    @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
         try {
             impactoService.deleteImpacto(id);
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("mensajeError", "No se puede eliminar el registro de impacto.");
+            redirectAttrs.addFlashAttribute("mensajeError", "No se puede eliminar el registro.");
         }
         return "redirect:/api/impacto-trafico";
     }
