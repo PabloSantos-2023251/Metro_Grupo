@@ -1,7 +1,11 @@
 package com.Metro.org.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "Boletos")
@@ -18,12 +22,12 @@ public class boleto {
     private BigDecimal precio;
 
     @Column(name = "fecha", nullable = false)
-    private Fecha fecha;
+    private Date fecha;
 
     @NotNull(message = "El pasajero es obligatorio")
     @ManyToOne
     @JoinColumn(name = "id_pasajero", nullable = false)
-    private Pasajero pasajero;
+    private pasajero pasajero;
 
     // Getters y Setters //
 
@@ -43,19 +47,19 @@ public class boleto {
         this.precio = precio;
     }
 
-    public Fecha getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(Fecha fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
-    public Pasajero getPasajero() {
+    public pasajero getPasajero() {
         return pasajero;
     }
 
-    public void setPasajero(Pasajero pasajero) {
+    public void setPasajero(pasajero pasajero) {
         this.pasajero = pasajero;
     }
 }
