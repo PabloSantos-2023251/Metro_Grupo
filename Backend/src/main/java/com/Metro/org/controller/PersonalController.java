@@ -24,9 +24,11 @@ public class PersonalController {
         List<Personal> personalList = personalService.getAllPersonal();
 
         if (buscar != null && !buscar.isEmpty()) {
+            String criterio = buscar.toLowerCase();
             personalList = personalList.stream()
-                    .filter(p -> p.getNombre().toLowerCase().contains(buscar.toLowerCase()) ||
-                            p.getCargo().toLowerCase().contains(buscar.toLowerCase()) ||
+                    .filter(p -> p.getNombre().toLowerCase().contains(criterio) ||
+                            p.getEmail().toLowerCase().contains(criterio) ||
+                            p.getCargo().toLowerCase().contains(criterio) ||
                             p.getId_personal().toString().contains(buscar))
                     .collect(Collectors.toList());
         }
@@ -37,8 +39,12 @@ public class PersonalController {
     }
 
     @PostMapping("/api/personal/guardar")
-    public String guardar(@ModelAttribute Personal personal) {
-        personalService.savePersonal(personal);
+    public String guardar(@ModelAttribute Personal personal, RedirectAttributes redirectAttrs) {
+        try {
+            personalService.savePersonal(personal);
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "Error al guardar: El email ya existe o los datos son inválidos.");
+        }
         return "redirect:/api/personal";
     }
 
