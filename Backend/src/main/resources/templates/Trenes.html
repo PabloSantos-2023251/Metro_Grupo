@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Trenes</title>
+    <link rel="stylesheet" href="/Estilos.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="PaginaPrincipal.html" class="btn btn-secondary">← Volver</a>
+
+    <h2>Gestión de Trenes</h2>
+    <hr>
+
+    <div class="card">
+        <form id="formTrenes">
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <label class="form-label">Modelo</label>
+                    <input type="text" class="form-control" placeholder="Ej: Modelo X200" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Capacidad de Pasajeros</label>
+                    <input type="number" class="form-control" placeholder="Ej: 120" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Estado</label>
+                    <input type="text" class="form-control" placeholder="Ej: Activo / Mantenimiento" required>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Guardar Tren</button>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+    <table class="table">
+
+        <thead>
+        <tr>
+            <th>ID Tren</th>
+            <th>Modelo</th>
+            <th>Capacidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>X200</td>
+            <td>120</td>
+            <td>Activo</td>
+            <td>
+                <button class="btn btn-warning">Editar</button>
+                <button class="btn btn-danger">Borrar</button>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
