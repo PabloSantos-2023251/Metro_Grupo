@@ -1,10 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasajeros</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<body>
 
+<body>
+<div class="container">
+    <a th:href="@{/}" class="btn btn-secondary">← Volver</a>
+
+    <h2>Gestión de Pasajeros</h2>
+    <hr>
+
+    <div class="card">
+        <form th:action="@{/pasajeros/agregar}" th:object="${pasajeroForm}" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">ID Pasajero</label>
+                    <input type="text" class="form-control" th:field="*{idPasajero}" placeholder="Ej: 1" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control" th:field="*{nombre}" placeholder="Ej: Juan" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tipo</label>
+                    <input type="text" class="form-control" th:field="*{tipo}" placeholder="Ej: Adulto" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Agregar Pasajero</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID Pasajero</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pasajero : ${pasajeros}">
+            <td th:text="${pasajero.idPasajero}"></td>
+            <td th:text="${pasajero.nombre}"></td>
+            <td th:text="${pasajero.tipo}"></td>
+            <td>
+                <a th:href="@{/pasajeros/editar/{id}(id=${pasajero.idPasajero})}" class="btn btn-warning">Editar</a>
+                <a th:href="@{/pasajeros/borrar/{id}(id=${pasajero.idPasajero})}" class="btn btn-danger"
+                   onclick="return confirm('¿Desea borrar este pasajero?')">Borrar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
+
 </html>
