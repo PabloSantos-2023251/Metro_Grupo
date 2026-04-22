@@ -19,7 +19,6 @@ public class ConductorController {
         this.conductorService = conductorService;
     }
 
-    // 📌 Vista principal
     @GetMapping
     public String verPagina(Model model){
 
@@ -28,28 +27,25 @@ public class ConductorController {
         model.addAttribute("conductores", lista);
         model.addAttribute("conductor", new Conductores());
 
-        return "Conductores"; // nombre del HTML
+        return "Conductores";
     }
 
-    // 📌 Guardar desde formulario
     @PostMapping("/guardar")
     public String guardarConductor(@Valid @ModelAttribute("conductor") Conductores conductor){
         conductorService.saveConductores(conductor);
         return "redirect:/conductores";
     }
 
-    // 📌 Eliminar
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id){
         conductorService.deleteConductores(id);
         return "redirect:/conductores";
     }
 
-    // 📌 Editar (vista)
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model){
 
-        Conductores conductor = conductorService.getByIdconductroes(id);
+        Conductores conductor = conductorService.getConductoresById(id);
 
         model.addAttribute("conductor", conductor);
 
