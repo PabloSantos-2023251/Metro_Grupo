@@ -3,80 +3,61 @@ package com.Metro.org.controller;
 import com.Metro.org.entity.Estaciones;
 import com.Metro.org.service.EstacionesService;
 import jakarta.validation.Valid;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import java.util.HashMap;
-import java.util.Map;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/estaciones")
+@Controller
+@RequestMapping("/estaciones")
 public class EstacionesController {
 
     private final EstacionesService estacionesService;
 
-    public EstacionesController (EstacionesService estacionesService){this.estacionesService = estacionesService;
-
+    public EstacionesController(EstacionesService estacionesService){
+        this.estacionesService = estacionesService;
     }
 
     @GetMapping
-    public List<Estaciones> getAllEstaciones(){return estacionesService.getAllEstaciones();
-
+    public String verPagina(Model model){
+        List<Estaciones> lista = estacionesService.getAllEstaciones();
+        model.addAttribute("estaciones", lista);
+        return "estacion";
     }
 
-    @PostMapping
+    @ResponseBody
+    @PostMapping("/api")
     public ResponseEntity<Object> createEstaciones(@Valid @RequestBody Estaciones estaciones){
         try{
-            Estaciones createEstaciones = estacionesService.saveEstaciones(estaciones);
-            return new ResponseEntity<>(createEstaciones,HttpStatus.CREATED);
+            Estaciones creada = estacionesService.saveEstaciones(estaciones);
+            return new ResponseEntity<>(creada, HttpStatus.CREATED);
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteEstaciones (@PathVariable Integer id){
+    @ResponseBody
+    @DeleteMapping("/api/{id}")
+    public ResponseEntity<?> deleteEstaciones(@PathVariable Integer id){
         try{
             estacionesService.deleteEstaciones(id);
-            return ResponseEntity.noContent().build();
-        }catch (IllegalArgumentException e){
+            return ResponseEntity.ok("Estación eliminada correctamente");
+        }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Estaciones> updateEstaciones(
-            @PathVariable Integer id,
-            @Valid @RequestBody Estaciones estaciones) {
-
-        Estaciones estacionesActualizar = estacionesService.updateEstaciones(id, estaciones);
-        return ResponseEntity.ok(estacionesActualizar);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getEstacionesId(@PathVariable Integer id){
+    @ResponseBody
+    @PutMapping("/api/{id}")
+    public ResponseEntity<?> updateEstaciones(@PathVariable Integer id, @RequestBody Estaciones estaciones){
         try{
-            Estaciones estaciones = estacionesService.getEstacionesById(id);
-            return ResponseEntity.ok(estaciones);
-        }catch (ObjectNotFoundException e){
-            return ResponseEntity.notFound().build();
+            Estaciones actualizada = estacionesService.updateEstaciones(id, estaciones);
+            return ResponseEntity.ok(actualizada);
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> manejarErroresValidacion(
-            MethodArgumentNotValidException ex) {
-
-        Map<String, String> errores = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errores.put(error.getField(), error.getDefaultMessage())
-        );
-
-        return ResponseEntity.badRequest().body(errores);
-    }
-
 }
