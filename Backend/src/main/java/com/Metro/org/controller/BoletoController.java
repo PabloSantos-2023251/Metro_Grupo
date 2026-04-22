@@ -24,7 +24,7 @@ public class BoletoController {
     public String listar(Model model) {
         model.addAttribute("boletos", boletoService.getAllBoletos());
         model.addAttribute("boletoForm", new Boleto());
-        return "html/Boletos";
+        return "index/Boletos";
     }
 
     @PostMapping("/agregar")
@@ -41,7 +41,7 @@ public class BoletoController {
         Boleto boleto = boletoService.getBoletoById(id);
         model.addAttribute("boletos", boletoService.getAllBoletos());
         model.addAttribute("boletoForm", boleto);
-        return "html/Boletos";
+        return "index/Boletos";
     }
 
     @PostMapping("/editar/{id}")

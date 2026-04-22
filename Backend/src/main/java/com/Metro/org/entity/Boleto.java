@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "boletos")
@@ -21,20 +21,24 @@ public class Boleto {
     private BigDecimal precio;
 
     @Column(name = "fecha", nullable = false)
-    private LocalDateTime fecha;
+    private LocalDate fecha;
 
     @NotNull(message = "El Pasajero es obligatorio")
     @ManyToOne
     @JoinColumn(name = "id_pasajero", nullable = false)
-    private Pasajero pasajero; // Asegúrate de que exista la clase Pasajero
+    private Pasajero pasajero;
 
-    // Getters y Setters
+    //Getters y Setters//
     public Integer getIdBoleto() { return idBoleto; }
     public void setIdBoleto(Integer idBoleto) { this.idBoleto = idBoleto; }
     public BigDecimal getPrecio() { return precio; }
     public void setPrecio(BigDecimal precio) { this.precio = precio; }
-    public LocalDateTime getFecha() { return fecha; }
-    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+    public LocalDate getFecha() { return fecha; }
+    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
     public Pasajero getPasajero() { return pasajero; }
     public void setPasajero(Pasajero pasajero) { this.pasajero = pasajero; }
+
+    public Integer getIdPasajero() {
+        return pasajero != null ? pasajero.getIdPasajero() : null;
+    }
 }
