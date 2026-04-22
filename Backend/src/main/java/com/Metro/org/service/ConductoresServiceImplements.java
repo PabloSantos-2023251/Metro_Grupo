@@ -6,48 +6,49 @@ import com.Metro.org.repository.ConductoresRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 public class ConductoresServiceImplements implements ConductoresService {
-    private final ConductoresRepository ConductoresRepository;
 
+    private final ConductoresRepository conductoresRepository;
 
     public ConductoresServiceImplements(ConductoresRepository conductoresRepository) {
-        ConductoresRepository = conductoresRepository;
+        this.conductoresRepository = conductoresRepository;
     }
 
     @Override
     public List<Conductores> getAllConductores() {
-        return ConductoresRepository.findAll();
+        return conductoresRepository.findAll();
     }
 
     @Override
     public Conductores getConductoresById(Integer id) {
-        return ConductoresRepository.findById(id).orElse(null);
+        return conductoresRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Conductor no encontrado con ID: " + id));
     }
 
     @Override
-    public Conductores saveConductores(Conductores conductores) throws RuntimeException {
-        return ConductoresRepository.save(conductores);
+    public Conductores saveConductores(Conductores conductores) {
+        return conductoresRepository.save(conductores);
     }
-
 
     @Override
     public void deleteConductores(Integer id) {
-        if (!ConductoresRepository.existsById(id)) {
-            throw new RuntimeException("Conductores no existe");
+        if (!conductoresRepository.existsById(id)) {
+            throw new RuntimeException("El conductor no existe con ID: " + id);
         }
-        ConductoresRepository.deleteById(id);
+        conductoresRepository.deleteById(id);
     }
 
     @Override
     public Conductores updateConductores(Integer id, Conductores conductores) {
-        Conductores existingConductores = ConductoresRepository.findById(id).orElseThrow(() -> new RuntimeException("El Conductores no existe"));
+        Conductores existing = conductoresRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("El conductor no existe con ID: " + id));
 
-        existingConductores.setNombre(conductores.getNombre());
-        existingConductores.setLicencia(conductores.getLicencia());
-        existingConductores.setAniosExperencia(conductores.getAniosExperencia());
+        existing.setNombre(conductores.getNombre());
+        existing.setLicencia(conductores.getLicencia());
+        existing.setAniosExperiencia(conductores.getAniosExperiencia());
 
-        return ConductoresRepository.save(existingConductores);
+        return conductoresRepository.save(existing);
     }
+
 }
