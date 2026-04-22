@@ -1,66 +1,62 @@
 package com.Metro.org.controller;
 
 import com.Metro.org.entity.Boleto;
+import com.Metro.org.entity.Pasajero;
 import com.Metro.org.service.BoletoService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.Metro.org.service.PasajeroService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/boletos")
 public class BoletoController {
 
     private final BoletoService boletoService;
+    private final PasajeroService pasajeroService;
 
-    public BoletoController(BoletoService boletoService) {
+    public BoletoController(BoletoService boletoService, PasajeroService pasajeroService) {
         this.boletoService = boletoService;
+        this.pasajeroService = pasajeroService;
     }
 
     @GetMapping
-    public List<Boleto> getAllBoletos() {
-        return boletoService.getAllBoletos();
+    public String listar(Model model) {
+        model.addAttribute("boletos", boletoService.getAllBoletos());
+        model.addAttribute("boletoForm", new Boleto());
+        return "html/Boletos";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getBoletoById(@PathVariable Integer id) {
-        try {
-            Boleto boleto = boletoService.getBoletoById(id);
-            return ResponseEntity.ok(boleto);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @PostMapping("/agregar")
+    public String agregar(@ModelAttribute("boletoForm") Boleto boleto,
+                          @RequestParam("idPasajero") Integer idPasajero) {
+        Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
+        boleto.setPasajero(pasajero);
+        boletoService.saveBoleto(boleto);
+        return "redirect:/boletos";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createBoleto(@Valid @RequestBody Boleto boleto) {
-        try {
-            Boleto created = boletoService.saveBoleto(boleto);
-            return new ResponseEntity<>(created, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al crear: " + e.getMessage());
-        }
+    @GetMapping("/editar/{id}")
+    public String editarForm(@PathVariable Integer id, Model model) {
+        Boleto boleto = boletoService.getBoletoById(id);
+        model.addAttribute("boletos", boletoService.getAllBoletos());
+        model.addAttribute("boletoForm", boleto);
+        return "html/Boletos";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateBoleto(@PathVariable Integer id, @Valid @RequestBody Boleto boleto) {
-        try {
-            boletoService.updateBoleto(id, boleto);
-            return ResponseEntity.ok("Boleto actualizado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @PostMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id,
+                         @ModelAttribute("boletoForm") Boleto boleto,
+                         @RequestParam("idPasajero") Integer idPasajero) {
+        Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
+        boleto.setPasajero(pasajero);
+        boletoService.updateBoleto(id, boleto);
+        return "redirect:/boletos";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteBoleto(@PathVariable Integer id) {
-        try {
-            boletoService.deleteBoleto(id);
-            return ResponseEntity.ok("Boleto anulado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/borrar/{id}")
+    public String borrar(@PathVariable Integer id) {
+        boletoService.deleteBoleto(id);
+        return "redirect:/boletos";
     }
 }
