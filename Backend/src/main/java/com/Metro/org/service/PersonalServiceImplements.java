@@ -4,6 +4,7 @@ import com.Metro.org.entity.Personal;
 import com.Metro.org.repository.PersonalRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PersonalServiceImplements implements PersonalService {
@@ -37,5 +38,10 @@ public class PersonalServiceImplements implements PersonalService {
     @Override
     public void deletePersonal(Integer id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Personal> findByEmail(String email) {
+        return repository.findByEmail(email.trim());
     }
 }
