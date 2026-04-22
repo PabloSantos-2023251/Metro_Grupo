@@ -1,43 +1,49 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Trenes</title>
-    <link rel="stylesheet" href="/Estilos.css">
+    <link rel="stylesheet" th:href="@{/Estilos.css}">
 </head>
 
 <body>
 
 <div class="container">
 
-    <a href="PaginaPrincipal.html" class="btn btn-secondary">← Volver</a>
+    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary">← Volver</a>
 
     <h2>Gestión de Trenes</h2>
     <hr>
 
     <div class="card">
-        <form id="formTrenes">
+        <form th:action="@{/trenes/guardar}" th:object="${tren}" method="post">
 
             <div class="row">
 
                 <div class="col-md-6">
                     <label class="form-label">Modelo</label>
-                    <input type="text" class="form-control" placeholder="Ej: Modelo X200" required>
+                    <input type="text" class="form-control"
+                           th:field="*{modelo}"
+                           placeholder="Ej: Modelo X200" required>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Capacidad de Pasajeros</label>
-                    <input type="number" class="form-control" placeholder="Ej: 120" required>
+                    <input type="number" class="form-control"
+                           th:field="*{capacidadPasajeros}"
+                           placeholder="Ej: 120" required>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" placeholder="Ej: Activo / Mantenimiento" required>
+                    <input type="text" class="form-control"
+                           th:field="*{estado}"
+                           placeholder="Ej: Activo / Mantenimiento" required>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 mt-2">
                     <button type="submit" class="btn btn-success">Guardar Tren</button>
                 </div>
 
@@ -59,14 +65,20 @@
         </thead>
 
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>X200</td>
-            <td>120</td>
-            <td>Activo</td>
+        <tr th:each="tren : ${trenes}">
+            <td th:text="${tren.idTren}"></td>
+            <td th:text="${tren.modelo}"></td>
+            <td th:text="${tren.capacidadPasajeros}"></td>
+            <td th:text="${tren.estado}"></td>
             <td>
-                <button class="btn btn-warning">Editar</button>
-                <button class="btn btn-danger">Borrar</button>
+                <a th:href="@{/trenes/editar/{id}(id=${tren.idTren})}"
+                   class="btn btn-warning">Editar</a>
+
+                <a th:href="@{/trenes/eliminar/{id}(id=${tren.idTren})}"
+                   class="btn btn-danger"
+                   onclick="return confirm('¿Seguro que deseas eliminar este tren?')">
+                    Borrar
+                </a>
             </td>
         </tr>
         </tbody>
