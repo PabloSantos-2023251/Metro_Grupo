@@ -1,69 +1,95 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Conductores</title>
-    <link rel="stylesheet" href="/Estilos.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Conductores</title>
+    <link rel="stylesheet" th:href="@{/Estilos.css}">
 </head>
 
 <body>
 
 <div class="container">
-    <a href="PaginaPrincipal.html" class="btn btn-secondary">← Volver</a>
+
+    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary">← Volver</a>
 
     <h2>Gestión de Conductores</h2>
     <hr>
 
+    <!-- FORMULARIO -->
     <div class="card">
-        <form id="formConductores">
+        <form th:action="@{/conductores/guardar}" th:object="${conductor}" method="post">
+
             <div class="row">
 
                 <div class="col-md-6">
                     <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control" placeholder="Ej: Juan Pérez" required>
+                    <input type="text" class="form-control"
+                           th:field="*{nombre}"
+                           placeholder="Ej: Juan Pérez" required>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Licencia</label>
-                    <input type="text" class="form-control" placeholder="Ej: B1234567" required>
+                    <input type="text" class="form-control"
+                           th:field="*{licencia}"
+                           placeholder="Ej: B1234567" required>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Años de Experiencia</label>
-                    <input type="number" class="form-control" placeholder="Ej: 5" required>
+                    <input type="number" class="form-control"
+                           th:field="*{aniosExperiencia}"
+                           placeholder="Ej: 5" required>
                 </div>
 
-                <div class="col-12">
-                    <button type="submit" class="btn btn-success">Guardar Conductor</button>
+                <div class="col-12 mt-2">
+                    <button type="submit" class="btn btn-success">
+                        Guardar Conductor
+                    </button>
                 </div>
 
             </div>
+
         </form>
     </div>
 
+    <!-- TABLA -->
     <table class="table">
+
         <thead>
         <tr>
             <th>ID Conductor</th>
             <th>Nombre</th>
             <th>Licencia</th>
-            <th>Años de Experiencia</th>
+            <th>Años Experiencia</th>
             <th>Acciones</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Juan Pérez</td>
-            <td>B1234567</td>
-            <td>5</td>
+        <tr th:each="conductor : ${conductores}">
+            <td th:text="${conductor.idConductor}"></td>
+            <td th:text="${conductor.nombre}"></td>
+            <td th:text="${conductor.licencia}"></td>
+            <td th:text="${conductor.aniosExperiencia}"></td>
+
             <td>
-                <button class="btn btn-warning">Editar</button>
-                <button class="btn btn-danger">Borrar</button>
+                <a th:href="@{/conductores/editar/{id}(id=${conductor.idConductor})}"
+                   class="btn btn-warning">
+                    Editar
+                </a>
+
+                <a th:href="@{/conductores/eliminar/{id}(id=${conductor.idConductor})}"
+                   class="btn btn-danger"
+                   onclick="return confirm('¿Seguro que deseas eliminar este conductor?')">
+                    Borrar
+                </a>
             </td>
         </tr>
         </tbody>
+
     </table>
 
 </div>
