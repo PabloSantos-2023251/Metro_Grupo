@@ -21,47 +21,44 @@ public class TrenController {
         this.trenService = trenService;
     }
 
-    // 📌 Vista principal (Thymeleaf)
+    // 📌 Vista principal
     @GetMapping
     public String verPagina(Model model){
-
-        List<Trenes> lista = trenService.getAllTren();
-
-        model.addAttribute("trenes", lista);   // lista para tabla
-        model.addAttribute("tren", new Trenes()); // objeto para formulario 👈 IMPORTANTE
-
+        model.addAttribute("trenes", trenService.getAllTren());
+        model.addAttribute("tren", new Trenes());
         return "Trenes";
     }
 
-    // 📌 Guardar desde formulario HTML (Thymeleaf)
+    // 📌 Guardar (formulario)
     @PostMapping("/guardar")
     public String guardarTren(@Valid @ModelAttribute("tren") Trenes tren){
         trenService.saveTren(tren);
         return "redirect:/trenes";
     }
 
+    // 📌 Editar (cargar datos)
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model){
+        model.addAttribute("tren", trenService.getTrenById(id));
+        model.addAttribute("trenes", trenService.getAllTren());
+        return "Trenes";
+    }
+
+    // 📌 Eliminar (WEB)
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        trenService.deleteTren(id);
+        return "redirect:/trenes";
+    }
+
     // 📌 API REST - Crear
     @ResponseBody
     @PostMapping("/api")
-    public ResponseEntity<Object> createTren(@Valid @RequestBody Trenes tren){
+    public ResponseEntity<?> createTren(@Valid @RequestBody Trenes tren){
         try {
-            Trenes createdTren = trenService.saveTren(tren);
-            return new ResponseEntity<>(createdTren, HttpStatus.CREATED);
+            return new ResponseEntity<>(trenService.saveTren(tren), HttpStatus.CREATED);
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    // 📌 API REST - Eliminar
-    @ResponseBody
-    @DeleteMapping("/api/{id}")
-    public ResponseEntity<?> deleteTren(@PathVariable Integer id){
-        try {
-            trenService.deleteTren(id);
-            return ResponseEntity.ok("Tren eliminado correctamente");
-        } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
         }
     }
 
@@ -71,11 +68,21 @@ public class TrenController {
     public ResponseEntity<?> updateTren(@PathVariable Integer id,
                                         @RequestBody Trenes tren){
         try {
-            Trenes actualizado = trenService.updateTren(id, tren);
-            return ResponseEntity.ok(actualizado);
+            return ResponseEntity.ok(trenService.updateTren(id, tren));
         } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    // 📌 API REST - Eliminar
+    @ResponseBody
+    @DeleteMapping("/api/{id}")
+    public ResponseEntity<?> deleteTrenApi(@PathVariable Integer id){
+        try {
+            trenService.deleteTren(id);
+            return ResponseEntity.ok("Tren eliminado correctamente");
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }
