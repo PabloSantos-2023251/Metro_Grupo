@@ -389,3 +389,6 @@ call crear_boleto(5.00, '2024-05-02', 7);
 call crear_boleto(2.50, '2024-05-02', 8);
 call crear_boleto(5.00, '2024-05-03', 9);
 call crear_boleto(0.00, '2024-05-03', 10);
+
+select * from mantenimiento;
+select * from horarios;
