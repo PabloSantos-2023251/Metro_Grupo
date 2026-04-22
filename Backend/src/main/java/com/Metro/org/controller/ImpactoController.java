@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/api/impacto-trafico")
 public class ImpactoController {
 
     private final ImpactoService impactoService;
@@ -20,7 +19,7 @@ public class ImpactoController {
         this.impactoService = service;
     }
 
-    @GetMapping
+    @GetMapping("/api/impacto-trafico")
     public String listar(@RequestParam(required = false) String buscar, Model model) {
         List<ImpactoTrafico> impactos = impactoService.getAllImpactos();
 
