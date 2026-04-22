@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Metro</title>
+    <link rel="stylesheet" th:href="@{/css/HomeStyle.css}">
+</head>
+<body>
+
+<header class="header-nav">
+    <div>
+        <h1>METRO-SUBTERRANEO</h1>
+        <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #c2d2e9;">
+            Bienvenido, <span th:text="${session.nombreUsuario}">Usuario</span>
+            (<span th:text="${session.rolUsuario}" style="text-transform: capitalize;">Rol</span>)
+        </p>
+    </div>
+    <a th:href="@{/}" class="btn-exit">CERRAR SESIÓN</a>
+</header>
+
+<main class="dashboard-grid">
+
+    <section class="metro-card">
+        <h3>Mantenimiento</h3>
+        <p>Control de revisiones técnicas y estados de la flota.</p>
+        <a th:href="@{/mantenimientos}" class="btn-action">Gestionar</a>
+    </section>
+
+    <section class="metro-card">
+        <h3>Personal</h3>
+        <p>Administración de operadores y personal de estación.</p>
+        <a th:href="@{/api/personal}" class="btn-action">Ver Listado</a>
+    </section>
+
+    <section class="metro-card">
+        <h3>Horarios</h3>
+        <p>Programación de salidas y llegadas por línea.</p>
+        <a href="/horarios" class="btn-action">Configurar</a>
+    </section>
+
+    <section class="metro-card">
+        <h3>Boletos</h3>
+        <p>Sistema de ventas y validación de acceso.</p>
+        <a href="/boletos" class="btn-action">Ventanilla</a>
+    </section>
+
+    <section class="metro-card">
+        <h3>Impacto Ambiental</h3>
+        <p>Eficiencia energética y reducción de tráfico.</p>
+        <a th:href="@{/api/impacto-trafico}" class="btn-action">Reportes</a>
+    </section>
+
+    <section class="metro-card">
+        <h3>Trenes</h3>
+        <p>Gestión de modelos, capacidad y disponibilidad.</p>
+        <a href="/trenes" class="btn-action">Ver Flota</a>
+    </section>
+
+</main>
+
+</body>
+</html>

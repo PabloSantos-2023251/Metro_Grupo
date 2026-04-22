@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Personal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<div class="container">
+    <a href="PaginaPrincipal.html" class="btn btn-secondary">← Volver</a>
+
+    <h2>Gestión de Personal</h2>
+    <hr>
+
+    <div class="card">
+        <form id="formPersonal">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-control" placeholder="Ej: Pablo Santos" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Cargo</label>
+                    <select class="form-control" required>
+                        <option value="">Seleccione un cargo...</option>
+                        <option value="Gerente">Gerente</option>
+                        <option value="Conserje">Conserje</option>
+                        <option value="Conductor">Conductor</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Guardar Personal</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID Personal</th>
+            <th>Nombre</th>
+            <th>Cargo</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Pablo Santos</td>
+            <td>Gerente</td>
+            <td>
+                <button class="btn btn-warning">Editar</button>
+                <button class="btn btn-danger">Borrar</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+
+</html>

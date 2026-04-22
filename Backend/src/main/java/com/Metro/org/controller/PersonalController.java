@@ -2,76 +2,67 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Personal;
 import com.Metro.org.service.PersonalService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/personal")
+@Controller
 public class PersonalController {
+
     private final PersonalService personalService;
 
-    public PersonalController(PersonalService personalService) {
-        this.personalService = personalService;
+    public PersonalController(PersonalService service) {
+        this.personalService = service;
     }
 
-    @GetMapping
-    public List<Personal> getAllPersonal() {
-        return personalService.getAllPersonal();
-    }
+    @GetMapping("/api/personal")
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
+        List<Personal> personalList = personalService.getAllPersonal();
 
-    @PostMapping
-    public ResponseEntity<Object> createPersonal(@Valid @RequestBody Personal personal) {
-        try {
-            Personal createdPersonal = personalService.savePersonal(personal);
-            Integer id = personal.getId_personal();
-            if (id == null) {
-                return ResponseEntity.badRequest().body("Error: El ID del personal es obligatorio en el JSON.");
-            } else {
-                createdPersonal = personalService.updatePersonal(id, personal);
-                return new ResponseEntity<>(createdPersonal, HttpStatus.OK);
-            }
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        if (buscar != null && !buscar.isEmpty()) {
+            String criterio = buscar.toLowerCase();
+            personalList = personalList.stream()
+                    .filter(p -> p.getNombre().toLowerCase().contains(criterio) ||
+                            p.getEmail().toLowerCase().contains(criterio) ||
+                            p.getCargo().toLowerCase().contains(criterio) ||
+                            p.getId_personal().toString().contains(buscar))
+                    .collect(Collectors.toList());
         }
+
+        model.addAttribute("personalList", personalList);
+        model.addAttribute("personalObj", new Personal());
+        return "Personal";
     }
 
-    @PutMapping
-    public ResponseEntity<Object> updatePersonal(@Valid @RequestBody Personal personal) {
+    @PostMapping("/api/personal/guardar")
+    public String guardar(@ModelAttribute Personal personal, RedirectAttributes redirectAttrs) {
         try {
-            Integer id = personal.getId_personal();
-            Personal updatedPersonal;
-
-            if (id == null) {
-                return ResponseEntity.badRequest().body("Error: El ID del personal es obligatorio en el JSON.");
-            } else {
-                updatedPersonal = personalService.updatePersonal(id, personal);
-                return new ResponseEntity<>(updatedPersonal, HttpStatus.OK);
-            }
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            personalService.savePersonal(personal);
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "Error al guardar: El email ya existe o los datos son inválidos.");
         }
+        return "redirect:/api/personal";
     }
 
-    @DeleteMapping
-    public ResponseEntity<Object> deletePersonal(@Valid @RequestBody Personal personal) {
-        try {
-            Integer id = personal.getId_personal();
+    @GetMapping("/api/personal/editar/{id}")
+    public String precargarEdicion(@PathVariable Integer id, Model model) {
+        model.addAttribute("personalList", personalService.getAllPersonal());
+        model.addAttribute("personalObj", personalService.getPersonalById(id));
+        model.addAttribute("editando", true);
+        return "Personal";
+    }
 
-            if (id == null) {
-                return ResponseEntity.badRequest().body("Error: El ID del personal es obligatorio en el JSON.");
-            }
+    @GetMapping("/api/personal/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
+        try {
             personalService.deletePersonal(id);
-
-            return ResponseEntity.ok().body("Personal eliminado correctamente");
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se puede eliminar el registro de personal.");
         }
+        return "redirect:/api/personal";
     }
 }
