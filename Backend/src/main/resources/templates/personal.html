@@ -41,6 +41,18 @@
                             <option value="Conductor">Conductor</option>
                         </select>
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label font-weight-bold">Contraseña</label>
+                        <input type="text" th:field="*{password}" class="form-control" placeholder="Contraseña" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label font-weight-bold">Rol</label>
+                        <select th:field="*{rol}" class="form-select" required>
+                            <option value="">Seleccione un rol...</option>
+                            <option value="Gerente">administrador</option>
+                            <option value="Conserje">empleado</option>
+                        </select>
+                    </div>
                     <div class="col-12 mt-3">
                         <button type="submit" class="btn btn-success"
                                 th:text="${editando} ? 'Actualizar Personal' : 'Guardar Personal'"></button>

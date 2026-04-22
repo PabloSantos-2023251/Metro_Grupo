@@ -6,11 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/api/personal")
 public class PersonalController {
 
     private final PersonalService personalService;
@@ -19,50 +19,44 @@ public class PersonalController {
         this.personalService = service;
     }
 
-    @GetMapping("/api/personal")
+    @GetMapping
     public String listar(@RequestParam(required = false) String buscar, Model model) {
-        List<Personal> personalList = personalService.getAllPersonal();
-
+        List<Personal> lista = personalService.getAllPersonal();
         if (buscar != null && !buscar.isEmpty()) {
-            String criterio = buscar.toLowerCase();
-            personalList = personalList.stream()
-                    .filter(p -> p.getNombre().toLowerCase().contains(criterio) ||
-                            p.getEmail().toLowerCase().contains(criterio) ||
-                            p.getCargo().toLowerCase().contains(criterio) ||
-                            p.getId_personal().toString().contains(buscar))
+            String b = buscar.toLowerCase();
+            lista = lista.stream()
+                    .filter(p -> p.getNombre().toLowerCase().contains(b) || p.getEmail().toLowerCase().contains(b))
                     .collect(Collectors.toList());
         }
-
-        model.addAttribute("personalList", personalList);
-        model.addAttribute("personalObj", new Personal());
+        model.addAttribute("personalList", lista);
+        if (!model.containsAttribute("personalObj")) {
+            model.addAttribute("personalObj", new Personal());
+        }
         return "Personal";
     }
 
-    @PostMapping("/api/personal/guardar")
-    public String guardar(@ModelAttribute Personal personal, RedirectAttributes redirectAttrs) {
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute Personal personal, RedirectAttributes ra) {
         try {
             personalService.savePersonal(personal);
+            ra.addFlashAttribute("mensajeExito", "Guardado correctamente");
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("mensajeError", "Error al guardar: El email ya existe o los datos son inválidos.");
+            ra.addFlashAttribute("mensajeError", "Error al guardar" + e);
         }
         return "redirect:/api/personal";
     }
 
-    @GetMapping("/api/personal/editar/{id}")
-    public String precargarEdicion(@PathVariable Integer id, Model model) {
-        model.addAttribute("personalList", personalService.getAllPersonal());
-        model.addAttribute("personalObj", personalService.getPersonalById(id));
-        model.addAttribute("editando", true);
-        return "Personal";
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, RedirectAttributes ra) {
+        Personal p = personalService.getPersonalById(id);
+        ra.addFlashAttribute("personalObj", p); // Esto lo pasa al GET de listar
+        ra.addFlashAttribute("editando", true);
+        return "redirect:/api/personal";
     }
 
-    @GetMapping("/api/personal/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
-        try {
-            personalService.deletePersonal(id);
-        } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("mensajeError", "No se puede eliminar el registro de personal.");
-        }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id) {
+        personalService.deletePersonal(id);
         return "redirect:/api/personal";
     }
 }
