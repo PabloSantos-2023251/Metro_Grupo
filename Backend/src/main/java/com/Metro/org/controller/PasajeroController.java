@@ -2,14 +2,11 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Pasajero;
 import com.Metro.org.service.PasajeroService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/pasajeros")
 public class PasajeroController {
 
@@ -20,47 +17,36 @@ public class PasajeroController {
     }
 
     @GetMapping
-    public List<Pasajero> getAllPasajeros() {
-        return pasajeroService.getAllPasajeros();
+    public String listar(Model model) {
+        model.addAttribute("pasajeros", pasajeroService.getAllPasajeros());
+        model.addAttribute("pasajeroForm", new Pasajero());
+        return "html/Pasajeros";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getPasajeroById(@PathVariable Integer id) { // Corregido @PathVariable
-        try {
-            Pasajero pasajero = pasajeroService.getPasajeroById(id);
-            return ResponseEntity.ok(pasajero);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @PostMapping("/agregar")
+    public String agregar(@ModelAttribute("pasajeroForm") Pasajero pasajero) {
+        pasajeroService.savePasajero(pasajero);
+        return "redirect:/pasajeros";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createPasajero(@Valid @RequestBody Pasajero pasajero) {
-        try {
-            Pasajero created = pasajeroService.savePasajero(pasajero);
-            return new ResponseEntity<>(created, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al crear: " + e.getMessage());
-        }
+    @GetMapping("/editar/{id}")
+    public String editarForm(@PathVariable Integer id, Model model) {
+        Pasajero pasajero = pasajeroService.getPasajeroById(id);
+        model.addAttribute("pasajeros", pasajeroService.getAllPasajeros());
+        model.addAttribute("pasajeroForm", pasajero);
+        return "html/Pasajeros";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updatePasajero(@PathVariable Integer id, @Valid @RequestBody Pasajero pasajero) {
-        try {
-            pasajeroService.updatePasajero(id, pasajero);
-            return ResponseEntity.ok("Pasajero actualizado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @PostMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id,
+                         @ModelAttribute("pasajeroForm") Pasajero pasajero) {
+        pasajeroService.updatePasajero(id, pasajero);
+        return "redirect:/pasajeros";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletePasajero(@PathVariable Integer id) {
-        try {
-            pasajeroService.deletePasajero(id);
-            return ResponseEntity.ok("Pasajero eliminado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/borrar/{id}")
+    public String borrar(@PathVariable Integer id) {
+        pasajeroService.deletePasajero(id);
+        return "redirect:/pasajeros";
     }
 }
