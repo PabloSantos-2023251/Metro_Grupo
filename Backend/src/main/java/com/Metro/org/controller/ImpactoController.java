@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/api/impacto-trafico")
 public class ImpactoController {
 
     private final ImpactoService impactoService;
@@ -19,42 +20,46 @@ public class ImpactoController {
         this.impactoService = service;
     }
 
-    @GetMapping("/api/impacto-trafico")
+    @GetMapping
     public String listar(@RequestParam(required = false) String buscar, Model model) {
         List<ImpactoTrafico> impactos = impactoService.getAllImpactos();
 
         if (buscar != null && !buscar.isEmpty()) {
+            String criterio = buscar.toLowerCase();
             impactos = impactos.stream()
-                    .filter(i -> (i.getZona() != null && i.getZona().toLowerCase().contains(buscar.toLowerCase())) ||
+                    .filter(i -> (i.getZona() != null && i.getZona().toLowerCase().contains(criterio)) ||
                             (i.getId_impacto() != null && i.getId_impacto().toString().contains(buscar)))
                     .collect(Collectors.toList());
         }
 
         model.addAttribute("impactos", impactos);
         model.addAttribute("impactoObj", new ImpactoTrafico());
+        model.addAttribute("editando", false); // Evita error 500 si la variable no existe
         return "Impacto";
     }
 
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute ImpactoTrafico impacto, RedirectAttributes redirectAttrs) {
-        if (impacto.getReduccionTraficoPorcentaje() != null) {
-            double porcentaje = impacto.getReduccionTraficoPorcentaje().doubleValue();
-            if (porcentaje < 0 || porcentaje > 100) {
-                redirectAttrs.addFlashAttribute("mensajeError", "El porcentaje debe estar entre 0 y 100.");
-                return "redirect:/api/impacto-trafico";
+        try {
+            if (impacto.getReduccionTraficoPorcentaje() != null) {
+                double porcentaje = impacto.getReduccionTraficoPorcentaje().doubleValue();
+                if (porcentaje < 0 || porcentaje > 100) {
+                    redirectAttrs.addFlashAttribute("mensajeError", "El porcentaje debe estar entre 0 y 100.");
+                    return "redirect:/api/impacto-trafico";
+                }
             }
+            impactoService.saveImpacto(impacto);
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "Error al procesar la solicitud.");
         }
-
-        impactoService.saveImpacto(impacto);
         return "redirect:/api/impacto-trafico";
     }
 
     @GetMapping("/editar/{id}")
     public String precargarEdicion(@PathVariable Integer id, Model model) {
         ImpactoTrafico impacto = impactoService.getImpactoById(id);
-        if (impacto == null) {
-            return "redirect:/api/impacto-trafico";
-        }
+        if (impacto == null) return "redirect:/api/impacto-trafico";
+
         model.addAttribute("impactos", impactoService.getAllImpactos());
         model.addAttribute("impactoObj", impacto);
         model.addAttribute("editando", true);
