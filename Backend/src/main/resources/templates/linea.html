@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -55,11 +55,11 @@
         </thead>
 
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Línea 1</td>
-            <td>Rojo</td>
-            <td>12.50</td>
+        <tr th:each="u : ${lineas}">
+            <td th:text="${u.idLinea}"></td>
+            <td th:text="${u.nombreLinea}"></td>
+            <td th:text="${u.color}"></td>
+            <td th:text="${u.longitudKm}"></td>
             <td>
                 <button class="btn btn-warning">Editar</button>
                 <button class="btn btn-danger">Borrar</button>
