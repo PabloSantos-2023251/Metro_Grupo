@@ -25,7 +25,7 @@ public class Linea {
     @NotNull(message = "La longitud es obligatoria")
     @Positive(message = "La longitud debe ser un número positivo")
     @Column (name = "longitud_km", nullable = false)
-    private Integer logitudKm;
+    private double longitudKm;
 
     // generar getter an setter
 
@@ -54,11 +54,11 @@ public class Linea {
         this.color = color;
     }
 
-    public Integer getLogitudKm() {
-        return logitudKm;
+    public double getLongitudKm() {
+        return longitudKm;
     }
 
-    public void setLogitudKm(Integer logitudKm) {
-        this.logitudKm = logitudKm;
+    public void setLogitudKm(double logitudKm) {
+        this.longitudKm = logitudKm;
     }
 }
