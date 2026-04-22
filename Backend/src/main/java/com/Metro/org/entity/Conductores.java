@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Entity // una clase anotada , represeta una tabla relacionar , actua comom un puente entre la programacion orientada a objetos y SQL (JPA ivernes)prermitiendo mapiar automaticamente atrivutos a columnas
+@Entity
 @Table(name = "conductores")
-
 public class Conductores {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_conductor")
@@ -18,14 +18,14 @@ public class Conductores {
     @Column(name = "nombre")
     private String nombre;
 
-    @NotNull(message = "El campo de texto no debe de estar vacio")
-    @Size(max = 8, message = "La Licencia no puede exceder de 8 caracteres")
-    @Column(name = "Licencia")
-    private Integer licencia;
+    @NotBlank(message = "La licencia no debe estar vacía")
+    @Size(max = 50, message = "La licencia no puede exceder de 50 caracteres")
+    @Column(name = "licencia")
+    private String licencia;
 
-    @NotBlank(message = "El campo de texto no debe de estar vacio")
-    @Column(name = "anios_experencia")
-    private String aniosExperencia;
+    @NotNull(message = "Los años de experiencia son obligatorios")
+    @Column(name = "anos_experiencia")
+    private Integer aniosExperiencia;
 
     public Integer getIdConductor() {
         return idConductor;
@@ -43,19 +43,19 @@ public class Conductores {
         this.nombre = nombre;
     }
 
-    public Integer getLicencia() {
+    public String getLicencia() {
         return licencia;
     }
 
-    public void setLicencia(Integer licencia) {
+    public void setLicencia(String licencia) {
         this.licencia = licencia;
     }
 
-    public String getAniosExperencia() {
-        return aniosExperencia;
+    public Integer getAniosExperiencia() {
+        return aniosExperiencia;
     }
 
-    public void setAniosExperencia(String aniosExperencia) {
-        this.aniosExperencia = aniosExperencia;
+    public void setAniosExperiencia(Integer aniosExperiencia) {
+        this.aniosExperiencia = aniosExperiencia;
     }
 }
