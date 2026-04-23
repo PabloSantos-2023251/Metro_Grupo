@@ -16,7 +16,9 @@
     <hr>
 
     <div class="card">
-        <form th:action="@{/pasajeros/agregar}" th:object="${pasajeroForm}" method="post">
+        <form th:action="${pasajeroForm.idPasajero != null} ? @{/pasajeros/editar/{id}(id=${pasajeroForm.idPasajero})} : @{/pasajeros/agregar}"
+              th:object="${pasajeroForm}" method="post">
+        <input type="hidden" th:field="*{idPasajero}" />
             <div class="row">
                 <div class="col-md-6">
                     <label class="form-label">ID Pasajero</label>
@@ -24,14 +26,16 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control" th:field="*{nombre}" placeholder="Ej: Juan" required>
+                    <input type="text" class="form-control" th:field="*{nombrePasajero}" placeholder="Ej: Juan" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Tipo</label>
-                    <input type="text" class="form-control" th:field="*{tipo}" placeholder="Ej: Adulto" required>
+                    <input type="text" class="form-control" th:field="*{tipoPasajero}" placeholder="Ej: Adulto" required>
                 </div>
                 <div class="col-12">
-                    <button type="submit" class="btn btn-success">Agregar Pasajero</button>
+                    <button type="submit" class="btn btn-success"
+                            th:text="${pasajeroForm.idPasajero != null} ? 'Guardar Cambios' : 'Agregar Pasajero'">
+                    </button>
                 </div>
             </div>
         </form>
