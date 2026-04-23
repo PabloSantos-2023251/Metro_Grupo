@@ -35,7 +35,7 @@ public class LineaServiceImplement implements LineaService {
 
         lineaExistente.setNombreLinea(lineaDetalles.getNombreLinea());
         lineaExistente.setColor(lineaDetalles.getColor());
-        lineaExistente.setLogitudKm(lineaDetalles.getLongitudKm());
+        lineaExistente.setLongitudKm(lineaDetalles.getLongitudKm());
 
         return lineaRepository.save(lineaExistente);
     }
