@@ -3,10 +3,9 @@ package com.Metro.org.controller;
 import com.Metro.org.entity.Linea;
 import com.Metro.org.service.LineaService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,41 +22,45 @@ public class LineaController {
 
     @GetMapping
     public String verPagina(Model model){
+
         List<Linea> lista = lineaService.getAllLinea();
+
         model.addAttribute("lineas", lista);
+        model.addAttribute("linea", new Linea());
+
         return "Linea";
     }
 
-    @ResponseBody
-    @PostMapping("/api")
-    public ResponseEntity<Object> createLinea(@Valid @RequestBody Linea linea){
-        try{
-            Linea creada = lineaService.saveLinea(linea);
-            return new ResponseEntity<>(creada, HttpStatus.CREATED);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+    @PostMapping("/guardar")
+    public String guardarLinea(@Valid @ModelAttribute("linea") Linea linea,
+                               BindingResult result,
+                               Model model){
+
+        if(result.hasErrors()){
+            model.addAttribute("lineas", lineaService.getAllLinea());
+            return "Linea";
         }
+
+        lineaService.saveLinea(linea);
+        return "redirect:/linea";
     }
 
-    @ResponseBody
-    @DeleteMapping("/api/{id}")
-    public ResponseEntity<?> deleteLinea(@PathVariable Integer id){
-        try{
-            lineaService.deleteLinea(id);
-            return ResponseEntity.ok("Línea eliminada correctamente");
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        lineaService.deleteLinea(id);
+        return "redirect:/linea";
     }
 
-    @ResponseBody
-    @PutMapping("/api/{id}")
-    public ResponseEntity<?> updateLinea(@PathVariable Integer id, @RequestBody Linea linea){
-        try{
-            Linea actualizada = lineaService.updateLinea(id, linea);
-            return ResponseEntity.ok(actualizada);
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model){
+
+        Linea linea = lineaService.getLineaById(id);
+
+        model.addAttribute("linea", linea);
+
+        List<Linea> lista = lineaService.getAllLinea();
+        model.addAttribute("lineas", lista);
+
+        return "linea";
     }
 }
