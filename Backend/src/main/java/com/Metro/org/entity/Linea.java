@@ -58,7 +58,7 @@ public class Linea {
         return longitudKm;
     }
 
-    public void setLogitudKm(double logitudKm) {
-        this.longitudKm = logitudKm;
+    public void setLongitudKm(double longitudKm) {
+        this.longitudKm = longitudKm;
     }
 }
