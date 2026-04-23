@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boletos</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
 </head>
 
 <body>
@@ -19,9 +19,6 @@
         <form th:action="${boletoForm.idBoleto != null} ? @{/boletos/editar/{id}(id=${boletoForm.idBoleto})} : @{/boletos/agregar}"
               th:object="${boletoForm}" method="post">
             <div class="row">
-                <div class="col-md-6">
-                    <label class="form-label">ID Boleto</label>
-                    <input type="hidden" th:field="*{idBoleto}" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Precio</label>
