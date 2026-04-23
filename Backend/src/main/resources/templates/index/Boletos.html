@@ -16,11 +16,12 @@
     <hr>
 
     <div class="card">
-        <form th:action="@{/boletos/agregar}" th:object="${boletoForm}" method="post">
+        <form th:action="${boletoForm.idBoleto != null} ? @{/boletos/editar/{id}(id=${boletoForm.idBoleto})} : @{/boletos/agregar}"
+              th:object="${boletoForm}" method="post">
             <div class="row">
                 <div class="col-md-6">
                     <label class="form-label">ID Boleto</label>
-                    <input type="text" class="form-control" th:field="*{idBoleto}" placeholder="Ej: 1" required>
+                    <input type="hidden" th:field="*{idBoleto}" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Precio</label>
@@ -32,10 +33,13 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">ID Pasajero</label>
-                    <input type="text" class="form-control" th:field="*{idPasajero}" placeholder="Ej: 1" required>
+                    <input type="text" class="form-control" name="idPasajero"
+                           th:value="${boletoForm.pasajero != null ? boletoForm.pasajero.idPasajero : ''}"
+                           placeholder="Ej: 1" required>
                 </div>
                 <div class="col-12">
-                    <button type="submit" class="btn btn-success">Agregar Boleto</button>
+                    <button type="submit" class="btn btn-success"
+                            th:text="${boletoForm.idBoleto != null} ? 'Guardar Cambios' : 'Agregar Boleto'">
                 </div>
             </div>
         </form>
