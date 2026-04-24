@@ -22,10 +22,10 @@ public class LoginController {
 
     @GetMapping("/")
     public String index() {
-        return "index/login";
+        return "login";
     }
 
-    @PostMapping("index/login")
+    @PostMapping("/login")
     public String autenticar(@RequestParam("email") String email,
                              @RequestParam("password") String password,
                              HttpSession session,
@@ -51,7 +51,7 @@ public class LoginController {
         }
 
         model.addAttribute("error", "Credenciales incorrectas");
-        return "index/login";
+        return "login";
     }
 
     @GetMapping("/PaginaPrincipal")
@@ -63,6 +63,6 @@ public class LoginController {
         model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
         model.addAttribute("rol", session.getAttribute("rolUsuario"));
 
-        return "index/PaginaPrincipal";
+        return "PaginaPrincipal";
     }
 }

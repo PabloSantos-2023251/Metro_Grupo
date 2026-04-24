@@ -18,8 +18,8 @@
     <div class="card">
         <form th:action="${boletoForm.idBoleto != null} ? @{/boletos/editar/{id}(id=${boletoForm.idBoleto})} : @{/boletos/agregar}"
               th:object="${boletoForm}" method="post">
+            <input type="hidden" th:field="*{idBoleto}" />
             <div class="row">
-                </div>
                 <div class="col-md-6">
                     <label class="form-label">Precio</label>
                     <input type="text" class="form-control" th:field="*{precio}" placeholder="Ej: 1.00" required>
@@ -37,6 +37,7 @@
                 <div class="col-12">
                     <button type="submit" class="btn btn-success"
                             th:text="${boletoForm.idBoleto != null} ? 'Guardar Cambios' : 'Agregar Boleto'">
+                    </button>
                 </div>
             </div>
         </form>

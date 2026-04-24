@@ -20,7 +20,7 @@ public class PasajeroController {
     public String listar(Model model) {
         model.addAttribute("pasajeros", pasajeroService.getAllPasajeros());
         model.addAttribute("pasajeroForm", new Pasajero());
-        return "index/Pasajeros";
+        return "Pasajeros";
     }
 
     @PostMapping("/agregar")
@@ -34,7 +34,7 @@ public class PasajeroController {
         Pasajero pasajero = pasajeroService.getPasajeroById(id);
         model.addAttribute("pasajeros", pasajeroService.getAllPasajeros());
         model.addAttribute("pasajeroForm", pasajero);
-        return "index/Pasajeros";
+        return "Pasajeros";
     }
 
     @PostMapping("/editar/{id}")
