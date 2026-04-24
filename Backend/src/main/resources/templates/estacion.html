@@ -16,6 +16,14 @@
     <hr>
 
     <div class="card">
+        <form th:action="@{/estaciones}" method="get" class="buscador">
+            <input type="text" name="buscar" placeholder="Buscar por ID">
+            <button type="submit">Buscar</button>
+            <a th:href="@{/estaciones}">Limpiar</a>
+        </form>
+    </div>
+
+    <div class="card">
         <form th:action="@{/estaciones/guardar}" th:object="${estacion}" method="post">
             <div class="row">
 
