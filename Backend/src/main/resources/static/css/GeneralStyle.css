@@ -118,3 +118,29 @@ hr {
 .col-md-3 { flex: 1 1 22%; }
 .col-md-6 { flex: 1 1 48%; }
 .col-12 { flex: 1 1 100%; }
+
+.search-container {
+    position: relative;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    padding-left: 40px;
+    border-radius: 20px;
+    border: 2px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0,123,255,0.25);
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
