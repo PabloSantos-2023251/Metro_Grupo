@@ -46,6 +46,16 @@
         </div>
     </div>
 
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <form th:action="@{/mantenimientos}" method="get" class="d-flex">
+                <input type="number" name="buscarTren" class="form-control me-2" placeholder="Filtrar por Tren..." required>
+                <button type="submit" class="btn btn-outline-success">Buscar</button>
+                <a th:href="@{/mantenimientos}" class="btn btn-outline-secondary ms-2">Limpiar</a>
+            </form>
+        </div>
+    </div>
+
     <div class="table-responsive">
         <table class="table table-striped border">
             <thead class="table-dark">
@@ -70,7 +80,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(mantenimientos)}">
-                <td colspan="5" class="text-center py-4 text-muted">No hay mantenimientos registrados.</td>
+                <td colspan="5" class="text-center py-4 text-muted">No se encontraron registros de mantenimiento para ese tren.</td>
             </tr>
             </tbody>
         </table>

@@ -32,19 +32,20 @@ public class MantenimientoServiceImplements implements MantenimientoService {
     @Override
     public Mantenimiento updateMantenimiento(Integer id, Mantenimiento mantenimiento) {
         return mantenimientoRepository.findById(id).map(existente -> {
+            existente.setIdTren(mantenimiento.getIdTren());
             existente.setFecha(mantenimiento.getFecha());
             existente.setDescripcion(mantenimiento.getDescripcion());
-            existente.setIdTren(mantenimiento.getIdTren());
             return mantenimientoRepository.save(existente);
         }).orElse(null);
     }
 
     @Override
-    public boolean deleteMantenimiento(Integer id) {
-        if (mantenimientoRepository.existsById(id)) {
-            mantenimientoRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteMantenimiento(Integer id) {
+        mantenimientoRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Mantenimiento> getMantenimientosByTren(Integer idTren) {
+        return mantenimientoRepository.findByIdTren(idTren);
     }
 }

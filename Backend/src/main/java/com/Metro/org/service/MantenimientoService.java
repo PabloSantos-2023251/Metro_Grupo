@@ -8,5 +8,6 @@ public interface MantenimientoService {
     Mantenimiento getMantenimientoById(Integer id);
     Mantenimiento saveMantenimiento(Mantenimiento mantenimiento);
     Mantenimiento updateMantenimiento(Integer id, Mantenimiento mantenimiento);
-    boolean deleteMantenimiento(Integer id); // Cambiado a boolean
+    void deleteMantenimiento(Integer id);
+    List<Mantenimiento> getMantenimientosByTren(Integer idTren);
 }

@@ -20,8 +20,9 @@ public class MantenimientoController {
     }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("mantenimientos", mantenimientoService.getAllMantenimientos());
+    public String listar(@RequestParam(name = "buscarTren", required = false) Integer buscarTren, Model model) {
+        List<Mantenimiento> lista = (buscarTren != null) ? mantenimientoService.getMantenimientosByTren(buscarTren) : mantenimientoService.getAllMantenimientos();
+        model.addAttribute("mantenimientos", lista);
         model.addAttribute("mantenimientoObj", new Mantenimiento());
         return "Mantenimiento";
     }
