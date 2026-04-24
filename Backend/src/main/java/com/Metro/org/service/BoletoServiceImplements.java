@@ -47,4 +47,10 @@ public class BoletoServiceImplements implements BoletoService {
         }
         boletoRepository.deleteById(id);
     }
+
+    @Override
+    public List<Boleto> getBoletosByPasajero(Integer idPasajero) {
+        return boletoRepository.findByPasajero_IdPasajero(idPasajero);
+ 
+  }
 }

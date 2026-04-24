@@ -4,6 +4,7 @@ import com.Metro.org.entity.Boleto;
 import com.Metro.org.entity.Pasajero;
 import com.Metro.org.service.BoletoService;
 import com.Metro.org.service.PasajeroService;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,15 @@ public class BoletoController {
         this.pasajeroService = pasajeroService;
     }
 
-    @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("boletos", boletoService.getAllBoletos());
-        model.addAttribute("boletoForm", new Boleto());
-        return "Boletos";
-    }
+@GetMapping
+public String listar(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model) {
+    List<Boleto> lista = (buscarId != null)
+            ? boletoService.getBoletosByPasajero(buscarId)
+            : boletoService.getAllBoletos();
+    model.addAttribute("boletos", lista);
+    model.addAttribute("boletoForm", new Boleto());
+    return "Boletos";
+}
 
     @PostMapping("/agregar")
     public String agregar(@ModelAttribute("boletoForm") Boleto boleto,
