@@ -65,14 +65,4 @@ public class LoginController {
 
         return "PaginaPrincipal";
     }
-
-    @GetMapping("/linea")
-    public String linea() {
-        return "linea";
-    }
-    
-    @GetMapping("/estaciones")
-    public String estaciones() {
-        return "estacion";
-    }
 }
