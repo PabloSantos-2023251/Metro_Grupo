@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/linea")
@@ -21,14 +22,20 @@ public class LineaController {
     }
 
     @GetMapping
-    public String verPagina(Model model){
+    public String listar(@RequestParam(required = false) String buscar, Model model){
 
-        List<Linea> lista = lineaService.getAllLinea();
+        List<Linea> lineas = lineaService.getAllLinea();
+        if (buscar != null && !buscar.isEmpty()) {
+            lineas = lineas.stream()
+                    .filter(l -> l.getIdLinea() != null &&
+                            l.getIdLinea().toString().contains(buscar))
+                    .collect(Collectors.toList());
+        }
 
-        model.addAttribute("lineas", lista);
+        model.addAttribute("lineas", lineas);
         model.addAttribute("linea", new Linea());
 
-        return "Linea";
+        return "linea";
     }
 
     @PostMapping("/guardar")
@@ -38,16 +45,10 @@ public class LineaController {
 
         if(result.hasErrors()){
             model.addAttribute("lineas", lineaService.getAllLinea());
-            return "Linea";
+            return "linea";
         }
 
         lineaService.saveLinea(linea);
-        return "redirect:/linea";
-    }
-
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id){
-        lineaService.deleteLinea(id);
         return "redirect:/linea";
     }
 
@@ -56,11 +57,15 @@ public class LineaController {
 
         Linea linea = lineaService.getLineaById(id);
 
+        model.addAttribute("lineas", lineaService.getAllLinea());
         model.addAttribute("linea", linea);
 
-        List<Linea> lista = lineaService.getAllLinea();
-        model.addAttribute("lineas", lista);
-
         return "linea";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        lineaService.deleteLinea(id);
+        return "redirect:/linea";
     }
 }
