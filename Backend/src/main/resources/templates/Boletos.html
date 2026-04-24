@@ -54,6 +54,11 @@
         <a th:href="@{/boletos}" class="btn btn-secondary">Limpiar</a>
     </form>
 </div>
+ 
+    <p th:if="${#lists.isEmpty(boletos) and param.buscarId != null}"
+   style="color:red; font-weight:bold;">
+    No se encontraron boletos para el pasajero con ID: <span th:text="${param.buscarId}"></span>
+</p>
 
     <table class="table">
         <thead>
