@@ -17,11 +17,17 @@
     <hr>
 
     <div class="card">
-        <!-- FORM CORREGIDO -->
+        <form th:action="@{/linea}" method="get" class="buscador">
+            <input type="text" name="buscar" placeholder="Buscar por ID">
+            <button type="submit">Buscar</button>
+            <a th:href="@{/linea}">Limpiar</a>
+        </form>
+    </div>
+
+    <div class="card">
         <form th:action="@{/linea/guardar}" th:object="${linea}" method="post">
             <div class="row">
 
-                <!-- ID OCULTO (CLAVE PARA EDITAR) -->
                 <input type="hidden" th:field="*{idLinea}">
 
                 <div class="col-md-6">
