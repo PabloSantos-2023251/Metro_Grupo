@@ -17,10 +17,28 @@
     <h2>Gestión de Conductores</h2>
     <hr>
 
-    <!-- FORMULARIO -->
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <form th:action="@{/conductores}" method="get" class="d-flex">
+
+                <input type="number" name="buscarId"
+                       class="form-control me-2"
+                       placeholder="Buscar por ID de conductor..." required>
+
+                <button type="submit" class="btn btn-outline-primary">
+                    Buscar
+                </button>
+
+                <a th:href="@{/conductores}" class="btn btn-outline-secondary ms-2">
+                    Limpiar
+                </a>
+
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <form th:action="@{/conductores/guardar}" th:object="${conductor}" method="post">
-
 
             <input type="hidden" th:field="*{idConductor}">
 
@@ -58,7 +76,6 @@
         </form>
     </div>
 
-    <!-- TABLA -->
     <table class="table">
 
         <thead>
@@ -91,6 +108,13 @@
                 </a>
             </td>
         </tr>
+
+        <tr th:if="${#lists.isEmpty(conductores)}">
+            <td colspan="5" class="text-center text-muted">
+                No se encontró ningún conductor con ese ID.
+            </td>
+        </tr>
+
         </tbody>
 
     </table>
