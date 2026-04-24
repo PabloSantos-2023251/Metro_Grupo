@@ -20,9 +20,22 @@ public class ConductorController {
     }
 
     @GetMapping
-    public String verPagina(Model model){
+    public String verPagina(@RequestParam(name = "buscarId", required = false) Integer buscarId,
+                            Model model){
 
-        List<Conductores> lista = conductorService.getAllConductores();
+        List<Conductores> lista;
+
+        if (buscarId != null) {
+            Conductores conductor = conductorService.getConductoresById(buscarId);
+
+            if (conductor != null) {
+                lista = List.of(conductor);
+            } else {
+                lista = List.of();
+            }
+        } else {
+            lista = conductorService.getAllConductores();
+        }
 
         model.addAttribute("conductores", lista);
         model.addAttribute("conductor", new Conductores());
