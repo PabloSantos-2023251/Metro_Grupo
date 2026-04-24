@@ -21,6 +21,9 @@
     <div class="card">
         <form th:action="@{/conductores/guardar}" th:object="${conductor}" method="post">
 
+
+            <input type="hidden" th:field="*{idConductor}">
+
             <div class="row">
 
                 <div class="col-md-6">
