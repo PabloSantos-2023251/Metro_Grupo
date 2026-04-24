@@ -2,12 +2,12 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Estaciones;
 import com.Metro.org.service.EstacionesService;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/estaciones")
@@ -20,25 +20,26 @@ public class EstacionesController {
     }
 
     @GetMapping
-    public String verPagina(Model model){
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
 
-        List<Estaciones> lista = estacionesService.getAllEstaciones();
+        List<Estaciones> estaciones = estacionesService.getAllEstaciones();
 
-        model.addAttribute("estaciones", lista);
+        if (buscar != null && !buscar.isEmpty()) {
+            estaciones = estaciones.stream()
+                    .filter(e -> e.getIdEstacion() != null &&
+                            e.getIdEstacion().toString().contains(buscar))
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("estaciones", estaciones);
         model.addAttribute("estacion", new Estaciones());
 
         return "estacion";
     }
 
     @PostMapping("/guardar")
-    public String guardarEstacion(@Valid @ModelAttribute("estacion") Estaciones estacion){
+    public String guardarEstacion(@ModelAttribute Estaciones estacion){
         estacionesService.saveEstaciones(estacion);
-        return "redirect:/estaciones";
-    }
-
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id){
-        estacionesService.deleteEstaciones(id);
         return "redirect:/estaciones";
     }
 
@@ -47,11 +48,15 @@ public class EstacionesController {
 
         Estaciones estacion = estacionesService.getEstacionesById(id);
 
+        model.addAttribute("estaciones", estacionesService.getAllEstaciones());
         model.addAttribute("estacion", estacion);
 
-        List<Estaciones> lista = estacionesService.getAllEstaciones();
-        model.addAttribute("estaciones", lista);
-
         return "estacion";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        estacionesService.deleteEstaciones(id);
+        return "redirect:/estaciones";
     }
 }
