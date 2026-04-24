@@ -169,3 +169,46 @@ select.form-control {
         padding: 10px;
     }
 }
+/* BUSCADOR */
+.buscador {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.buscador input {
+    padding: 8px 10px;
+    border: 1px solid #c2d2e9;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+}
+
+.buscador input:focus {
+    outline: none;
+    border-color: #5e83ba;
+    box-shadow: 0 0 5px rgba(94, 131, 186, 0.5);
+}
+
+.buscador button {
+    padding: 8px 15px;
+    background-color: #5e83ba;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.buscador button:hover {
+    background-color: #3a4e7a;
+}
+
+.buscador a {
+    color: #5e83ba;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.buscador a:hover {
+    text-decoration: underline;
+}
