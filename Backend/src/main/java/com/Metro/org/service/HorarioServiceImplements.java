@@ -47,4 +47,9 @@ public class HorarioServiceImplements implements HorarioService {
         }
         return false;
     }
+
+    @Override
+    public List<Horario> getHorariosByTren(Integer idTren) {
+        return horarioRepository.findByIdTren(idTren);
+    }
 }

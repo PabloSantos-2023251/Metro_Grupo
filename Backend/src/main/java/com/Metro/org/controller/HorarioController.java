@@ -19,15 +19,14 @@ public class HorarioController {
         this.horarioService = horarioService;
     }
 
-    // --- RUTA PRINCIPAL PARA VER LA VISTA ---
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("horarios", horarioService.getAllHorarios());
+    public String listar(@RequestParam(name = "buscarTren", required = false) Integer buscarTren, Model model) {
+        List<Horario> lista = (buscarTren != null) ? horarioService.getHorariosByTren(buscarTren) : horarioService.getAllHorarios();
+        model.addAttribute("horarios", lista);
         model.addAttribute("horarioObj", new Horario());
-        return "Horario"; // Retorna Horario.html
+        return "Horario";
     }
 
-    // --- ACCIÓN DE GUARDAR Y ACTUALIZAR ---
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Horario horario, RedirectAttributes redirectAttrs) {
         try {
@@ -42,7 +41,6 @@ public class HorarioController {
         return "redirect:/horarios";
     }
 
-    // --- PRECARGAR DATOS PARA EDICIÓN ---
     @GetMapping("/editar/{id}")
     public String precargarEdicion(@PathVariable Integer id, Model model) {
         Horario horario = horarioService.getHorarioById(id);
@@ -54,14 +52,12 @@ public class HorarioController {
         return "Horario";
     }
 
-    // --- ACCIÓN DE ELIMINAR ---
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         horarioService.deleteHorario(id);
         return "redirect:/horarios";
     }
 
-    // --- API OPCIONAL (JSON) ---
     @GetMapping("/api/listar")
     @ResponseBody
     public List<Horario> getAllApi() {

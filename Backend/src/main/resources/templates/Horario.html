@@ -10,7 +10,7 @@
 <div class="container mt-4">
     <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary mb-3">← Volver al Dashboard</a>
 
-    <h2 th:text="${editando} ? 'Modificar Horario' : '🕒 Horarios de Trenes'"></h2>
+    <h2 th:text="${editando} ? 'Modificar Horario' : 'Horarios de Trenes'"></h2>
     <hr>
 
     <div class="card mb-4 shadow-sm border-0">
@@ -39,6 +39,16 @@
         </div>
     </div>
 
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <form th:action="@{/horarios}" method="get" class="d-flex">
+                <input type="number" name="buscarTren" class="form-control me-2" placeholder="Buscar por ID de Tren..." required>
+                <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                <a th:href="@{/horarios}" class="btn btn-outline-secondary ms-2">Limpiar</a>
+            </form>
+        </div>
+    </div>
+
     <table class="table table-striped border">
         <thead class="table-dark">
         <tr>
@@ -57,8 +67,11 @@
             <td th:text="${h.horaLlegada}"></td>
             <td class="text-center">
                 <a th:href="@{/horarios/editar/{id}(id=${h.idHorario})}" class="btn btn-sm btn-warning">Editar</a>
-                <a th:href="@{/horarios/eliminar/{id}(id=${h.idHorario})}" class="btn btn-sm btn-danger">Eliminar</a>
+                <a th:href="@{/horarios/eliminar/{id}(id=${h.idHorario})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar horario?')">Eliminar</a>
             </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(horarios)}">
+            <td colspan="5" class="text-center py-3 text-muted">No se encontraron resultados para ese tren.</td>
         </tr>
         </tbody>
     </table>
