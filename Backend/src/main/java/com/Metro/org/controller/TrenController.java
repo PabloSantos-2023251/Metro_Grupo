@@ -2,9 +2,6 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Trenes;
 import com.Metro.org.service.TrenService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +19,26 @@ public class TrenController {
     }
 
     @GetMapping
-    public String verPagina(Model model){
-        model.addAttribute("trenes", trenService.getAllTren());
+    public String verPagina(@RequestParam(name = "buscarId", required = false) Integer buscarId,
+                            Model model){
+
+        List<Trenes> lista;
+
+        if (buscarId != null) {
+            Trenes tren = trenService.getTrenById(buscarId);
+
+            if (tren != null) {
+                lista = List.of(tren);
+            } else {
+                lista = List.of();
+            }
+        } else {
+            lista = trenService.getAllTren();
+        }
+
+        model.addAttribute("trenes", lista);
         model.addAttribute("tren", new Trenes());
+
         return "Trenes";
     }
 
@@ -46,5 +60,4 @@ public class TrenController {
         trenService.deleteTren(id);
         return "redirect:/trenes";
     }
-
 }
