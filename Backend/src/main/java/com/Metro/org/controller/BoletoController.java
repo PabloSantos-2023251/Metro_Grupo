@@ -40,16 +40,6 @@ public String listar(@RequestParam(name = "buscarId", required = false) Integer 
         return "redirect:/boletos";
     }
 
-   @PostMapping("/editar/{id}")
-public String editar(@PathVariable Integer id,
-                     @ModelAttribute("boletoForm") Boleto boleto,
-                     @RequestParam("idPasajero") Integer idPasajero) {
-    Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
-    boleto.setPasajero(pasajero); 
-    boletoService.updateBoleto(id, boleto);
-    return "redirect:/boletos";
-}
-
     @PostMapping("/editar/{id}")
     public String editar(@PathVariable Integer id,
                          @ModelAttribute("boletoForm") Boleto boleto,
