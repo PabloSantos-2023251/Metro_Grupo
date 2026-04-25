@@ -22,8 +22,7 @@ public class ConductoresServiceImplements implements ConductoresService {
 
     @Override
     public Conductores getConductoresById(Integer id) {
-        return conductoresRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Conductor no encontrado con ID: " + id));
+        return conductoresRepository.findById(id).orElse(null);
     }
 
     @Override
