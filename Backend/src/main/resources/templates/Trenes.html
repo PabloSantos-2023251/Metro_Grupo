@@ -22,7 +22,6 @@
 
     <div class="card p-3 shadow">
 
-        <!-- FORMULARIO GUARDAR -->
         <form th:action="@{/trenes/guardar}" th:object="${tren}" method="post">
 
             <input type="hidden" th:field="*{idTren}">
@@ -59,7 +58,6 @@
             </div>
         </form>
 
-        <!-- FORMULARIO BUSCAR (SEPARADO) -->
         <div class="row mb-3 mt-3">
             <div class="col-md-5">
                 <form th:action="@{/trenes}" method="get" class="d-flex">
@@ -82,7 +80,6 @@
 
     </div>
 
-    <!-- TABLA -->
     <table class="table table-striped table-hover mt-4">
 
         <thead class="table-dark">
