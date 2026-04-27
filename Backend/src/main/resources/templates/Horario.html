@@ -2,37 +2,48 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Horarios - Metro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
 </head>
 <body>
-<div class="container mt-4">
-    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary mb-3">← Volver al Dashboard</a>
 
-    <h2 th:text="${editando} ? 'Modificar Horario' : 'Horarios de Trenes'"></h2>
-    <hr>
+<div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/Metro.mp4}" type="video/mp4">
+    </video>
+</div>
 
-    <div class="card mb-4 shadow-sm border-0">
+<div class="main-container-glass">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary" style="background-color: #3a4e7a; border: none;">← Volver al Dashboard</a>
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;" th:text="${editando} ? 'Modificar Horario' : 'Horarios de Trenes'"></h2>
+    </div>
+
+    <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
+
+    <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
         <div class="card-body">
             <form th:action="@{/horarios/guardar}" th:object="${horarioObj}" method="post">
                 <input type="hidden" th:field="*{idHorario}">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">ID Tren</label>
-                        <input type="number" th:field="*{idTren}" class="form-control" required>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">ID Tren</label>
+                        <input type="number" th:field="*{idTren}" class="form-control" placeholder="Ej: 1" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Hora Salida</label>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Hora Salida</label>
                         <input type="time" th:field="*{horaSalida}" class="form-control" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Hora Llegada</label>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Hora Llegada</label>
                         <input type="time" th:field="*{horaLlegada}" class="form-control" required>
                     </div>
-                    <div class="col-12 mt-3">
-                        <button type="submit" class="btn btn-primary" th:text="${editando} ? 'Actualizar' : 'Registrar'"></button>
-                        <a th:if="${editando}" th:href="@{/horarios}" class="btn btn-link">Cancelar</a>
+                    <div class="col-12 mt-3 text-center">
+                        <button type="submit" class="btn btn-metro-main w-100 py-2"
+                                th:text="${editando} ? 'Actualizar Horario' : 'Registrar Horario'"></button>
+                        <a th:if="${editando}" th:href="@{/horarios}" class="btn-cancel-link">Cancelar edición</a>
                     </div>
                 </div>
             </form>
@@ -43,38 +54,42 @@
         <div class="col-md-5">
             <form th:action="@{/horarios}" method="get" class="d-flex">
                 <input type="number" name="buscarTren" class="form-control me-2" placeholder="Buscar por ID de Tren..." required>
-                <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                <button type="submit" class="btn btn-metro-main">Buscar</button>
                 <a th:href="@{/horarios}" class="btn btn-outline-secondary ms-2">Limpiar</a>
             </form>
         </div>
     </div>
 
-    <table class="table table-striped border">
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Tren</th>
-            <th>Salida</th>
-            <th>Llegada</th>
-            <th class="text-center">Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="h : ${horarios}">
-            <td th:text="${h.idHorario}"></td>
-            <td th:text="'Unidad ' + ${h.idTren}"></td>
-            <td th:text="${h.horaSalida}"></td>
-            <td th:text="${h.horaLlegada}"></td>
-            <td class="text-center">
-                <a th:href="@{/horarios/editar/{id}(id=${h.idHorario})}" class="btn btn-sm btn-warning">Editar</a>
-                <a th:href="@{/horarios/eliminar/{id}(id=${h.idHorario})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar horario?')">Eliminar</a>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(horarios)}">
-            <td colspan="5" class="text-center py-3 text-muted">No se encontraron resultados para ese tren.</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive table-metro-style shadow-sm">
+        <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tren</th>
+                <th>Salida</th>
+                <th>Llegada</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="h : ${horarios}">
+                <td th:text="${h.idHorario}" class="fw-bold"></td>
+                <td th:text="'Unidad ' + ${h.idTren}"></td>
+                <td th:text="${h.horaSalida}"></td>
+                <td th:text="${h.horaLlegada}"></td>
+                <td class="text-center">
+                    <a th:href="@{/horarios/editar/{id}(id=${h.idHorario})}" class="btn btn-sm btn-warning">Editar</a>
+                    <a th:href="@{/horarios/eliminar/{id}(id=${h.idHorario})}"
+                       class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar horario?')">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(horarios)}">
+                <td colspan="5" class="text-center py-4 text-muted">No se encontraron resultados para ese tren.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 </body>
 </html>

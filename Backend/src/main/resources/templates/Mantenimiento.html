@@ -8,38 +8,43 @@
     <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
 </head>
 <body>
-<div class="container mt-4">
-    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary mb-3">← Volver al Dashboard</a>
 
-    <h2 th:text="${editando} ? 'Editar Registro de Mantenimiento' : 'Gestión de Mantenimiento de Trenes'"></h2>
-    <hr>
+<div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/Metro.mp4}" type="video/mp4">
+    </video>
+</div>
 
-    <div th:if="${mensajeError}" class="alert alert-danger" role="alert">
-        <strong th:text="${mensajeError}"></strong>
+<div class="main-container-glass">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary" style="background-color: #3a4e7a; border: none;">← Volver al Dashboard</a>
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;">Mantenimiento de Trenes</h2>
     </div>
 
-    <div class="card mb-4 shadow-sm border-0">
+    <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
+
+    <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
+
+    <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
         <div class="card-body">
             <form th:action="@{/mantenimientos/guardar}" th:object="${mantenimientoObj}" method="post">
                 <input type="hidden" th:field="*{idMantenimiento}">
-
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">ID del Tren</label>
-                        <input type="number" th:field="*{idTren}" class="form-control" placeholder="Ej: 101" required>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">ID del Tren</label>
+                        <input type="number" th:field="*{idTren}" class="form-control" placeholder="Ej: 1" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Fecha</label>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Fecha</label>
                         <input type="date" th:field="*{fecha}" class="form-control" required>
                     </div>
                     <div class="col-md-12">
-                        <label class="form-label fw-bold">Descripción del Trabajo</label>
-                        <textarea th:field="*{descripcion}" class="form-control" rows="2" placeholder="Describa el mantenimiento realizado..." required></textarea>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Descripción del Trabajo</label>
+                        <textarea th:field="*{descripcion}" class="form-control" rows="2" placeholder="Describa la actividad..." required></textarea>
                     </div>
-                    <div class="col-12 mt-3">
-                        <button type="submit" class="btn btn-success"
+                    <div class="col-12 mt-3 text-center">
+                        <button type="submit" class="btn btn-metro-main w-100 py-2"
                                 th:text="${editando} ? 'Actualizar Registro' : 'Guardar Registro'"></button>
-                        <a th:if="${editando}" th:href="@{/mantenimientos}" class="btn btn-link">Cancelar</a>
                     </div>
                 </div>
             </form>
@@ -49,16 +54,16 @@
     <div class="row mb-3">
         <div class="col-md-5">
             <form th:action="@{/mantenimientos}" method="get" class="d-flex">
-                <input type="number" name="buscarTren" class="form-control me-2" placeholder="Filtrar por Tren..." required>
-                <button type="submit" class="btn btn-outline-success">Buscar</button>
+                <input type="number" name="buscarTren" class="form-control me-2" placeholder="Filtrar por Tren...">
+                <button type="submit" class="btn btn-metro-main">Buscar</button>
                 <a th:href="@{/mantenimientos}" class="btn btn-outline-secondary ms-2">Limpiar</a>
             </form>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped border">
-            <thead class="table-dark">
+    <div class="table-responsive table-metro-style shadow-sm">
+        <table class="table table-hover mb-0">
+            <thead>
             <tr>
                 <th>ID</th>
                 <th>Tren</th>
@@ -69,22 +74,23 @@
             </thead>
             <tbody>
             <tr th:each="m : ${mantenimientos}">
-                <td th:text="${m.idMantenimiento}"></td>
+                <td th:text="${m.idMantenimiento}" class="fw-bold"></td>
                 <td th:text="'Tren #' + ${m.idTren}"></td>
                 <td th:text="${m.fecha}"></td>
                 <td th:text="${m.descripcion}"></td>
                 <td class="text-center">
                     <a th:href="@{/mantenimientos/editar/{id}(id=${m.idMantenimiento})}" class="btn btn-sm btn-warning">Editar</a>
                     <a th:href="@{/mantenimientos/eliminar/{id}(id=${m.idMantenimiento})}"
-                       class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar este registro?')">Borrar</a>
+                       class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar registro?')">Borrar</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(mantenimientos)}">
-                <td colspan="5" class="text-center py-4 text-muted">No se encontraron registros de mantenimiento para ese tren.</td>
+                <td colspan="5" class="text-center py-4 text-muted">No se encontraron registros.</td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
 </body>
 </html>
