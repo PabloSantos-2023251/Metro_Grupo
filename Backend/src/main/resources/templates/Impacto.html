@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impacto en Tráfico - Metro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
+</head>
+<body>
+
+<div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/Metro.mp4}" type="video/mp4">
+    </video>
+</div>
+
+<div class="main-container-glass">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary d-inline-flex align-items-center gap-2" style="background-color: #3a4e7a; border: none;">
+            <i class="bi bi-chevron-left"></i> Volver
+        </a>
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;" th:text="${editando} ? 'Editar Impacto en Tráfico' : 'Análisis de Impacto Vial'"></h2>
+    </div>
+
+    <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
+
+    <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong th:text="${mensajeError}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
+        <div class="card-body">
+            <form th:action="@{/api/impacto-trafico/guardar}" th:object="${impactoObj}" method="post">
+                <input type="hidden" th:field="*{id_impacto}">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Zona o Área</label>
+                        <input type="text" th:field="*{zona}" class="form-control" placeholder="Ej: Zona 10, Calzada Roosevelt" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Reducción de Tráfico (%)</label>
+                        <input type="number" step="0.01" th:field="*{reduccionTraficoPorcentaje}" class="form-control" placeholder="Ej: 15.50" required>
+                    </div>
+                    <div class="col-12 mt-3 text-center">
+                        <button type="submit" class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
+                            <i th:class="${editando} ? 'bi bi-pencil-fill' : 'bi bi-bar-chart-fill'"></i>
+                            <span th:text="${editando} ? 'Actualizar Análisis' : 'Registrar Impacto'"></span>
+                        </button>
+                        <a th:if="${editando}" th:href="@{/api/impacto-trafico}" class="btn-cancel-link d-block mt-2">Cancelar edición</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form th:action="@{/api/impacto-trafico}" method="get" class="d-flex gap-2">
+                <input type="text" name="buscar" th:value="${param.buscar}" class="form-control" placeholder="Buscar por zona o ID...">
+                <button type="submit" class="btn btn-metro-main px-4 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-funnel-fill"></i> Filtrar
+                </button>
+                <a th:href="@{/api/impacto-trafico}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-arrow-counterclockwise"></i> Limpiar
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive table-metro-style shadow-sm">
+        <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Zona / Ubicación</th>
+                <th>Reducción (%)</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="i : ${impactos}">
+                <td th:text="${i.id_impacto}" class="fw-bold"></td>
+                <td th:text="${i.zona}"></td>
+                <td th:text="${i.reduccionTraficoPorcentaje + '%'}"></td>
+                <td class="text-center">
+                    <a th:href="@{/api/impacto-trafico/editar/{id}(id=${i.id_impacto})}"
+                       class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+
+                    <a th:href="@{/api/impacto-trafico/eliminar/{id}(id=${i.id_impacto})}"
+                       class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
+                       onclick="return confirm('¿Está seguro de eliminar este registro?')">
+                        <i class="bi bi-trash3-fill"></i> Borrar
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(impactos)}">
+                <td colspan="4" class="text-center py-4 text-muted">No se encontraron datos de impacto vial.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
