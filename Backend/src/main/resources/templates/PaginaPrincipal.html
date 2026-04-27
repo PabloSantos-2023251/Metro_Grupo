@@ -12,12 +12,16 @@
 </div>
 
 <header class="header-nav">
-    <div>
-        <h1>METRO-SUBTERRANEO</h1>
-        <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #c2d2e9;">
-            Bienvenido, <span th:text="${session.nombreUsuario}">Usuario</span>
-            (<span th:text="${session.rolUsuario}" style="text-transform: capitalize;">Rol</span>)
-        </p>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <img th:src="@{/imagenes/LogoOscuro.png}" alt="Logo" class="nav-logo">
+
+        <div>
+            <h1>METRO-SUBTERRANEO</h1>
+            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #c2d2e9;">
+                Bienvenido, <span th:text="${session.nombreUsuario}">Usuario</span>
+                (<span th:text="${session.rolUsuario}" style="text-transform: capitalize;">Rol</span>)
+            </p>
+        </div>
     </div>
 
     <div style="display: flex; gap: 15px; align-items: center;">
