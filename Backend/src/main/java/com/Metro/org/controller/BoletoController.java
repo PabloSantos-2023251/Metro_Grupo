@@ -21,15 +21,25 @@ public class BoletoController {
         this.pasajeroService = pasajeroService;
     }
 
-@GetMapping
-public String listar(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model) {
-    List<Boleto> lista = (buscarId != null)
-            ? boletoService.getBoletosByPasajero(buscarId)
-            : boletoService.getAllBoletos();
-    model.addAttribute("boletos", lista);
-    model.addAttribute("boletoForm", new Boleto());
-    return "Boletos";
-}
+    @GetMapping
+    public String listar(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model) {
+        List<Boleto> lista = (buscarId != null)
+                ? boletoService.getBoletosByPasajero(buscarId)
+                : boletoService.getAllBoletos();
+        model.addAttribute("boletos", lista);
+        model.addAttribute("boletoForm", new Boleto());
+        return "Boletos";
+    }
+
+    // ← MÉTODO NUEVO: carga el formulario con los datos del boleto a editar
+    @GetMapping("/editar/{id}")
+    public String mostrarFormEditar(@PathVariable Integer id, Model model) {
+        Boleto boleto = boletoService.getBoletoById(id);
+        List<Boleto> lista = boletoService.getAllBoletos();
+        model.addAttribute("boletoForm", boleto);
+        model.addAttribute("boletos", lista);
+        return "Boletos";
+    }
 
     @PostMapping("/agregar")
     public String agregar(@ModelAttribute("boletoForm") Boleto boleto,
