@@ -31,7 +31,6 @@ public class BoletoController {
         return "Boletos";
     }
 
-    // ← MÉTODO NUEVO: carga el formulario con los datos del boleto a editar
     @GetMapping("/editar/{id}")
     public String mostrarFormEditar(@PathVariable Integer id, Model model) {
         Boleto boleto = boletoService.getBoletoById(id);
@@ -43,21 +42,35 @@ public class BoletoController {
 
     @PostMapping("/agregar")
     public String agregar(@ModelAttribute("boletoForm") Boleto boleto,
-                          @RequestParam("idPasajero") Integer idPasajero) {
-        Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
-        boleto.setPasajero(pasajero);
-        boletoService.saveBoleto(boleto);
-        return "redirect:/boletos";
+                          @RequestParam("idPasajero") Integer idPasajero,
+                          Model model) {
+        try {
+            Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
+            boleto.setPasajero(pasajero);
+            boletoService.saveBoleto(boleto);
+            return "redirect:/boletos";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorBoleto", e.getMessage());
+            model.addAttribute("boletos", boletoService.getAllBoletos());
+            return "Boletos";
+        }
     }
 
     @PostMapping("/editar/{id}")
     public String editar(@PathVariable Integer id,
                          @ModelAttribute("boletoForm") Boleto boleto,
-                         @RequestParam("idPasajero") Integer idPasajero) {
-        Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
-        boleto.setPasajero(pasajero);
-        boletoService.updateBoleto(id, boleto);
-        return "redirect:/boletos";
+                         @RequestParam("idPasajero") Integer idPasajero,
+                         Model model) {
+        try {
+            Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
+            boleto.setPasajero(pasajero);
+            boletoService.updateBoleto(id, boleto);
+            return "redirect:/boletos";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorBoleto", e.getMessage());
+            model.addAttribute("boletos", boletoService.getAllBoletos());
+            return "Boletos";
+        }
     }
 
     @GetMapping("/borrar/{id}")
