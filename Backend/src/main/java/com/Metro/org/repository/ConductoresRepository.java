@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ConductoresRepository extends JpaRepository<Conductores,Integer> {
+
+    boolean existsByLicencia(String licencia);
+
 }
-
-
-
