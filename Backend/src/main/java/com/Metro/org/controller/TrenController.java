@@ -2,6 +2,7 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Trenes;
 import com.Metro.org.service.TrenService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,15 @@ public class TrenController {
     }
 
     @PostMapping("/guardar")
-    public String guardarTren(@ModelAttribute("tren") Trenes tren){
+    public String guardarTren(@Valid @ModelAttribute("tren") Trenes tren,
+                              org.springframework.validation.BindingResult result,
+                              Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("trenes", trenService.getAllTren());
+            return "Trenes";
+        }
+
         trenService.saveTren(tren);
         return "redirect:/trenes";
     }
