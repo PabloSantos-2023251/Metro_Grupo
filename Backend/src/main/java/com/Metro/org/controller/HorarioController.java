@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 
 @Controller
@@ -32,11 +31,15 @@ public class HorarioController {
         try {
             if (horario.getIdHorario() != null && horario.getIdHorario() > 0) {
                 horarioService.updateHorario(horario.getIdHorario(), horario);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Horario actualizado con éxito.");
             } else {
                 horarioService.saveHorario(horario);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Nuevo horario programado correctamente.");
             }
+        } catch (RuntimeException e) {
+            redirectAttrs.addFlashAttribute("mensajeError", e.getMessage());
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("mensajeError", "Error al procesar el horario: " + e.getMessage());
+            redirectAttrs.addFlashAttribute("mensajeError", "Error técnico: " + e.getMessage());
         }
         return "redirect:/horarios";
     }
@@ -53,8 +56,12 @@ public class HorarioController {
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        horarioService.deleteHorario(id);
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
+        if(horarioService.deleteHorario(id)) {
+            redirectAttrs.addFlashAttribute("mensajeExito", "Horario eliminado.");
+        } else {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se pudo eliminar.");
+        }
         return "redirect:/horarios";
     }
 
