@@ -1,29 +1,34 @@
 package com.Metro.org.entity;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "trenes")
-
 public class Trenes {
-    @Id
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tren")
     private Integer idTren;
-    @NotBlank(message = "El campo de texto no debe de estar vacio")
+
+    @NotBlank(message = "El modelo no puede estar vacío")
     @Column(name = "modelo")
     private String modelo;
 
-    @NotNull(message = "El campo no puede estar vacio")
+    @NotNull(message = "La capacidad no puede estar vacía")
+    @Min(value = 50, message = "La capacidad debe ser al menos 50 pasajeros")
     @Column(name = "capacidad_pasajeros")
     private Integer capacidadPasajeros;
 
-    @NotBlank(message = "El campo de texto no debe de estar vacio")
+    @NotBlank(message = "El estado no puede estar vacío")
+    @Pattern(
+            regexp = "(?i)Operativo|Mantenimiento|Fuera de Servicio",
+            message = "Estado inválido (Operativo, Mantenimiento o Fuera de Servicio)"
+    )
     @Column(name = "estado")
     private String estado;
 
@@ -59,4 +64,3 @@ public class Trenes {
         this.estado = estado;
     }
 }
-
