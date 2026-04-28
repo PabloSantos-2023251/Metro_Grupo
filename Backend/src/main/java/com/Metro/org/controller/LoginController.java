@@ -1,8 +1,6 @@
 package com.Metro.org.controller;
 
-import com.Metro.org.entity.Pasajero;
 import com.Metro.org.entity.Personal;
-import com.Metro.org.service.PasajeroService;
 import com.Metro.org.service.PersonalService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -16,11 +14,9 @@ import java.util.Optional;
 public class LoginController {
 
     private final PersonalService personalService;
-    private final PasajeroService pasajeroService;
 
-    public LoginController(PersonalService personalService, PasajeroService pasajeroService) {
+    public LoginController(PersonalService personalService) {
         this.personalService = personalService;
-        this.pasajeroService = pasajeroService;
     }
 
     @GetMapping("/")
@@ -48,22 +44,6 @@ public class LoginController {
         return "registro";
     }
 
-    @PostMapping("/registro")
-    public String guardarPasajero(@RequestParam("nombre") String nombre,
-                                  @RequestParam("tipo") String tipo,
-                                  Model model) {
-        try {
-            Pasajero nuevoPasajero = new Pasajero();
-            nuevoPasajero.setNombrePasajero(nombre);
-            nuevoPasajero.setTipoPasajero(tipo);
-
-            pasajeroService.savePasajero(nuevoPasajero);
-            return "redirect:/?registroExito=true";
-        } catch (Exception e) {
-            model.addAttribute("error", "Error al registrar el pasajero");
-            return "registro";
-        }
-    }
 
     @GetMapping("/PaginaPrincipal")
     public String mostrarPaginaPrincipal(HttpSession session, Model model) {
