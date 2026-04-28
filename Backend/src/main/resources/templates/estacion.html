@@ -1,62 +1,59 @@
-<!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Estaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <link rel="stylesheet" th:href="@{/estacion.css}">
 </head>
 
 <body>
-<div class="container">
 
-    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary">← Volver</a>
-    <h2>Gestión de Estaciones</h2>
-    <hr>
+<div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/Metro.mp4}" type="video/mp4">
+    </video>
+</div>
 
-    <div class="card">
-        <form th:action="@{/estaciones}" method="get" class="buscador">
-            <input type="text" name="buscar" placeholder="Buscar por ID">
-            <button type="submit">Buscar</button>
-            <a th:href="@{/estaciones}">Limpiar</a>
-        </form>
+<div class="main-container-glass">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}"
+           class="btn btn-secondary d-flex align-items-center gap-2"
+           style="background-color: #3a4e7a; border: none;">
+            <i class="bi bi-arrow-left-circle"></i> Volver
+        </a>
+
+        <h2 style="font-weight:700;">Gestión de Estaciones</h2>
     </div>
 
+    <hr>
     <div class="card">
         <form th:action="@{/estaciones/guardar}" th:object="${estacion}" method="post">
-            <div class="row">
+            <div class="row g-3">
 
                 <input type="hidden" th:field="*{idEstacion}">
 
-                <div class="col-md-6">
-                    <label class="form-label">Nombre de Estación</label>
-                    <input type="text" class="form-control"
-                           th:field="*{nombre}"
-                           placeholder="Ej: Estación Central" required>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" th:field="*{nombre}" placeholder="Nombre" required>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">Zona</label>
-                    <input type="text" class="form-control"
-                           th:field="*{zona}"
-                           placeholder="Ej: Zona 1">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" th:field="*{zona}" placeholder="Zona">
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">Línea</label>
-                    <select class="form-control"
-                            th:field="*{idLinea}" required>
-                        <option value="">Seleccione una línea</option>
+                <div class="col-md-4">
+                    <select class="form-control" th:field="*{idLinea}" required>
+                        <option value="">Línea</option>
                         <option value="1">Línea 1</option>
                         <option value="2">Línea 2</option>
                         <option value="3">Línea 3</option>
                     </select>
                 </div>
 
-                <div class="col-12">
-                    <button type="submit" class="btn btn-success">
-                        Guardar Estación
+                <div class="col-12 text-center">
+                    <button class="btn btn-metro-main w-100 py-2 d-flex justify-content-center gap-2">
+                        <i class="bi bi-floppy-fill"></i> Guardar
                     </button>
                 </div>
 
@@ -64,37 +61,58 @@
         </form>
     </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID Estación</th>
-            <th>Nombre</th>
-            <th>Zona</th>
-            <th>Línea</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="e : ${estaciones}">
-            <td th:text="${e.idEstacion}"></td>
-            <td th:text="${e.nombre}"></td>
-            <td th:text="${e.zona}"></td>
-            <td th:text="${e.idLinea}"></td>
-            <td>
-                <a th:href="@{/estaciones/editar/{id}(id=${e.idEstacion})}"
-                   class="btn btn-warning">Editar</a>
-
-                <a th:href="@{/estaciones/eliminar/{id}(id=${e.idEstacion})}"
-                   class="btn btn-danger"
-                   onclick="return confirm('¿Seguro que quieres eliminar esta estación?')">
-                    Borrar
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <form th:action="@{/estaciones}" method="get" class="d-flex">
+                <input type="text" name="buscar" class="form-control me-2" placeholder="Buscar...">
+                <button class="btn btn-metro-main d-flex gap-1">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a th:href="@{/estaciones}" class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-eraser-fill"></i> Limpiar
                 </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive table-metro-style">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Zona</th>
+                <th>Línea</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="e : ${estaciones}">
+                <td th:text="${e.idEstacion}"></td>
+                <td th:text="${e.nombre}"></td>
+                <td th:text="${e.zona}"></td>
+                <td th:text="${e.idLinea}"></td>
+
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+
+                        <a th:href="@{/estaciones/editar/{id}(id=${e.idEstacion})}"
+                           class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </a>
+
+                        <a th:href="@{/estaciones/eliminar/{id}(id=${e.idEstacion})}"
+                           class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
+                           onclick="return confirm('¿Eliminar registro?')">
+                            <i class="bi bi-trash3-fill"></i> Borrar
+                        </a>
+
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 </div>
 </body>
-</html>
