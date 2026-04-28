@@ -6,123 +6,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Conductores</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/Estilos.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
 </head>
 
 <body>
 
-<div class="container">
+<div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/Metro.mp4}" type="video/mp4">
+    </video>
+</div>
 
-    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary">← Volver</a>
+<div class="main-container-glass">
 
-    <h2>Gestión de Conductores</h2>
-    <hr>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}"
+           class="btn btn-secondary d-inline-flex align-items-center gap-2"
+           style="background-color: #3a4e7a; border: none;">
+            <i class="bi bi-chevron-left"></i> Volver
+        </a>
 
-    <div class="card">
-
-        <form th:action="@{/conductores/guardar}" th:object="${conductor}" method="post">
-
-            <input type="hidden" th:field="*{idConductor}">
-
-            <div class="row">
-
-                <div class="col-md-6">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control"
-                           th:field="*{nombre}"
-                           placeholder="Ej: Juan Pérez" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Licencia</label>
-                    <input type="text" class="form-control"
-                           th:field="*{licencia}"
-                           placeholder="Ej: B1234567" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Años de Experiencia</label>
-                    <input type="number" class="form-control"
-                           th:field="*{aniosExperiencia}"
-                           placeholder="Ej: 5" required>
-                </div>
-
-                <div class="col-12 mt-2">
-                    <button type="submit" class="btn btn-success">
-                        Guardar Conductor
-                    </button>
-                </div>
-
-            </div>
-        </form>
-
-        <div class="row mb-3 mt-3">
-            <div class="col-md-5">
-                <form th:action="@{/conductores}" method="get" class="d-flex">
-
-                    <input type="number" name="buscarId"
-                           class="form-control me-2"
-                           placeholder="Buscar por ID de conductor...">
-
-                    <button type="submit" class="btn btn-outline-primary">
-                        Buscar
-                    </button>
-
-                    <a th:href="@{/conductores}" class="btn btn-outline-secondary ms-2">
-                        Limpiar
-                    </a>
-
-                </form>
-            </div>
-        </div>
-
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;">
+            Gestión de Conductores
+        </h2>
     </div>
 
-    <table class="table">
+    <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
 
-        <thead>
-        <tr>
-            <th>ID Conductor</th>
-            <th>Nombre</th>
-            <th>Licencia</th>
-            <th>Años Experiencia</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
+    <!-- FORMULARIO -->
+    <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
+        <div class="card-body">
 
-        <tbody>
-        <tr th:each="conductor : ${conductores}">
-            <td th:text="${conductor.idConductor}"></td>
-            <td th:text="${conductor.nombre}"></td>
-            <td th:text="${conductor.licencia}"></td>
-            <td th:text="${conductor.aniosExperiencia}"></td>
+            <form th:action="@{/conductores/guardar}" th:object="${conductor}" method="post">
 
-            <td>
-                <a th:href="@{/conductores/editar/{id}(id=${conductor.idConductor})}"
-                   class="btn btn-warning">
-                    Editar
+                <input type="hidden" th:field="*{idConductor}">
+
+                <div class="row g-3">
+
+                    <!-- NOMBRE -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Nombre</label>
+                        <input type="text" class="form-control"
+                               th:field="*{nombre}"
+                               placeholder="Ej: Juan Pérez">
+
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('nombre')}"
+                             th:errors="*{nombre}"></div>
+                    </div>
+
+                    <!-- LICENCIA -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Licencia</label>
+                        <input type="text" class="form-control"
+                               th:field="*{licencia}"
+                               placeholder="Ej: B1234567">
+
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('licencia')}"
+                             th:errors="*{licencia}"></div>
+                    </div>
+
+                    <!-- EXPERIENCIA -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Años de Experiencia</label>
+                        <input type="number" class="form-control"
+                               th:field="*{aniosExperiencia}"
+                               placeholder="Ej: 5">
+
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('aniosExperiencia')}"
+                             th:errors="*{aniosExperiencia}"></div>
+                    </div>
+
+                    <!-- BOTÓN -->
+                    <div class="col-12 mt-3 text-center">
+                        <button type="submit"
+                                class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
+                            <i class="bi bi-person-plus-fill"></i>
+                            Guardar Conductor
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form th:action="@{/conductores}" method="get" class="d-flex gap-2">
+
+                <input type="number" name="buscarId"
+                       class="form-control"
+                       placeholder="Buscar por ID de conductor...">
+
+                <button type="submit"
+                        class="btn btn-metro-main px-4 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-funnel-fill"></i> Buscar
+                </button>
+
+                <a th:href="@{/conductores}"
+                   class="btn btn-outline-secondary d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-arrow-counterclockwise"></i> Limpiar
                 </a>
 
-                <a th:href="@{/conductores/eliminar/{id}(id=${conductor.idConductor})}"
-                   class="btn btn-danger"
-                   onclick="return confirm('¿Seguro que deseas eliminar este conductor?')">
-                    Borrar
-                </a>
-            </td>
-        </tr>
+            </form>
+        </div>
+    </div>
 
-        <tr th:if="${#lists.isEmpty(conductores)}">
-            <td colspan="5" class="text-center text-muted">
-                No se encontró ningún conductor con ese ID.
-            </td>
-        </tr>
+    <!-- TABLA -->
+    <div class="table-responsive table-metro-style shadow-sm">
+        <table class="table table-hover mb-0">
 
-        </tbody>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Licencia</th>
+                <th>Experiencia</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
 
-    </table>
+            <tbody>
+            <tr th:each="conductor : ${conductores}">
+                <td th:text="${conductor.idConductor}" class="fw-bold"></td>
+                <td th:text="${conductor.nombre}"></td>
+                <td th:text="${conductor.licencia}"></td>
+                <td th:text="${conductor.aniosExperiencia}"></td>
+
+                <td class="text-center">
+
+                    <a th:href="@{/conductores/editar/{id}(id=${conductor.idConductor})}"
+                       class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+
+                    <a th:href="@{/conductores/eliminar/{id}(id=${conductor.idConductor})}"
+                       class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
+                       onclick="return confirm('¿Seguro que deseas eliminar este conductor?')">
+                        <i class="bi bi-trash3-fill"></i> Borrar
+                    </a>
+
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(conductores)}">
+                <td colspan="5" class="text-center py-4 text-muted">
+                    No se encontró ningún conductor.
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+    </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
