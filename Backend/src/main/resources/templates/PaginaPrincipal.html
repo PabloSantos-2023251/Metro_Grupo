@@ -7,15 +7,27 @@
 </head>
 <body>
 
+<div id="floating-bg">
+    <svg id="floating-svg" viewBox="0 0 696 316" fill="none" preserveAspectRatio="none"></svg>
+</div>
+
 <header class="header-nav">
-    <div>
-        <h1>METRO-SUBTERRANEO</h1>
-        <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #c2d2e9;">
-            Bienvenido, <span th:text="${session.nombreUsuario}">Usuario</span>
-            (<span th:text="${session.rolUsuario}" style="text-transform: capitalize;">Rol</span>)
-        </p>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <img th:src="@{/imagenes/LogoOscuro.png}" alt="Logo" class="nav-logo">
+
+        <div>
+            <h1>METRO-SUBTERRANEO</h1>
+            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #c2d2e9;">
+                Bienvenido, <span th:text="${session.nombreUsuario}">Usuario</span>
+                (<span th:text="${session.rolUsuario}" style="text-transform: capitalize;">Rol</span>)
+            </p>
+        </div>
     </div>
-    <a th:href="@{/}" class="btn-exit">CERRAR SESIÓN</a>
+
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button id="themeToggleBtn" class="btn-theme">🌓 Tema</button>
+        <a th:href="@{/}" class="btn-exit">CERRAR SESIÓN</a>
+    </div>
 </header>
 
 <main class="dashboard-grid">
@@ -23,7 +35,7 @@
     <section class="metro-card">
         <h3>Mantenimiento</h3>
         <p>Control de revisiones técnicas y estados de la flota.</p>
-        <a th:href="@{/mantenimiento}" class="btn-action">Gestionar Unidades</a>
+        <a th:href="@{/mantenimientos}" class="btn-action">Gestionar</a>
     </section>
 
     <section class="metro-card">
@@ -39,15 +51,15 @@
     </section>
 
     <section class="metro-card">
-        <h3>Pasajeros</h3>
-        <p>Registro y gestión de pasajeros del metro.</p>
-        <a th:href="@{/pasajeros}" class="btn-action">Ver Listado</a>
-    </section>
-
-    <section class="metro-card">
         <h3>Boletos</h3>
         <p>Sistema de ventas y validación de acceso.</p>
         <a href="/boletos" class="btn-action">Ventanilla</a>
+    </section>
+
+    <section class="metro-card">
+        <h3>Pasajeros</h3>
+        <p>Gestión de pasajeros y tipo.</p>
+        <a href="/pasajeros" class="btn-action">Ver Lista</a>
     </section>
 
     <section class="metro-card">
@@ -64,5 +76,52 @@
 
 </main>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const svg = document.getElementById("floating-svg");
+        const position = -1;
+
+        for (let i = 0; i < 36; i++) {
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const d = `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`;
+
+            path.setAttribute("d", d);
+            path.setAttribute("stroke", "currentColor");
+            path.setAttribute("stroke-width", 0.5 + i * 0.03);
+            path.classList.add("motion-path");
+
+            svg.appendChild(path);
+
+            const length = path.getTotalLength();
+            path.style.strokeDasharray = length;
+
+            const duration = (20 + Math.random() * 10) * 1000;
+
+            path.animate([
+                { strokeDashoffset: length, opacity: 0.3 },
+                { strokeDashoffset: 0, opacity: 0.6, offset: 0.5 },
+                { strokeDashoffset: -length, opacity: 0.3 }
+            ], {
+                duration: duration,
+                iterations: Infinity,
+                easing: 'linear'
+            });
+
+            path.style.opacity = 0.1 + i * 0.03;
+        }
+
+
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const savedTheme = localStorage.getItem('metro-theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('metro-theme', newTheme);
+        });
+    });
+</script>
 </body>
 </html>
