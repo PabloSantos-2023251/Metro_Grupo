@@ -44,7 +44,15 @@ public class ConductorController {
     }
 
     @PostMapping("/guardar")
-    public String guardarConductor(@Valid @ModelAttribute("conductor") Conductores conductor){
+    public String guardarConductor(@Valid @ModelAttribute("conductor") Conductores conductor,
+                                   org.springframework.validation.BindingResult result,
+                                   Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("conductores", conductorService.getAllConductores());
+            return "Conductores";
+        }
+
         conductorService.saveConductores(conductor);
         return "redirect:/conductores";
     }
