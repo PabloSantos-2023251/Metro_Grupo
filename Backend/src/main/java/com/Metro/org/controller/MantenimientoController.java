@@ -32,11 +32,15 @@ public class MantenimientoController {
         try {
             if (mantenimiento.getIdMantenimiento() != null && mantenimiento.getIdMantenimiento() > 0) {
                 mantenimientoService.updateMantenimiento(mantenimiento.getIdMantenimiento(), mantenimiento);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Registro actualizado correctamente.");
             } else {
                 mantenimientoService.saveMantenimiento(mantenimiento);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Mantenimiento guardado con éxito.");
             }
+        } catch (RuntimeException e) {
+            redirectAttrs.addFlashAttribute("mensajeError", e.getMessage());
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("mensajeError", "Error al procesar el mantenimiento: " + e.getMessage());
+            redirectAttrs.addFlashAttribute("mensajeError", "Error inesperado: " + e.getMessage());
         }
         return "redirect:/mantenimientos";
     }
@@ -54,8 +58,13 @@ public class MantenimientoController {
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        mantenimientoService.deleteMantenimiento(id);
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
+        try {
+            mantenimientoService.deleteMantenimiento(id);
+            redirectAttrs.addFlashAttribute("mensajeExito", "Mantenimiento eliminado.");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se pudo eliminar el registro.");
+        }
         return "redirect:/mantenimientos";
     }
 
