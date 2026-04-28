@@ -27,6 +27,11 @@ public class ConductoresServiceImplements implements ConductoresService {
 
     @Override
     public Conductores saveConductores(Conductores conductores) {
+
+        if (conductoresRepository.existsByLicencia(conductores.getLicencia())) {
+            throw new RuntimeException("La licencia ya existe");
+        }
+
         return conductoresRepository.save(conductores);
     }
 
@@ -40,8 +45,14 @@ public class ConductoresServiceImplements implements ConductoresService {
 
     @Override
     public Conductores updateConductores(Integer id, Conductores conductores) {
+
         Conductores existing = conductoresRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("El conductor no existe con ID: " + id));
+
+        if (!existing.getLicencia().equals(conductores.getLicencia()) &&
+                conductoresRepository.existsByLicencia(conductores.getLicencia())) {
+            throw new RuntimeException("La licencia ya existe");
+        }
 
         existing.setNombre(conductores.getNombre());
         existing.setLicencia(conductores.getLicencia());
