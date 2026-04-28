@@ -3,57 +3,69 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Líneas</title>
-    <link rel="stylesheet" th:href="@{/linea.css}">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- MISMO CSS DE ESTACIÓN -->
+    <link rel="stylesheet" th:href="@{/estacion.css}">
 </head>
 
 <body>
-<div class="container">
 
-    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary">← Volver</a>
+<!-- VIDEO FONDO -->
+<div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/Metro.mp4}" type="video/mp4">
+    </video>
+</div>
 
-    <h2>Gestión de Líneas</h2>
-    <hr>
+<div class="main-container-glass">
 
-    <div class="card">
-        <form th:action="@{/linea}" method="get" class="buscador">
-            <input type="text" name="buscar" placeholder="Buscar por ID">
-            <button type="submit">Buscar</button>
-            <a th:href="@{/linea}">Limpiar</a>
-        </form>
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}"
+           class="btn btn-secondary d-flex align-items-center gap-2"
+           style="background-color: #3a4e7a; border: none;">
+            <i class="bi bi-arrow-left-circle"></i> Volver
+        </a>
+
+        <h2 style="font-weight:700;">Gestión de Líneas</h2>
     </div>
 
-    <div class="card">
+    <hr>
+
+    <!-- FORMULARIO -->
+    <div class="card p-3">
         <form th:action="@{/linea/guardar}" th:object="${linea}" method="post">
-            <div class="row">
+            <div class="row g-3">
 
                 <input type="hidden" th:field="*{idLinea}">
 
-                <div class="col-md-6">
-                    <label class="form-label">Nombre de Línea</label>
+                <div class="col-md-4">
                     <input type="text" class="form-control"
                            th:field="*{nombreLinea}"
-                           placeholder="Ej: Línea 1" required>
+                           placeholder="Nombre de Línea" required>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">Color</label>
+                <div class="col-md-4">
                     <input type="text" class="form-control"
                            th:field="*{color}"
-                           placeholder="Ej: Rojo">
+                           placeholder="Color">
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">Longitud (km)</label>
+                <div class="col-md-4">
                     <input type="number" step="0.01" class="form-control"
                            th:field="*{longitudKm}"
-                           placeholder="Ej: 12.50">
+                           placeholder="Longitud (km)">
                 </div>
 
-                <div class="col-12">
-                    <button type="submit" class="btn btn-success">
-                        Guardar Línea
+                <div class="col-12 text-center">
+                    <button type="submit"
+                            class="btn btn-metro-main w-100 py-2 d-flex justify-content-center gap-2">
+                        <i class="bi bi-floppy-fill"></i> Guardar
                     </button>
                 </div>
 
@@ -61,38 +73,63 @@
         </form>
     </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID Línea</th>
-            <th>Nombre</th>
-            <th>Color</th>
-            <th>Longitud (km)</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="u : ${lineas}">
-            <td th:text="${u.idLinea}"></td>
-            <td th:text="${u.nombreLinea}"></td>
-            <td th:text="${u.color}"></td>
-            <td th:text="${u.longitudKm}"></td>
-            <td>
-                <a th:href="@{/linea/editar/{id}(id=${u.idLinea})}"
-                   class="btn btn-warning">Editar</a>
-
-                <a th:href="@{/linea/eliminar/{id}(id=${u.idLinea})}"
-                   class="btn btn-danger"
-                   onclick="return confirm('¿Seguro que quieres eliminar esta línea?')">
-                    Borrar
+    <!-- BUSCADOR -->
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <form th:action="@{/linea}" method="get" class="d-flex">
+                <input type="text" name="buscar" class="form-control me-2" placeholder="Buscar...">
+                <button type="submit" class="btn btn-metro-main d-flex gap-1">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a th:href="@{/linea}"
+                   class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-eraser-fill"></i> Limpiar
                 </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            </form>
+        </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-responsive table-metro-style">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Color</th>
+                <th>Longitud (km)</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="l : ${lineas}">
+                <td th:text="${l.idLinea}"></td>
+                <td th:text="${l.nombreLinea}"></td>
+                <td th:text="${l.color}"></td>
+                <td th:text="${l.longitudKm}"></td>
+
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+
+                        <a th:href="@{/linea/editar/{id}(id=${l.idLinea})}"
+                           class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </a>
+
+                        <a th:href="@{/linea/eliminar/{id}(id=${l.idLinea})}"
+                           class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
+                           onclick="return confirm('¿Eliminar registro?')">
+                            <i class="bi bi-trash3-fill"></i> Borrar
+                        </a>
+
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 </div>
 </body>
-
 </html>
