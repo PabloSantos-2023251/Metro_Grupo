@@ -5,21 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boletos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
 </head>
 
 <body>
-<div class="container">
-    <a th:href="@{/PaginaPrincipal}">← Volver</a>
+<div class="main-container-glass">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary d-inline-flex align-items-center gap-2"
+           style="background-color: #3a4e7a; border: none;">
+            <i class="bi bi-arrow-left-circle"></i> Volver al Dashboard
+        </a>
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;"
+            th:text="${boletoForm.idBoleto != null} ? 'Modificar Boleto' : 'Gestión de Boletos'"></h2>
+    </div>
 
-    <h2>Gestión de Boletos</h2>
     <hr>
 
-    <div class="card">
+    <div class="card p-4 mb-4">
         <form th:action="${boletoForm.idBoleto != null} ? @{/boletos/editar/{id}(id=${boletoForm.idBoleto})} : @{/boletos/agregar}"
               th:object="${boletoForm}" method="post">
             <input type="hidden" th:field="*{idBoleto}" />
-            <div class="row">
+            <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Precio</label>
                     <input type="text" class="form-control" th:field="*{precio}" placeholder="Ej: 1.00" required>
@@ -34,31 +42,40 @@
                            th:value="${boletoForm.pasajero != null ? boletoForm.pasajero.idPasajero : ''}"
                            placeholder="Ej: 1" required>
                 </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-success"
-                            th:text="${boletoForm.idBoleto != null} ? 'Guardar Cambios' : 'Agregar Boleto'">
+                <div class="col-12 mt-3 text-center">
+                    <button type="submit" class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
+                        <i th:class="${boletoForm.idBoleto != null} ? 'bi bi-arrow-repeat' : 'bi bi-ticket-fill'"></i>
+                        <span th:text="${boletoForm.idBoleto != null} ? 'Guardar Cambios' : 'Agregar Boleto'"></span>
                     </button>
+                    <a th:if="${boletoForm.idBoleto != null}" th:href="@{/boletos}" class="btn-cancel-link d-block mt-2">Cancelar edición</a>
                 </div>
             </div>
         </form>
     </div>
-    
-    <div class="search-container">
-    <form th:action="@{/boletos}" method="get" style="display:flex; gap:10px;">
-        <div style="position:relative; flex:1;">
-            <input type="number" name="buscarId" class="form-control search-input"
-                   placeholder="Filtrar por ID Pasajero..." required>
+
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <form th:action="@{/boletos}" method="get" class="d-flex">
+                <input type="number" name="buscarId" class="form-control me-2"
+                       placeholder="Buscar por ID Pasajero..." required>
+
+                <button type="submit" class="btn btn-metro-main d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+
+                <a th:href="@{/boletos}" class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-eraser-fill"></i> Limpiar
+                </a>
+            </form>
         </div>
-        <button type="submit" class="btn btn-success" style="width:auto;">Buscar</button>
-        <a th:href="@{/boletos}" class="btn btn-secondary">Limpiar</a>
-    </form>
-</div>
+    </div>
  
     <p th:if="${#lists.isEmpty(boletos) and param.buscarId != null}"
    style="color:red; font-weight:bold;">
     No se encontraron boletos para el pasajero con ID: <span th:text="${param.buscarId}"></span>
 </p>
 
+<div class="table-responsive">
     <table class="table">
         <thead>
         <tr>
@@ -66,7 +83,7 @@
             <th>Precio</th>
             <th>Fecha</th>
             <th>ID Pasajero</th>
-            <th>Acciones</th>
+            <th class="text-center">Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -75,14 +92,24 @@
             <td th:text="${boleto.precio}"></td>
             <td th:text="${boleto.fecha}"></td>
             <td th:text="${boleto.idPasajero}"></td>
-            <td>
-                <a th:href="@{/boletos/editar/{id}(id=${boleto.idBoleto})}" class="btn btn-warning">Editar</a>
-                <a th:href="@{/boletos/borrar/{id}(id=${boleto.idBoleto})}" class="btn btn-danger"
-                   onclick="return confirm('¿Desea borrar este boleto?')">Borrar</a>
+            <td class="text-center">
+                <a th:href="@{/boletos/editar/{id}(id=${boleto.idBoleto})}"
+                   class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <a th:href="@{/boletos/borrar/{id}(id=${boleto.idBoleto})}"
+                   class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
+                   onclick="return confirm('¿Desea borrar este boleto?')">
+                    <i class="bi bi-trash3-fill"></i> Borrar
+                </a>
             </td>
         </tr>
         </tbody>
+        <tr th:if="${#lists.isEmpty(boletos)}">
+            <td colspan="5" class="text-center py-4 text-muted">No se encontraron resultados.</td>
+        </tr>
     </table>
+    </div>
 </div>
 </body>
 
