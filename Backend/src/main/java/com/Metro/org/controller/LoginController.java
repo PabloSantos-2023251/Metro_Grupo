@@ -56,7 +56,9 @@ public class LoginController {
 
     @GetMapping("/PaginaPrincipal")
     public String mostrarPaginaPrincipal(HttpSession session, Model model) {
-
+        if (session.getAttribute("nombreUsuario") == null) {
+            return "redirect:/";
+        }
 
         model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
         model.addAttribute("rol", session.getAttribute("rolUsuario"));
