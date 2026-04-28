@@ -1,3 +1,4 @@
+
 :root {
     --bg-color: #f1f1f0;
     --text-color: #091d36;
@@ -156,4 +157,23 @@ body {
 .btn-theme:hover {
     background: var(--nav-text);
     color: var(--nav-bg);
+}
+.nav-logo {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+    transition: transform 0.3s ease;
+}
+.nav-logo:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+    .nav-logo {
+        height: 40px;
+    }
+    .header-nav h1 {
+        font-size: 1.1rem;
+    }
 }
