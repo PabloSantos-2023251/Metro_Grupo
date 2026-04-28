@@ -6,123 +6,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Trenes</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/Estilos.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
 </head>
 
 <body>
 
-<div class="container mt-4">
+<div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/Metro.mp4}" type="video/mp4">
+    </video>
+</div>
 
-    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary mb-3">← Volver</a>
+<div class="main-container-glass">
 
-    <h2>Gestión de Trenes</h2>
-    <hr>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a th:href="@{/PaginaPrincipal}"
+           class="btn btn-secondary d-inline-flex align-items-center gap-2"
+           style="background-color: #3a4e7a; border: none;">
+            <i class="bi bi-chevron-left"></i> Volver
+        </a>
 
-    <div class="card p-3 shadow">
-
-        <form th:action="@{/trenes/guardar}" th:object="${tren}" method="post">
-
-            <input type="hidden" th:field="*{idTren}">
-
-            <div class="row">
-
-                <div class="col-md-6 mb-2">
-                    <label class="form-label">Modelo</label>
-                    <input type="text" class="form-control"
-                           th:field="*{modelo}"
-                           placeholder="Modelo X200" required>
-                </div>
-
-                <div class="col-md-6 mb-2">
-                    <label class="form-label">Capacidad</label>
-                    <input type="number" class="form-control"
-                           th:field="*{capacidadPasajeros}"
-                           placeholder="120" required>
-                </div>
-
-                <div class="col-md-6 mb-2">
-                    <label class="form-label">Estado</label>
-                    <input type="text" class="form-control"
-                           th:field="*{estado}"
-                           placeholder="Activo / Mantenimiento" required>
-                </div>
-
-                <div class="col-12 mt-2">
-                    <button type="submit" class="btn btn-success"
-                            th:text="${tren.idTren != null} ? 'Actualizar Tren' : 'Guardar Tren'">
-                    </button>
-                </div>
-
-            </div>
-        </form>
-
-        <div class="row mb-3 mt-3">
-            <div class="col-md-5">
-                <form th:action="@{/trenes}" method="get" class="d-flex">
-
-                    <input type="number" name="buscarId"
-                           class="form-control me-2"
-                           placeholder="Buscar por ID de tren...">
-
-                    <button type="submit" class="btn btn-outline-primary">
-                        Buscar
-                    </button>
-
-                    <a th:href="@{/trenes}" class="btn btn-outline-secondary ms-2">
-                        Limpiar
-                    </a>
-
-                </form>
-            </div>
-        </div>
-
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;">
+            Gestión de Trenes
+        </h2>
     </div>
 
-    <table class="table table-striped table-hover mt-4">
+    <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
 
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Modelo</th>
-            <th>Capacidad</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
+    <!-- FORMULARIO -->
+    <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
+        <div class="card-body">
 
-        <tbody>
-        <tr th:each="tren : ${trenes}">
-            <td th:text="${tren.idTren}"></td>
-            <td th:text="${tren.modelo}"></td>
-            <td th:text="${tren.capacidadPasajeros}"></td>
-            <td th:text="${tren.estado}"></td>
-            <td>
-                <a th:href="@{/trenes/editar/{id}(id=${tren.idTren})}"
-                   class="btn btn-warning btn-sm">
-                    Editar
+            <form th:action="@{/trenes/guardar}" th:object="${tren}" method="post">
+
+                <input type="hidden" th:field="*{idTren}">
+
+                <div class="row g-3">
+
+                    <!-- MODELO -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Modelo</label>
+                        <input type="text" class="form-control"
+                               th:field="*{modelo}"
+                               placeholder="Modelo X200">
+
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('modelo')}"
+                             th:errors="*{modelo}"></div>
+                    </div>
+
+                    <!-- CAPACIDAD -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Capacidad</label>
+                        <input type="number" class="form-control"
+                               th:field="*{capacidadPasajeros}"
+                               placeholder="120">
+
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('capacidadPasajeros')}"
+                             th:errors="*{capacidadPasajeros}"></div>
+                    </div>
+
+                    <!-- ESTADO -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Estado</label>
+                        <input type="text" class="form-control"
+                               th:field="*{estado}"
+                               placeholder="Operativo / Mantenimiento">
+
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('estado')}"
+                             th:errors="*{estado}"></div>
+                    </div>
+
+                    <!-- BOTÓN -->
+                    <div class="col-12 mt-3 text-center">
+                        <button type="submit"
+                                class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
+                            <i class="bi bi-train-front-fill"></i>
+                            <span th:text="${tren.idTren != null} ? 'Actualizar Tren' : 'Guardar Tren'"></span>
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form th:action="@{/trenes}" method="get" class="d-flex gap-2">
+
+                <input type="number" name="buscarId"
+                       class="form-control"
+                       placeholder="Buscar por ID de tren...">
+
+                <button type="submit"
+                        class="btn btn-metro-main px-4 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-funnel-fill"></i> Buscar
+                </button>
+
+                <a th:href="@{/trenes}"
+                   class="btn btn-outline-secondary d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-arrow-counterclockwise"></i> Limpiar
                 </a>
 
-                <a th:href="@{/trenes/eliminar/{id}(id=${tren.idTren})}"
-                   class="btn btn-danger btn-sm"
-                   onclick="return confirm('¿Seguro que deseas eliminar este tren?')">
-                    Borrar
-                </a>
-            </td>
-        </tr>
+            </form>
+        </div>
+    </div>
 
-        <tr th:if="${#lists.isEmpty(trenes)}">
-            <td colspan="5" class="text-center text-muted">
-                No se encontró ningún tren con ese ID.
-            </td>
-        </tr>
+    <!-- TABLA -->
+    <div class="table-responsive table-metro-style shadow-sm">
+        <table class="table table-hover mb-0">
 
-        </tbody>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Modelo</th>
+                <th>Capacidad</th>
+                <th>Estado</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
 
-    </table>
+            <tbody>
+            <tr th:each="tren : ${trenes}">
+                <td th:text="${tren.idTren}" class="fw-bold"></td>
+                <td th:text="${tren.modelo}"></td>
+                <td th:text="${tren.capacidadPasajeros}"></td>
+                <td th:text="${tren.estado}"></td>
+
+                <td class="text-center">
+
+                    <a th:href="@{/trenes/editar/{id}(id=${tren.idTren})}"
+                       class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+
+                    <a th:href="@{/trenes/eliminar/{id}(id=${tren.idTren})}"
+                       class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
+                       onclick="return confirm('¿Seguro que deseas eliminar este tren?')">
+                        <i class="bi bi-trash3-fill"></i> Borrar
+                    </a>
+
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(trenes)}">
+                <td colspan="5" class="text-center py-4 text-muted">
+                    No se encontró ningún tren.
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+    </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
