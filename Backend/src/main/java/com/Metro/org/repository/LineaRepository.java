@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LineaRepository extends JpaRepository<Linea,Integer> {
+    Linea findByColorIgnoreCase(String color);
 }
