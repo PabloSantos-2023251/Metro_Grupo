@@ -48,7 +48,7 @@ public class LoginController {
 
     @PostMapping("/registro")
     public String registrarUsuario(@ModelAttribute Personal personal) {
-        personalService.save(personal);
+        personalService.savePersonal(personal);
         return "redirect:/?success=true";
     }
 
