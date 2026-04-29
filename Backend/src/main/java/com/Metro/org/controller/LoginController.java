@@ -1,26 +1,27 @@
 package com.Metro.org.controller;
 
+import com.Metro.org.entity.Pasajero;
 import com.Metro.org.entity.Personal;
+import com.Metro.org.service.PasajeroService;
 import com.Metro.org.service.PersonalService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Controller
 public class LoginController {
 
     private final PersonalService personalService;
+    private final PasajeroService pasajeroService;
 
-    public LoginController(PersonalService personalService) {
+    public LoginController(PersonalService personalService, PasajeroService pasajeroService) {
         this.personalService = personalService;
+        this.pasajeroService = pasajeroService;
     }
 
-    @GetMapping("/")
+    @GetMapping({"/", "/login"})
     public String index() {
         return "login";
     }
@@ -30,33 +31,36 @@ public class LoginController {
                              @RequestParam("password") String password,
                              HttpSession session,
                              Model model) {
-        Optional<Personal> usuarioOpt = personalService.findByEmail(email);
-        if (usuarioOpt.isPresent() && usuarioOpt.get().getPassword().equals(password)) {
-            session.setAttribute("nombreUsuario", usuarioOpt.get().getNombre());
-            session.setAttribute("rolUsuario", usuarioOpt.get().getRol());
+
+        Optional<Personal> personalOpt = personalService.findByEmail(email);
+        if (personalOpt.isPresent() && personalOpt.get().getPassword().equals(password)) {
+            session.setAttribute("nombreUsuario", personalOpt.get().getNombre());
+            session.setAttribute("rolUsuario", personalOpt.get().getRol());
             return "redirect:/PaginaPrincipal";
         }
-        model.addAttribute("error", "Credenciales incorrectas");
+
+        Optional<Pasajero> pasajeroOpt = pasajeroService.findByEmail(email);
+        if (pasajeroOpt.isPresent() && pasajeroOpt.get().getPassword().equals(password)) {
+            session.setAttribute("nombreUsuario", pasajeroOpt.get().getNombrePasajero());
+            session.setAttribute("rolUsuario", "PASAJERO");
+            return "redirect:/PaginaPrincipal";
+        }
+
+        model.addAttribute("error", "Correo o contraseña incorrectos");
         return "login";
-    }
-
-    @GetMapping("/registro")
-    public String mostrarRegistro(Model model) {
-        model.addAttribute("personal", new Personal());
-        return "registro";
-    }
-
-    @PostMapping("/registro")
-    public String registrarUsuario(@ModelAttribute Personal personal) {
-        personalService.savePersonal(personal);
-        return "redirect:/?success=true";
     }
 
     @GetMapping("/PaginaPrincipal")
     public String mostrarPaginaPrincipal(HttpSession session, Model model) {
-        if (session.getAttribute("nombreUsuario") == null) return "redirect:/";
+        if (session.getAttribute("nombreUsuario") == null) return "redirect:/login";
         model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
         model.addAttribute("rol", session.getAttribute("rolUsuario"));
         return "PaginaPrincipal";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 }
