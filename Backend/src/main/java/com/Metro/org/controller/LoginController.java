@@ -50,6 +50,20 @@ public class LoginController {
         return "login";
     }
 
+    @GetMapping("/registro")
+    public String mostrarRegistro(Model model) {
+        model.addAttribute("pasajero", new Pasajero());
+        return "registro";
+    }
+
+    @PostMapping("/registro")
+    public String registrarPasajero(@ModelAttribute("pasajero") Pasajero pasajero) {
+        // Guardamos al pasajero usando el service
+        pasajeroService.savePasajero(pasajero);
+        // Redirigimos al login con un mensaje de éxito
+        return "redirect:/login?success";
+    }
+
     @GetMapping("/PaginaPrincipal")
     public String mostrarPaginaPrincipal(HttpSession session, Model model) {
         if (session.getAttribute("nombreUsuario") == null) return "redirect:/login";

@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // TE F
 import org.springframework.security.crypto.password.PasswordEncoder; // TE FALTABA ESTE
 
 @SpringBootApplication
-public class BackendProyectoApplication implements CommandLineRunner { // AGREGADO EL IMPLEMENTS
+public class BackendProyectoApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(BackendProyectoApplication.class, args);
