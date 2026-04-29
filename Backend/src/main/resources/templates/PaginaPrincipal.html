@@ -2,126 +2,154 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Metro</title>
-    <link rel="stylesheet" th:href="@{/css/HomeStyle.css}">
+    <link rel="stylesheet" th:href="@{/css/Homestyle.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
 
-<div id="floating-bg">
-    <svg id="floating-svg" viewBox="0 0 696 316" fill="none" preserveAspectRatio="none"></svg>
+<div id="floating-bg" aria-hidden="true">
+    <svg id="floating-svg" preserveAspectRatio="none"></svg>
 </div>
 
-<header class="header-nav">
-    <div>
-        <h1>METRO-SUBTERRANEO</h1>
-        <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #c2d2e9;">
-            Bienvenido, <span th:text="${session.nombreUsuario}">Usuario</span>
-            (<span th:text="${session.rolUsuario}" style="text-transform: capitalize;">Rol</span>)
-        </p>
+<header class="header-nav" role="banner">
+    <div class="header-left">
+        <img th:src="@{/imagenes/LogoOscuro.png}" id="logo-img" alt="Logo" class="nav-logo">
+        <div class="brand-text">
+            <h1 class="logo">METRO-SUBTERRÁNEO</h1>
+            <p class="user-info">
+                Bienvenido, <strong th:text="${session.nombreUsuario}">Usuario</strong>
+                <span class="badge-role">(<span th:text="${session.rolUsuario}">Rol</span>)</span>
+            </p>
+        </div>
     </div>
-
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <button id="themeToggleBtn" class="btn-theme">🌓 Tema</button>
-        <a th:href="@{/}" class="btn-exit">CERRAR SESIÓN</a>
+    <div class="header-actions">
+        <button id="themeToggleBtn" class="btn-theme">🌓 <span>Tema</span></button>
+        <a th:href="@{/logout}" class="btn-exit"><i class="bi bi-box-arrow-right"></i> <span>Cerrar sesión</span></a>
     </div>
 </header>
 
-<main class="dashboard-grid">
-
-    <section class="metro-card">
+<main class="dashboard-grid" role="main">
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-gear-wide-connected"></i>
         <h3>Mantenimiento</h3>
         <p>Control de revisiones técnicas y estados de la flota.</p>
         <a th:href="@{/mantenimientos}" class="btn-action">Gestionar</a>
-    </section>
+    </article>
 
-    <section class="metro-card">
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-person-standing"></i>
         <h3>Personal</h3>
         <p>Administración de operadores y personal de estación.</p>
-        <a th:href="@{/api/personal}" class="btn-action">Ver Listado</a>
-    </section>
+        <a th:href="@{/api/personal}" class="btn-action">Ver listado</a>
+    </article>
 
-    <section class="metro-card">
+    <article class="metro-card">
+        <i class="bi bi-clock"></i>
         <h3>Horarios</h3>
-        <p>Programación de salidas y llegadas por línea.</p>
+        <p th:text="${session.rolUsuario == 'PASAJERO'} ? 'Consulta las próximas llegadas.' : 'Programación de salidas.'"></p>
         <a href="/horarios" class="btn-action">Configurar</a>
-    </section>
+    </article>
 
-    <section class="metro-card">
+    <article class="metro-card">
+        <i class="bi bi-ticket-detailed"></i>
         <h3>Boletos</h3>
-        <p>Sistema de ventas y validación de acceso.</p>
+        <p th:text="${session.rolUsuario == 'PASAJERO'} ? 'Tus boletos de viaje.' : 'Sistema de ventas.'"></p>
         <a href="/boletos" class="btn-action">Ventanilla</a>
-    </section>
+    </article>
 
-    <section class="metro-card">
-        <h3>Impacto Ambiental</h3>
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-stoplights"></i>
+        <h3>Impacto Tráfico</h3>
         <p>Eficiencia energética y reducción de tráfico.</p>
         <a th:href="@{/api/impacto-trafico}" class="btn-action">Reportes</a>
-    </section>
+    </article>
 
-    <section class="metro-card">
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-train-front"></i>
         <h3>Trenes</h3>
-        <p>Gestión de modelos, capacidad y disponibilidad.</p>
-        <a href="/trenes" class="btn-action">Ver Flota</a>
-    </section>
+        <p>Gestión de modelos y capacidad.</p>
+        <a href="/trenes" class="btn-action">Ver flota</a>
+    </article>
 
-    <section class="metro-card">
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-flag"></i>
         <h3>Estaciones</h3>
-        <p>Gestión de estaciones, zonas y asignación a líneas.</p>
-        <a href="/estaciones" class="btn-action">Ver Estaciones</a>
-    </section>
+        <p>Gestión de estaciones y zonas.</p>
+        <a href="/estaciones" class="btn-action">Ver estaciones</a>
+    </article>
 
-    <section class="metro-card">
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-arrow-left-right"></i>
         <h3>Líneas</h3>
-        <p>Gestión de líneas, color y longitud del sistema.</p>
-        <a href="/linea" class="btn-action">Ver Líneas</a>
-    </section>
+        <p>Gestión de líneas y longitud.</p>
+        <a href="/linea" class="btn-action">Ver líneas</a>
+    </article>
 
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-person-vcard"></i>
+        <h3>Conductores</h3>
+        <p>Manejo de conductores asignados.</p>
+        <a href="/conductores" class="btn-action">Ver conductores</a>
+    </article>
+
+    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+        <i class="bi bi-person"></i>
+        <h3>Pasajeros</h3>
+        <p>Manejo de pasajeros y gestión de viajes.</p>
+        <a href="/pasajeros" class="btn-action">Ver pasajeros</a>
+    </article>
 </main>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const svg = document.getElementById("floating-svg");
-        const position = -1;
+        const logoImg = document.getElementById("logo-img");
+        const themeBtn = document.getElementById('themeToggleBtn');
 
-        for (let i = 0; i < 36; i++) {
+        const totalPaths = 12;
+        const fragment = document.createDocumentFragment();
+
+        const updateSize = () => {
+            svg.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
+        };
+        updateSize();
+        window.addEventListener("resize", updateSize);
+
+        for (let i = 0; i < totalPaths; i++) {
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            const d = `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`;
-
+            const startY = (window.innerHeight / totalPaths) * i;
+            const d = `M-100 ${startY} C${window.innerWidth * 0.4} ${startY - 150} ${window.innerWidth * 0.6} ${startY + 150} ${window.innerWidth + 100} ${startY}`;
             path.setAttribute("d", d);
-            path.setAttribute("stroke", "currentColor");
-            path.setAttribute("stroke-width", 0.5 + i * 0.03);
-            path.classList.add("motion-path");
-
-            svg.appendChild(path);
-
-            const length = path.getTotalLength();
-            path.style.strokeDasharray = length;
-
-            const duration = (20 + Math.random() * 10) * 1000;
-
-            path.animate([
-                { strokeDashoffset: length, opacity: 0.3 },
-                { strokeDashoffset: 0, opacity: 0.6, offset: 0.5 },
-                { strokeDashoffset: -length, opacity: 0.3 }
-            ], {
-                duration: duration,
+            path.setAttribute("stroke", "#3b82f6");
+            path.setAttribute("stroke-width", 1.2 + (i * 0.1));
+            path.setAttribute("fill", "none");
+            path.style.opacity = "0.3";
+            fragment.appendChild(path);
+            path.style.strokeDasharray = "60 140";
+            path.animate([{ strokeDashoffset: 1000 }, { strokeDashoffset: 0 }], {
+                duration: 18000 + (Math.random() * 7000),
                 iterations: Infinity,
                 easing: 'linear'
             });
-
-            path.style.opacity = 0.1 + i * 0.03;
         }
+        svg.appendChild(fragment);
 
+        const updateLogo = (theme) => {
+            logoImg.src = theme === 'dark' ? "/imagenes/LogoOscuro.png" : "/imagenes/Logo.png";
+        };
 
-        const themeBtn = document.getElementById('themeToggleBtn');
         const savedTheme = localStorage.getItem('metro-theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
+        updateLogo(savedTheme);
 
         themeBtn.addEventListener('click', () => {
             const currentTheme = document.body.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', newTheme);
             localStorage.setItem('metro-theme', newTheme);
+            updateLogo(newTheme);
         });
     });
 </script>
