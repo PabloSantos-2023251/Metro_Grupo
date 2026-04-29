@@ -42,13 +42,17 @@ public class LineaController {
     public String guardarLinea(@Valid @ModelAttribute("linea") Linea linea,
                                BindingResult result,
                                Model model){
-
         if(result.hasErrors()){
             model.addAttribute("lineas", lineaService.getAllLinea());
             return "linea";
         }
-
-        lineaService.saveLinea(linea);
+        try {
+            lineaService.saveLinea(linea);
+        } catch (Exception e){
+            model.addAttribute("mensajeError", e.getMessage());
+            model.addAttribute("lineas", lineaService.getAllLinea());
+            return "linea";
+        }
         return "redirect:/linea";
     }
 
