@@ -9,4 +9,5 @@ public interface BoletoService {
     Boleto saveBoleto(Boleto boleto);
     Boleto updateBoleto(Integer id, Boleto boleto);
     void deleteBoleto(Integer id);
+    List<Boleto> getBoletosByPasajero(Integer idPasajero);
 }

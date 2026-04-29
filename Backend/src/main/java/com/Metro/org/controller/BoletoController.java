@@ -1,66 +1,81 @@
 package com.Metro.org.controller;
 
 import com.Metro.org.entity.Boleto;
+import com.Metro.org.entity.Pasajero;
 import com.Metro.org.service.BoletoService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.Metro.org.service.PasajeroService;
+import java.util.List;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/boletos")
 public class BoletoController {
 
     private final BoletoService boletoService;
+    private final PasajeroService pasajeroService;
 
-    public BoletoController(BoletoService boletoService) {
+    public BoletoController(BoletoService boletoService, PasajeroService pasajeroService) {
         this.boletoService = boletoService;
+        this.pasajeroService = pasajeroService;
     }
 
     @GetMapping
-    public List<Boleto> getAllBoletos() {
-        return boletoService.getAllBoletos();
+    public String listar(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model) {
+        List<Boleto> lista = (buscarId != null)
+                ? boletoService.getBoletosByPasajero(buscarId)
+                : boletoService.getAllBoletos();
+        model.addAttribute("boletos", lista);
+        model.addAttribute("boletoForm", new Boleto());
+        return "Boletos";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getBoletoById(@PathVariable Integer id) {
+    @GetMapping("/editar/{id}")
+    public String mostrarFormEditar(@PathVariable Integer id, Model model) {
+        Boleto boleto = boletoService.getBoletoById(id);
+        List<Boleto> lista = boletoService.getAllBoletos();
+        model.addAttribute("boletoForm", boleto);
+        model.addAttribute("boletos", lista);
+        return "Boletos";
+    }
+
+    @PostMapping("/agregar")
+    public String agregar(@ModelAttribute("boletoForm") Boleto boleto,
+                          @RequestParam("idPasajero") Integer idPasajero,
+                          Model model) {
         try {
-            Boleto boleto = boletoService.getBoletoById(id);
-            return ResponseEntity.ok(boleto);
+            Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
+            boleto.setPasajero(pasajero);
+            boletoService.saveBoleto(boleto);
+            return "redirect:/boletos";
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            model.addAttribute("errorBoleto", e.getMessage());
+            model.addAttribute("boletos", boletoService.getAllBoletos());
+            return "Boletos";
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createBoleto(@Valid @RequestBody Boleto boleto) {
+    @PostMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id,
+                         @ModelAttribute("boletoForm") Boleto boleto,
+                         @RequestParam("idPasajero") Integer idPasajero,
+                         Model model) {
         try {
-            Boleto created = boletoService.saveBoleto(boleto);
-            return new ResponseEntity<>(created, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al crear: " + e.getMessage());
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateBoleto(@PathVariable Integer id, @Valid @RequestBody Boleto boleto) {
-        try {
+            Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
+            boleto.setPasajero(pasajero);
             boletoService.updateBoleto(id, boleto);
-            return ResponseEntity.ok("Boleto actualizado correctamente");
+            return "redirect:/boletos";
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            model.addAttribute("errorBoleto", e.getMessage());
+            model.addAttribute("boletos", boletoService.getAllBoletos());
+            return "Boletos";
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteBoleto(@PathVariable Integer id) {
-        try {
-            boletoService.deleteBoleto(id);
-            return ResponseEntity.ok("Boleto anulado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/borrar/{id}")
+    public String borrar(@PathVariable Integer id) {
+        boletoService.deleteBoleto(id);
+        return "redirect:/boletos";
     }
 }
