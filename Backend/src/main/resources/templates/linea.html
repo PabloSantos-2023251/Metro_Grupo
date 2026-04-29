@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Líneas</title>
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
@@ -21,8 +19,6 @@
 </div>
 
 <div class="main-container-glass">
-
-    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a th:href="@{/PaginaPrincipal}"
            class="btn btn-secondary d-flex align-items-center gap-2"
@@ -34,8 +30,6 @@
     </div>
 
     <hr>
-
-    <!-- ALERTA DE ERROR -->
     <div class="container-fluid px-0">
         <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -43,8 +37,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     </div>
-
-    <!-- FORMULARIO -->
     <div class="card p-3">
         <form th:action="@{/linea/guardar}" th:object="${linea}" method="post">
             <div class="row g-3">
@@ -79,8 +71,6 @@
             </div>
         </form>
     </div>
-
-    <!-- BUSCADOR -->
     <div class="row mb-3">
         <div class="col-md-5">
             <form th:action="@{/linea}" method="get" class="d-flex">
@@ -95,8 +85,6 @@
             </form>
         </div>
     </div>
-
-    <!-- TABLA -->
     <div class="table-responsive table-metro-style">
         <table class="table table-hover">
             <thead>
