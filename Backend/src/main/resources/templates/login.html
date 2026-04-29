@@ -11,7 +11,6 @@
 <body>
 
 <div class="login-wrapper">
-
     <div class="scene-panel">
         <div class="station-header">
             <div class="line-badge">
@@ -76,7 +75,12 @@
             <h2 class="form-title">Acceso Operadores</h2>
             <p class="form-subtitle">Ingresa tus credenciales para continuar</p>
 
+            <p th:if="${param.boletoListo}" style="color: #ffca28; background: rgba(255,202,40,0.1); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ffca28; margin-bottom: 15px; font-size: 0.9rem;">
+                🎫 ¡Boleto emitido! Puedes recogerlo en taquilla.
+            </p>
+
             <p th:if="${error}" style="color: #ff5252; background: rgba(255,82,82,0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; text-align: center; border: 1px solid #ff5252;" th:text="${error}"></p>
+
             <p th:if="${param.success}" style="color: #4db6ac; background: rgba(77,182,172,0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; text-align: center; border: 1px solid #4db6ac;">¡Registro exitoso! Inicia sesión.</p>
 
             <form th:action="@{/login}" method="post" class="login-form">
@@ -101,7 +105,7 @@
                         <input type="password" name="password" id="password" class="field-input" placeholder="••••••••" required>
                         <button type="button" class="toggle-pw" id="togglePw">
                             <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                <path d="M1 12s4-8 11-8 11-8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
                         </button>
                     </div>
@@ -112,9 +116,31 @@
 
             <div class="register-section" style="margin-top: 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.2rem;">
                 <p style="color: #64b5f6; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8;">¿Eres nuevo operador?</p>
-                <a th:href="@{/registro}" style="color: #4db6ac; text-decoration: none; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; transition: 0.3s; display: inline-block;">
-                    SOLICITAR REGISTRO
-                </a>
+                <a th:href="@{/registro}" style="color: #4db6ac; text-decoration: none; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;">SOLICITAR REGISTRO</a>
+            </div>
+
+            <div id="boletoModal" class="modal-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center;">
+                <div class="form-panel" style="max-width: 400px; border: 2px solid #ffca28;">
+                    <h2 class="form-title" style="color: #ffca28;">Emisión de Boleto</h2>
+                    <p class="form-subtitle">Ingresa tus datos para generar el ticket</p>
+
+                    <form th:action="@{/pedir-boleto}" method="post" class="login-form">
+                        <div class="field-group">
+                            <label class="field-label">Nombre completo</label>
+                            <input type="text" name="nombrePasajero" class="field-input" required>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Tipo de Pasajero</label>
+                            <select name="tipoPasajero" class="field-input" style="background: #091d36; color: white;">
+                                <option value="Regular">Regular</option>
+                                <option value="Estudiante">Estudiante</option>
+                                <option value="Tercera Edad">Tercera Edad</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn" style="background: #ffca28; color: #000;">GENERAR BOLETO</button>
+                        <button type="button" onclick="closeModal()" style="background: transparent; color: white; border: none; margin-top: 10px; cursor: pointer; width: 100%;">Cancelar</button>
+                    </form>
+                </div>
             </div>
 
             <div class="form-note-box" style="margin-top: 1.5rem;">
@@ -132,8 +158,8 @@
 
 <script>
     const pupils = [
-        { l: document.getElementById('pupilL1'), r: document.getElementById('pupilR1'), le: document.getElementById('eyeL1'),  re: document.getElementById('eyeR1'), max: 5 },
-        { l: document.getElementById('pupilL2'), r: document.getElementById('pupilR2'), le: document.getElementById('eyeL2'),  re: document.getElementById('eyeR2'), max: 4 },
+        { l: document.getElementById('pupilL1'), r: document.getElementById('pupilR1'), le: document.getElementById('eyeL1'), re: document.getElementById('eyeR1'), max: 5 },
+        { l: document.getElementById('pupilL2'), r: document.getElementById('pupilR2'), le: document.getElementById('eyeL2'), re: document.getElementById('eyeR2'), max: 4 },
     ];
 
     let passwordVisible = false;
@@ -172,8 +198,8 @@
         passwordInput.type = passwordVisible ? 'text' : 'password';
         const icon = document.getElementById('eyeIcon');
         icon.innerHTML = passwordVisible
-            ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
-            : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
+        : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
         passwordInput.dispatchEvent(new Event('input'));
     });
 
@@ -187,11 +213,19 @@
         setTimeout(autoBlink, 3000 + Math.random() * 4000);
     }
 
+    function openModal() { document.getElementById('boletoModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('boletoModal').style.display = 'none'; }
+
     window.addEventListener('load', () => {
         trainNavy.classList.add('arrive');
         setTimeout(() => trainTeal.classList.add('arrive'), 300);
         autoBlink();
     });
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('boletoModal');
+        if (event.target == modal) { closeModal(); }
+    };
 </script>
 </body>
 </html>
