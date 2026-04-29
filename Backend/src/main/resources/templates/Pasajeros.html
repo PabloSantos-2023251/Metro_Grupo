@@ -34,7 +34,13 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Tipo</label>
-                    <input type="text" class="form-control" th:field="*{tipoPasajero}" placeholder="Ej: Adulto" required>
+                    <select class="form-select" th:field="*{tipoPasajero}" required>
+                        <option value="">-- Seleccione un tipo --</option>
+                        <option value="general">General</option>
+                        <option value="estudiante">Estudiante</option>
+                        <option value="adulto mayor">Adulto Mayor</option>
+                        <option value="discapacitado">Discapacitado</option>
+                    </select>
                 </div>
                 <div class="col-12 mt-3 text-center">
                     <button type="submit" class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
