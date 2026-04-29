@@ -6,20 +6,13 @@ import jakarta.persistence.*;
 @Table(name = "personal")
 public class Personal {
     @Id
-    @Column(name = "id_personal")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_personal;
 
     private String nombre;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(nullable = false)
     private String password;
-
     private String cargo;
-
-    @Column(nullable = false)
     private String rol;
 
     // Getters y Setters
