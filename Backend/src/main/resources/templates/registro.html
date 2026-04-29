@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Metro - Registro de Pasajeros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/LoginStyle.css}">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="scene-panel">
+        <div class="station-header">
+            <div class="line-badge">
+                <img th:src="@{/imagenes/LogoOscuro.png}" alt="Logo">
+            </div>
+            <div>
+                <p style="font-family: var(--font-head); font-size: 0.68rem; letter-spacing: 3px; color: var(--blue-lt); margin: 0;">GESTION DEL</p>
+                <span class="station-name">METRO</span>
+            </div>
+        </div>
+
+        <div class="platform-scene">
+            <div class="train-car train-navy" id="trainNavy">
+                <div class="train-front">
+                    <div class="cab-window">
+                        <div class="eye-socket" id="eyeL1"><div class="pupil" id="pupilL1"></div></div>
+                        <div class="eye-socket" id="eyeR1"><div class="pupil" id="pupilR1"></div></div>
+                    </div>
+                </div>
+                <div class="train-body">
+                    <div class="body-window"></div><div class="body-window"></div><div class="body-window"></div>
+                </div>
+            </div>
+            <div class="platform-floor"></div>
+        </div>
+        <div class="scene-footer">Registro de Usuarios de Red</div>
+    </div>
+
+    <div class="form-panel">
+        <div class="form-inner">
+            <div class="brand-mark">
+                <span class="brand-text">METRO<span>SUBTERRANEO</span></span>
+            </div>
+
+            <h2 class="form-title">Registro de Pasajero</h2>
+            <p class="form-subtitle">Ingrese los datos para la nueva tarjeta</p>
+
+            <form th:action="@{/registro}" method="post" class="login-form">
+
+                <div class="field-group">
+                    <label class="field-label">Nombre del Pasajero</label>
+                    <div class="input-wrap">
+                        <input type="text" name="nombre" class="field-input" placeholder="Nombre completo" required>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Tipo de Pasajero</label>
+                    <div class="input-wrap">
+                        <select name="tipo" class="field-input" style="background: #091d36; color: white; border: none; width: 100%;" required>
+                            <option value="Regular">Regular</option>
+                            <option value="Estudiante">Estudiante</option>
+                            <option value="Adulto Mayor">Adulto Mayor</option>
+                            <option value="Discapacidad">PCD (Discapacidad)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">REGISTRAR PASAJERO</button>
+            </form>
+
+            <div th:if="${error}" style="color: #ff4d4d; font-size: 0.85rem; margin-top: 15px; text-align: center;" th:text="${error}"></div>
+
+            <div class="link-footer" style="text-align: center; margin-top: 20px;">
+                <a th:href="@{/}" style="color: #4db6ac; text-decoration: none; font-size: 0.9rem;">Regresar al Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const pupils = [{ l: document.getElementById('pupilL1'), r: document.getElementById('pupilR1'), le: document.getElementById('eyeL1'),  re: document.getElementById('eyeR1'), max: 5 }];
+    const trainNavy = document.getElementById('trainNavy');
+
+    document.addEventListener('mousemove', (e) => {
+        pupils.forEach(p => {
+            const move = (el, eye, mX, mY, max) => {
+                const r = eye.getBoundingClientRect();
+                const dx = mX - (r.left + r.width/2), dy = mY - (r.top + r.height/2);
+                const d = Math.min(Math.hypot(dx, dy), max), a = Math.atan2(dy, dx);
+                el.style.transform = `translate(calc(-50% + ${Math.cos(a)*d}px), calc(-50% + ${Math.sin(a)*d}px))`;
+            };
+            move(p.l, p.le, e.clientX, e.clientY, p.max);
+            move(p.r, p.re, e.clientX, e.clientY, p.max);
+        });
+    });
+
+    window.addEventListener('load', () => {
+        trainNavy.classList.add('arrive');
+    });
+</script>
+</body>
+</html>

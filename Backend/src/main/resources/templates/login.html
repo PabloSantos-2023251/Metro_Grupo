@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Metro Login</title>
+    <title>Metro Login | Acceso al Sistema</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -76,6 +76,9 @@
             <h2 class="form-title">Acceso Operadores</h2>
             <p class="form-subtitle">Ingresa tus credenciales para continuar</p>
 
+            <p th:if="${error}" style="color: #ff5252; background: rgba(255,82,82,0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; text-align: center; border: 1px solid #ff5252;" th:text="${error}"></p>
+            <p th:if="${param.success}" style="color: #4db6ac; background: rgba(77,182,172,0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; text-align: center; border: 1px solid #4db6ac;">¡Registro exitoso! Inicia sesión.</p>
+
             <form th:action="@{/login}" method="post" class="login-form">
                 <div class="field-group">
                     <label class="field-label">Correo Electrónico</label>
@@ -107,7 +110,14 @@
                 <button type="submit" class="submit-btn">INGRESAR AL SISTEMA</button>
             </form>
 
-            <div class="form-note-box">
+            <div class="register-section" style="margin-top: 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.2rem;">
+                <p style="color: #64b5f6; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8;">¿Eres nuevo operador?</p>
+                <a th:href="@{/registro}" style="color: #4db6ac; text-decoration: none; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; transition: 0.3s; display: inline-block;">
+                    SOLICITAR REGISTRO
+                </a>
+            </div>
+
+            <div class="form-note-box" style="margin-top: 1.5rem;">
                 <svg class="note-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                 </svg>

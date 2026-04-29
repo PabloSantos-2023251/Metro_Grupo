@@ -6,9 +6,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.Optional;
 
 @Controller
@@ -30,39 +30,33 @@ public class LoginController {
                              @RequestParam("password") String password,
                              HttpSession session,
                              Model model) {
-
-        System.out.println("Intentando login con: " +email);
-
         Optional<Personal> usuarioOpt = personalService.findByEmail(email);
-
-        if (usuarioOpt.isPresent()) {
-            Personal u = usuarioOpt.get();
-            System.out.println("Usuario encontrado en DB. Password real: "+u.getPassword());
-
-            if (u.getPassword().equals(password)) {
-                session.setAttribute("nombreUsuario",u.getNombre());
-                session.setAttribute("rolUsuario",u.getRol());
-                return "redirect:/PaginaPrincipal";
-            } else {
-                System.out.println("La contraseña no coincide.");
-            }
-        } else {
-            System.out.println("No se encontró ningún usuario con ese correo.");
+        if (usuarioOpt.isPresent() && usuarioOpt.get().getPassword().equals(password)) {
+            session.setAttribute("nombreUsuario", usuarioOpt.get().getNombre());
+            session.setAttribute("rolUsuario", usuarioOpt.get().getRol());
+            return "redirect:/PaginaPrincipal";
         }
-
         model.addAttribute("error", "Credenciales incorrectas");
         return "login";
     }
 
+    @GetMapping("/registro")
+    public String mostrarRegistro(Model model) {
+        model.addAttribute("personal", new Personal());
+        return "registro";
+    }
+
+    @PostMapping("/registro")
+    public String registrarUsuario(@ModelAttribute Personal personal) {
+        personalService.save(personal);
+        return "redirect:/?success=true";
+    }
+
     @GetMapping("/PaginaPrincipal")
     public String mostrarPaginaPrincipal(HttpSession session, Model model) {
-        if (session.getAttribute("nombreUsuario") == null) {
-            return "redirect:/";
-        }
-
+        if (session.getAttribute("nombreUsuario") == null) return "redirect:/";
         model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
         model.addAttribute("rol", session.getAttribute("rolUsuario"));
-
         return "PaginaPrincipal";
     }
 }
