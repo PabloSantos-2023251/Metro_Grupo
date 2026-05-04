@@ -60,6 +60,15 @@ body {
     box-shadow: 0 20px 50px rgba(0,0,0,0.2);
 }
 
+h1, h2 {
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    background: var(--accent-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .table-metro-style {
     width: 100%;
     background-color: rgba(255, 255, 255, 0.05);
@@ -82,6 +91,7 @@ body {
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 1px;
+    border: none;
 }
 
 .table-metro-style tbody tr {
@@ -102,35 +112,21 @@ body {
 
 .btn-metro-main {
     background: var(--accent-grad);
-    color: white;
+    color: white !important;
     border: none;
     padding: 12px 24px;
     border-radius: 12px;
     font-weight: 700;
     transition: 0.3s;
     box-shadow: 0 8px 15px rgba(59, 130, 246, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-metro-main:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 20px rgba(59, 130, 246, 0.4);
-    color: white;
-}
-
-.form-control {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--glass-border);
-    border-radius: 10px;
-    padding: 12px;
-    color: var(--text-color);
-    backdrop-filter: blur(5px);
-}
-
-.form-control:focus {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-    color: var(--text-color);
 }
 
 .btn-sm {
@@ -151,11 +147,25 @@ body {
     color: white !important;
 }
 
-h2, h1 {
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 20px;
-    background: var(--accent-grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.form-control {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--text-color);
+    backdrop-filter: blur(5px);
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    color: var(--text-color);
+    outline: none;
+}
+
+::placeholder {
+    color: var(--text-soft);
+    opacity: 0.7;
 }
