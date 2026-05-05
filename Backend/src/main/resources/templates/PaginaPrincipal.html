@@ -20,7 +20,7 @@
             <h1 class="logo">METRO-SUBTERRÁNEO</h1>
             <p class="user-info">
                 Bienvenido, <strong th:text="${session.nombreUsuario}">Usuario</strong>
-                <span class="badge-role">(<span th:text="${session.rolUsuario}">Rol</span>)</span>
+                <span class="badge-role" th:text="'(' + ${session.puestoUsuario} + ')'">(Puesto)</span>
             </p>
         </div>
     </div>
@@ -31,14 +31,15 @@
 </header>
 
 <main class="dashboard-grid" role="main">
-    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+
+    <article class="metro-card" th:if="${#strings.equals(session.puestoUsuario, 'Mantenimiento') or #strings.equals(session.puestoUsuario, 'Tecnico') or #strings.equals(session.rolUsuario, 'administrador')}">
         <i class="bi bi-gear-wide-connected"></i>
         <h3>Mantenimiento</h3>
         <p>Control de revisiones técnicas y estados de la flota.</p>
         <a th:href="@{/mantenimientos}" class="btn-action">Gestionar</a>
     </article>
 
-    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+    <article class="metro-card" th:if="${#strings.equals(session.rolUsuario, 'administrador') or #strings.equals(session.puestoUsuario, 'Administrativo') or #strings.equals(session.puestoUsuario, 'Supervisor')}">
         <i class="bi bi-person-standing"></i>
         <h3>Personal</h3>
         <p>Administración de operadores y personal de estación.</p>
@@ -52,14 +53,14 @@
         <a href="/horarios" class="btn-action">Configurar</a>
     </article>
 
-    <article class="metro-card">
+    <article class="metro-card" th:if="${#strings.equals(session.puestoUsuario, 'Taquillera') or #strings.equals(session.puestoUsuario, 'Atencion Cliente') or #strings.equals(session.rolUsuario, 'PASAJERO') or #strings.equals(session.rolUsuario, 'administrador')}">
         <i class="bi bi-ticket-detailed"></i>
         <h3>Boletos</h3>
         <p th:text="${session.rolUsuario == 'PASAJERO'} ? 'Tus boletos de viaje.' : 'Sistema de ventas.'"></p>
         <a href="/boletos" class="btn-action">Ventanilla</a>
     </article>
 
-    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+    <article class="metro-card" th:if="${#strings.equals(session.rolUsuario, 'administrador') or #strings.equals(session.puestoUsuario, 'Supervisor')}">
         <i class="bi bi-stoplights"></i>
         <h3>Impacto Tráfico</h3>
         <p>Eficiencia energética y reducción de tráfico.</p>
@@ -73,21 +74,21 @@
         <a href="/trenes" class="btn-action">Ver flota</a>
     </article>
 
-    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+    <article class="metro-card" th:if="${#strings.equals(session.puestoUsuario, 'Seguridad') or #strings.equals(session.puestoUsuario, 'Supervisor') or #strings.equals(session.rolUsuario, 'administrador')}">
         <i class="bi bi-flag"></i>
         <h3>Estaciones</h3>
         <p>Gestión de estaciones y zonas.</p>
         <a href="/estaciones" class="btn-action">Ver estaciones</a>
     </article>
 
-    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+    <article class="metro-card" th:if="${#strings.equals(session.rolUsuario, 'administrador') or #strings.equals(session.puestoUsuario, 'Supervisor')}">
         <i class="bi bi-arrow-left-right"></i>
         <h3>Líneas</h3>
         <p>Gestión de líneas y longitud.</p>
         <a href="/linea" class="btn-action">Ver líneas</a>
     </article>
 
-    <article class="metro-card" th:if="${session.rolUsuario != 'PASAJERO'}">
+    <article class="metro-card" th:if="${#strings.equals(session.rolUsuario, 'administrador') or #strings.equals(session.puestoUsuario, 'Supervisor') or #strings.equals(session.puestoUsuario, 'Administrativo')}">
         <i class="bi bi-person-vcard"></i>
         <h3>Conductores</h3>
         <p>Manejo de conductores asignados.</p>
@@ -101,6 +102,7 @@
         <a href="/pasajeros" class="btn-action">Ver pasajeros</a>
     </article>
 </main>
+
 <script th:src="@{/js/HomeAction.js}"></script>
 </body>
 </html>

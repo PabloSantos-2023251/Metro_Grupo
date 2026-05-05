@@ -34,15 +34,21 @@ public class LoginController {
 
         Optional<Personal> personalOpt = personalService.findByEmail(email);
         if (personalOpt.isPresent() && personalOpt.get().getPassword().equals(password)) {
-            session.setAttribute("nombreUsuario", personalOpt.get().getNombre());
-            session.setAttribute("rolUsuario", personalOpt.get().getRol());
+            Personal p = personalOpt.get();
+            session.setAttribute("idUsuario", p.getId_personal());
+            session.setAttribute("nombreUsuario", p.getNombre());
+            session.setAttribute("rolUsuario", p.getRol());
+            session.setAttribute("puestoUsuario", p.getCargo());
             return "redirect:/PaginaPrincipal";
         }
 
         Optional<Pasajero> pasajeroOpt = pasajeroService.findByEmail(email);
         if (pasajeroOpt.isPresent() && pasajeroOpt.get().getPassword().equals(password)) {
-            session.setAttribute("nombreUsuario", pasajeroOpt.get().getNombrePasajero());
+            Pasajero pas = pasajeroOpt.get();
+            session.setAttribute("idUsuario", pas.getIdPasajero());
+            session.setAttribute("nombreUsuario", pas.getNombrePasajero());
             session.setAttribute("rolUsuario", "PASAJERO");
+            session.setAttribute("puestoUsuario", "Cliente");
             return "redirect:/PaginaPrincipal";
         }
 
@@ -58,9 +64,7 @@ public class LoginController {
 
     @PostMapping("/registro")
     public String registrarPasajero(@ModelAttribute("pasajero") Pasajero pasajero) {
-        // Guardamos al pasajero usando el service
         pasajeroService.savePasajero(pasajero);
-        // Redirigimos al login con un mensaje de éxito
         return "redirect:/login?success";
     }
 
@@ -69,6 +73,7 @@ public class LoginController {
         if (session.getAttribute("nombreUsuario") == null) return "redirect:/login";
         model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
         model.addAttribute("rol", session.getAttribute("rolUsuario"));
+        model.addAttribute("puesto", session.getAttribute("puestoUsuario"));
         return "PaginaPrincipal";
     }
 
