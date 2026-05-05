@@ -1,13 +1,13 @@
 package com.Metro.org.controller;
 
+import com.Metro.org.entity.Pasajero;
 import com.Metro.org.entity.Personal;
+import com.Metro.org.service.PasajeroService;
 import com.Metro.org.service.PersonalService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -15,12 +15,14 @@ import java.util.Optional;
 public class LoginController {
 
     private final PersonalService personalService;
+    private final PasajeroService pasajeroService;
 
-    public LoginController(PersonalService personalService) {
+    public LoginController(PersonalService personalService, PasajeroService pasajeroService) {
         this.personalService = personalService;
+        this.pasajeroService = pasajeroService;
     }
 
-    @GetMapping("/")
+    @GetMapping({"/", "/login"})
     public String index() {
         return "login";
     }
@@ -31,38 +33,53 @@ public class LoginController {
                              HttpSession session,
                              Model model) {
 
-        System.out.println("Intentando login con: " +email);
-
-        Optional<Personal> usuarioOpt = personalService.findByEmail(email);
-
-        if (usuarioOpt.isPresent()) {
-            Personal u = usuarioOpt.get();
-            System.out.println("Usuario encontrado en DB. Password real: "+u.getPassword());
-
-            if (u.getPassword().equals(password)) {
-                session.setAttribute("nombreUsuario",u.getNombre());
-                session.setAttribute("rolUsuario",u.getRol());
-                return "redirect:/PaginaPrincipal";
-            } else {
-                System.out.println("La contraseña no coincide.");
-            }
-        } else {
-            System.out.println("No se encontró ningún usuario con ese correo.");
+        Optional<Personal> personalOpt = personalService.findByEmail(email);
+        if (personalOpt.isPresent() && personalOpt.get().getPassword().equals(password)) {
+            Personal p = personalOpt.get();
+            session.setAttribute("idUsuario",    p.getId_personal());
+            session.setAttribute("nombreUsuario", p.getNombre());
+            session.setAttribute("rolUsuario",    p.getRol());
+            return "redirect:/PaginaPrincipal";
         }
 
-        model.addAttribute("error", "Credenciales incorrectas");
+        Optional<Pasajero> pasajeroOpt = pasajeroService.findByEmail(email);
+        if (pasajeroOpt.isPresent() && pasajeroOpt.get().getPassword().equals(password)) {
+            Pasajero pas = pasajeroOpt.get();
+            session.setAttribute("idUsuario",    pas.getIdPasajero());
+            session.setAttribute("nombreUsuario", pas.getNombrePasajero());
+            session.setAttribute("rolUsuario",   "PASAJERO");
+            return "redirect:/PaginaPrincipal";
+        }
+
+        model.addAttribute("error", "Correo o contraseña incorrectos");
         return "login";
+    }
+
+    @GetMapping("/registro")
+    public String mostrarRegistro(Model model) {
+        model.addAttribute("pasajero", new Pasajero());
+        return "registro";
+    }
+
+    @PostMapping("/registro")
+    public String registrarPasajero(@ModelAttribute("pasajero") Pasajero pasajero) {
+        pasajeroService.savePasajero(pasajero);
+        return "redirect:/login?success";
     }
 
     @GetMapping("/PaginaPrincipal")
     public String mostrarPaginaPrincipal(HttpSession session, Model model) {
         if (session.getAttribute("nombreUsuario") == null) {
-            return "redirect:/";
+            return "redirect:/login";
         }
-
         model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
-        model.addAttribute("rol", session.getAttribute("rolUsuario"));
-
+        model.addAttribute("rol",    session.getAttribute("rolUsuario"));
         return "PaginaPrincipal";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 }
