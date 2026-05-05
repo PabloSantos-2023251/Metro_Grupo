@@ -3,7 +3,9 @@ package com.Metro.org.service;
 import com.Metro.org.entity.Pasajero;
 import com.Metro.org.repository.PasajeroRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PasajeroServiceImplements implements PasajeroService {
@@ -45,5 +47,10 @@ public class PasajeroServiceImplements implements PasajeroService {
             throw new RuntimeException("Pasajero no encontrado");
         }
         pasajeroRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Pasajero> findByEmail(String email) {
+        return pasajeroRepository.findByEmail(email);
     }
 }
