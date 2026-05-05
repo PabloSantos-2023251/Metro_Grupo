@@ -20,13 +20,23 @@ public class Pasajero {
     @Column(name = "tipo_pasajero", nullable = false, length = 30)
     private String tipoPasajero;
 
-    // Getters y Setters//
+    @Column(name = "email", unique = true, length = 100)
+    private String email;
+
+    @Column(name = "password", length = 100)
+    private String password;
+
+    // Getters y Setters
     public Integer getIdPasajero() { return idPasajero; }
     public void setIdPasajero(Integer idPasajero) { this.idPasajero = idPasajero; }
     public String getNombrePasajero() { return nombrePasajero; }
     public void setNombrePasajero(String nombrePasajero) { this.nombrePasajero = nombrePasajero; }
     public String getTipoPasajero() { return tipoPasajero; }
     public void setTipoPasajero(String tipoPasajero) { this.tipoPasajero = tipoPasajero; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
     public String getNombre() { return nombrePasajero; }
     public void setNombre(String nombre) { this.nombrePasajero = nombre; }
