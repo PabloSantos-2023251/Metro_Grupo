@@ -344,3 +344,4 @@ call crear_boleto(5.00, '2024-05-03', 9);
 call crear_boleto(0.00, '2024-05-03', 10);
 
 select * from pasajeros;
+select * from tickets_soporte;

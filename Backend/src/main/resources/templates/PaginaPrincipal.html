@@ -101,7 +101,7 @@
         <a href="/pasajeros" class="btn-action">Ver pasajeros</a>
     </article>
 
-    <article class="metro-card">
+    <article class="metro-card" th:if="${session.rolUsuario == 'PASAJERO'}">
         <i class="bi bi-headset"></i>
         <h3>Soporte</h3>
         <p>Centro de ayuda y sugerencias técnicas.</p>
