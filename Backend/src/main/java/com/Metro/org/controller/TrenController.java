@@ -1,59 +1,63 @@
 package com.Metro.org.controller;
 
-
-import com.Metro.org.entity.trenes;
+import com.Metro.org.entity.Trenes;
 import com.Metro.org.service.TrenService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-@RestController
-@RequestMapping("/api/Tren")
-
+@Controller
+@RequestMapping("/trenes")
 public class TrenController {
+
     private final TrenService trenService;
-    public TrenController(TrenService TrenService){
-        this.trenService = TrenService;
+
+    public TrenController(TrenService trenService){
+        this.trenService = trenService;
     }
 
     @GetMapping
-    public List<trenes> getAllTren(){return trenService.getAllTren();}
+    public String verPagina(@RequestParam(name = "buscarId", required = false) Integer buscarId,
+                            Model model){
 
-    @PostMapping
-    public ResponseEntity<Object> createTren(@Valid @RequestBody trenes trenes){
-        try{
-            trenes createdTrenes = trenService.saveTren(trenes);
-            return new ResponseEntity<>(createdTrenes, HttpStatus.CREATED);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+        List<Trenes> lista;
+
+        if (buscarId != null) {
+            Trenes tren = trenService.getTrenById(buscarId);
+
+            if (tren != null) {
+                lista = List.of(tren);
+            } else {
+                lista = List.of();
+            }
+        } else {
+            lista = trenService.getAllTren();
         }
+
+        model.addAttribute("trenes", lista);
+        model.addAttribute("tren", new Trenes());
+
+        return "Trenes";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTren(@PathVariable Integer id){
-        try {
-            trenService.deleteTren(id);
-            return ResponseEntity.ok("Tren Eliminado Correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        }
+    @PostMapping("/guardar")
+    public String guardarTren(@ModelAttribute("tren") Trenes tren){
+        trenService.saveTren(tren);
+        return "redirect:/trenes";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateTren(@PathVariable Integer id, @RequestBody trenes trenes) {
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model){
+        model.addAttribute("tren", trenService.getTrenById(id));
+        model.addAttribute("trenes", trenService.getAllTren());
+        return "Trenes";
+    }
 
-        try {
-            trenes actualizado = trenService.updateTren(id, trenes);
-            return ResponseEntity.ok(actualizado);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        trenService.deleteTren(id);
+        return "redirect:/trenes";
     }
 }

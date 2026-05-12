@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Trenes</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/Estilos.css}">
+</head>
+
+<body>
+
+<div class="container mt-4">
+
+    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary mb-3">← Volver</a>
+
+    <h2>Gestión de Trenes</h2>
+    <hr>
+
+    <div class="card p-3 shadow">
+
+        <!-- FORMULARIO GUARDAR -->
+        <form th:action="@{/trenes/guardar}" th:object="${tren}" method="post">
+
+            <input type="hidden" th:field="*{idTren}">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Modelo</label>
+                    <input type="text" class="form-control"
+                           th:field="*{modelo}"
+                           placeholder="Modelo X200" required>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Capacidad</label>
+                    <input type="number" class="form-control"
+                           th:field="*{capacidadPasajeros}"
+                           placeholder="120" required>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Estado</label>
+                    <input type="text" class="form-control"
+                           th:field="*{estado}"
+                           placeholder="Activo / Mantenimiento" required>
+                </div>
+
+                <div class="col-12 mt-2">
+                    <button type="submit" class="btn btn-success"
+                            th:text="${tren.idTren != null} ? 'Actualizar Tren' : 'Guardar Tren'">
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+        <!-- FORMULARIO BUSCAR (SEPARADO) -->
+        <div class="row mb-3 mt-3">
+            <div class="col-md-5">
+                <form th:action="@{/trenes}" method="get" class="d-flex">
+
+                    <input type="number" name="buscarId"
+                           class="form-control me-2"
+                           placeholder="Buscar por ID de tren...">
+
+                    <button type="submit" class="btn btn-outline-primary">
+                        Buscar
+                    </button>
+
+                    <a th:href="@{/trenes}" class="btn btn-outline-secondary ms-2">
+                        Limpiar
+                    </a>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <table class="table table-striped table-hover mt-4">
+
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Modelo</th>
+            <th>Capacidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="tren : ${trenes}">
+            <td th:text="${tren.idTren}"></td>
+            <td th:text="${tren.modelo}"></td>
+            <td th:text="${tren.capacidadPasajeros}"></td>
+            <td th:text="${tren.estado}"></td>
+            <td>
+                <a th:href="@{/trenes/editar/{id}(id=${tren.idTren})}"
+                   class="btn btn-warning btn-sm">
+                    Editar
+                </a>
+
+                <a th:href="@{/trenes/eliminar/{id}(id=${tren.idTren})}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('¿Seguro que deseas eliminar este tren?')">
+                    Borrar
+                </a>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(trenes)}">
+            <td colspan="5" class="text-center text-muted">
+                No se encontró ningún tren con ese ID.
+            </td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
