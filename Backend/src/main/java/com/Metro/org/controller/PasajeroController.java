@@ -32,8 +32,10 @@ public class PasajeroController {
         } else {
             lista = pasajeroService.getAllPasajeros();
         }
+
         model.addAttribute("pasajeros", lista);
 
+        // Si no viene de un error de validación, creamos un objeto nuevo para el formulario
         if (!model.containsAttribute("pasajeroForm")) {
             model.addAttribute("pasajeroForm", new Pasajero());
         }
@@ -50,19 +52,18 @@ public class PasajeroController {
         return "redirect:/pasajeros";
     }
 
-    @PostMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, @ModelAttribute("pasajeroForm") Pasajero pasajero) {
-        // Actualización directa sin encriptación
-        pasajeroService.updatePasajero(id, pasajero);
-        return "redirect:/pasajeros";
-    }
-
     @GetMapping("/editar/{id}")
     public String editarForm(@PathVariable Integer id, Model model) {
         Pasajero pasajero = pasajeroService.getPasajeroById(id);
         model.addAttribute("pasajeros", pasajeroService.getAllPasajeros());
         model.addAttribute("pasajeroForm", pasajero);
         return "Pasajeros";
+    }
+
+    @PostMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, @ModelAttribute("pasajeroForm") Pasajero pasajero) {
+        pasajeroService.updatePasajero(id, pasajero);
+        return "redirect:/pasajeros";
     }
 
     @GetMapping("/borrar/{id}")

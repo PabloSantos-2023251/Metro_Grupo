@@ -1,39 +1,19 @@
 package com.Metro.org.controller;
 
-<<<<<<< HEAD
-import com.Metro.org.entity.Personal;
-=======
 import com.Metro.org.entity.Pasajero;
 import com.Metro.org.entity.Personal;
 import com.Metro.org.service.PasajeroService;
->>>>>>> ft-MiguelSantizo2022021
 import com.Metro.org.service.PersonalService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-<<<<<<< HEAD
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-=======
 import org.springframework.web.bind.annotation.*;
->>>>>>> ft-MiguelSantizo2022021
 import java.util.Optional;
 
 @Controller
 public class LoginController {
 
     private final PersonalService personalService;
-<<<<<<< HEAD
-
-    public LoginController(PersonalService personalService) {
-        this.personalService = personalService;
-    }
-
-    @GetMapping("/")
-    public String index() {
-=======
     private final PasajeroService pasajeroService;
 
     public LoginController(PersonalService personalService, PasajeroService pasajeroService) {
@@ -58,7 +38,6 @@ public class LoginController {
 
     @GetMapping("/login")
     public String mostrarLogin() {
->>>>>>> ft-MiguelSantizo2022021
         return "login";
     }
 
@@ -68,28 +47,6 @@ public class LoginController {
                              HttpSession session,
                              Model model) {
 
-<<<<<<< HEAD
-        System.out.println("Intentando login con: " +email);
-
-        Optional<Personal> usuarioOpt = personalService.findByEmail(email);
-
-        if (usuarioOpt.isPresent()) {
-            Personal u = usuarioOpt.get();
-            System.out.println("Usuario encontrado en DB. Password real: "+u.getPassword());
-
-            if (u.getPassword().equals(password)) {
-                session.setAttribute("nombreUsuario",u.getNombre());
-                session.setAttribute("rolUsuario",u.getRol());
-                return "redirect:/PaginaPrincipal";
-            } else {
-                System.out.println("La contraseña no coincide.");
-            }
-        } else {
-            System.out.println("No se encontró ningún usuario con ese correo.");
-        }
-
-        model.addAttribute("error", "Credenciales incorrectas");
-=======
         Optional<Personal> personalOpt = personalService.findByEmail(email);
         if (personalOpt.isPresent() && personalOpt.get().getPassword().equals(password)) {
             Personal p = personalOpt.get();
@@ -111,27 +68,17 @@ public class LoginController {
         }
 
         model.addAttribute("error", "Correo o contraseña incorrectos");
->>>>>>> ft-MiguelSantizo2022021
         return "login";
     }
 
     @GetMapping("/PaginaPrincipal")
     public String mostrarPaginaPrincipal(HttpSession session, Model model) {
         if (session.getAttribute("nombreUsuario") == null) {
-<<<<<<< HEAD
-            return "redirect:/";
-=======
             return "redirect:/login";
->>>>>>> ft-MiguelSantizo2022021
         }
 
         model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
         model.addAttribute("rol", session.getAttribute("rolUsuario"));
-<<<<<<< HEAD
-
-        return "PaginaPrincipal";
-    }
-=======
         model.addAttribute("puesto", session.getAttribute("puestoUsuario"));
         return "PaginaPrincipal";
     }
@@ -153,5 +100,4 @@ public class LoginController {
         session.invalidate();
         return "redirect:/Principal";
     }
->>>>>>> ft-MiguelSantizo2022021
 }

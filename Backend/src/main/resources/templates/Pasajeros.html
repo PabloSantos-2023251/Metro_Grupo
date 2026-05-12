@@ -24,7 +24,7 @@
                style="background: #334155; border: none; border-radius: 12px; padding: 10px 20px;">
                 <i class="bi bi-arrow-left-circle"></i> Dashboard
             </a>
-            <h2 th:text="${pasajeroForm.idPasajero != null} ? 'Modificar Pasajero' : 'Gestión de Pasajeros'" style="margin: 0;"></h2>
+            <h2 th:text="${pasajeroForm.idPasajero != null} ? 'Modificar Pasajero' : 'Gestión de Pasajeros'" style="margin: 0; color: white;"></h2>
         </div>
 
         <div th:if="${nuevoId}" class="alert mb-4 animate__animated animate__fadeIn"
@@ -33,49 +33,49 @@
                 <i class="bi bi-person-check-fill fs-2 me-3"></i>
                 <div>
                     <h5 class="mb-0 fw-bold">¡Registro Exitoso!</h5>
-                    <p class="mb-0">Se ha generado el <strong style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">ID: <span th:text="${nuevoId}"></span></strong> para el pasajero.</p>
+                    <p class="mb-0">Se ha generado el <strong>ID: <span th:text="${nuevoId}"></span></strong> para el pasajero.</p>
                 </div>
             </div>
         </div>
 
-        <hr style="border-color: var(--glass-border); margin-bottom: 30px;">
+        <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 30px;">
 
-        <div class="card p-4 mb-5" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 20px;">
+        <div class="card p-4 mb-5" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(10px);">
             <form th:action="${pasajeroForm.idPasajero != null} ? @{/pasajeros/editar/{id}(id=${pasajeroForm.idPasajero})} : @{/pasajeros/agregar}"
                   th:object="${pasajeroForm}" method="post">
                 <input type="hidden" th:field="*{idPasajero}" />
 
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Nombre Completo</label>
+                        <label class="form-label fw-bold text-white">Nombre Completo</label>
                         <div class="input-group">
-                            <span class="input-group-text" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--text-color);"><i class="bi bi-person"></i></span>
-                            <input type="text" class="form-control" th:field="*{nombrePasajero}" placeholder="Ej: Juan Pérez" required>
+                            <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" th:field="*{nombrePasajero}" placeholder="Ej: Juan Pérez" required>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Correo Electrónico</label>
+                        <label class="form-label fw-bold text-white">Correo Electrónico</label>
                         <div class="input-group">
-                            <span class="input-group-text" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--text-color);"><i class="bi bi-envelope"></i></span>
-                            <input type="email" class="form-control" th:field="*{email}" placeholder="usuario@metro.com" required>
+                            <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control bg-dark text-white border-secondary" th:field="*{email}" placeholder="usuario@metro.com" required>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Contraseña</label>
+                        <label class="form-label fw-bold text-white">Contraseña</label>
                         <div class="input-group">
-                            <span class="input-group-text" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--text-color);"><i class="bi bi-lock"></i></span>
-                            <input type="password" class="form-control" th:field="*{password}" placeholder="••••••••"
+                            <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control bg-dark text-white border-secondary" th:field="*{password}" placeholder="••••••••"
                                    th:required="${pasajeroForm.idPasajero == null}">
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Tipo de Pasajero</label>
+                        <label class="form-label fw-bold text-white">Tipo de Pasajero</label>
                         <div class="input-group">
-                            <span class="input-group-text" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--text-color);"><i class="bi bi-tags"></i></span>
-                            <select class="form-select form-control" th:field="*{tipoPasajero}" required>
+                            <span class="input-group-text bg-dark border-secondary text-white"><i class="bi bi-tags"></i></span>
+                            <select class="form-select bg-dark text-white border-secondary" th:field="*{tipoPasajero}" required>
                                 <option value="">-- Seleccionar --</option>
                                 <option value="General">General</option>
                                 <option value="Estudiante">Estudiante</option>
@@ -86,37 +86,21 @@
                     </div>
 
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-metro-main w-100 py-3 d-inline-flex justify-content-center align-items-center gap-2">
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold d-inline-flex justify-content-center align-items-center gap-2"
+                                style="border-radius: 12px; background: linear-gradient(45deg, #3b82f6, #2563eb);">
                             <i th:class="${pasajeroForm.idPasajero != null} ? 'bi bi-arrow-repeat' : 'bi bi-person-fill-add'"></i>
                             <span th:text="${pasajeroForm.idPasajero != null} ? 'Guardar Cambios' : 'Registrar Pasajero'"></span>
                         </button>
-                        <a th:if="${pasajeroForm.idPasajero != null}" th:href="@{/pasajeros}" class="d-block mt-3 text-center text-decoration-none" style="color: var(--text-soft);">
-                            <i class="bi bi-x-circle"></i> Cancelar edición
-                        </a>
                     </div>
                 </div>
             </form>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <form th:action="@{/pasajeros}" method="get" class="d-flex gap-2">
-                    <input type="number" name="buscarId" class="form-control" placeholder="Buscar por ID..." required>
-                    <button type="submit" class="btn btn-metro-main p-2 px-3">
-                        <i class="bi bi-search"></i>
-                    </button>
-                    <a th:href="@{/pasajeros}" class="btn btn-outline-secondary d-flex align-items-center" style="border-radius: 10px;">
-                        <i class="bi bi-eraser-fill"></i>
-                    </a>
-                </form>
-            </div>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table-metro-style">
-                <thead>
+        <div class="table-responsive mt-4">
+            <table class="table table-dark table-hover" style="background: rgba(0,0,0,0.2); border-radius: 15px; overflow: hidden;">
+                <thead class="table-light">
                 <tr>
-                    <th>ID & ROL</th>
+                    <th>ID & Tipo</th>
                     <th>Nombre Completo</th>
                     <th>Correo Electrónico</th>
                     <th class="text-center">Acciones</th>
@@ -126,19 +110,18 @@
                 <tr th:each="pasajero : ${pasajeros}">
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                                    <span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; font-family: monospace; border: 1px solid var(--glass-border);"
-                                          th:text="${'ID: ' + pasajero.idPasajero}"></span>
-                            <span class="badge" style="background: var(--accent-grad);" th:text="${pasajero.tipo}"></span>
+                            <span class="badge bg-secondary" th:text="${'ID: ' + pasajero.idPasajero}"></span>
+                            <span class="badge bg-info text-dark" th:text="${pasajero.tipo}"></span>
                         </div>
                     </td>
                     <td th:text="${pasajero.nombre}" class="fw-bold"></td>
-                    <td th:text="${pasajero.email}" style="color: var(--text-soft);"></td>
+                    <td th:text="${pasajero.email}"></td>
                     <td class="text-center">
-                        <div class="d-flex justify-content-center gap-2">
-                            <a th:href="@{/pasajeros/editar/{id}(id=${pasajero.idPasajero})}" class="btn btn-sm btn-warning">
+                        <div class="btn-group">
+                            <a th:href="@{/pasajeros/editar/{id}(id=${pasajero.idPasajero})}" class="btn btn-sm btn-outline-warning">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
-                            <a th:href="@{/pasajeros/borrar/{id}(id=${pasajero.idPasajero})}" class="btn btn-sm btn-danger"
+                            <a th:href="@{/pasajeros/borrar/{id}(id=${pasajero.idPasajero})}" class="btn btn-sm btn-outline-danger"
                                onclick="return confirm('¿Eliminar permanentemente?')">
                                 <i class="bi bi-trash3-fill"></i>
                             </a>
