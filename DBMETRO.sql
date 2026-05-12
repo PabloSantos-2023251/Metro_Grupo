@@ -55,6 +55,16 @@ create table horarios (
     foreign key (id_tren) references trenes(id_tren) on delete cascade
 );
 
+create table tickets_soporte (
+    id int AUTO_INCREMENT primary key,
+    nombre_completo varchar(100) not null,
+    email varchar(150) not null,
+    tipo_consulta enum('soporte', 'consulta', 'sugerencia') not null,
+    mensaje varchar(150) not null,
+    estado enum('pendiente', 'en_proceso', 'resuelto') default 'pendiente',
+    fecha_creacion timestamp default current_timestamp
+);
+
 create table mantenimiento (
     id_mantenimiento int primary key auto_increment,
     fecha date,
