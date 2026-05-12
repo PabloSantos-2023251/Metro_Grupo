@@ -6,13 +6,24 @@ const pupils = [
 let passwordVisible = false;
 let passwordHasValue = false;
 const passwordInput = document.getElementById('password');
-const trainNavy = document.getElementById('trainNavy');
-const trainTeal = document.getElementById('trainTeal');
+
+const lookAway = () => {
+    pupils.forEach(p => {
+        if (!p.l || !p.r) return;
+        p.l.style.transform = `translate(calc(-50% - 12px), calc(-50% - 2px))`;
+        p.r.style.transform = `translate(calc(-50% - 12px), calc(-50% - 2px))`;
+    });
+};
 
 document.addEventListener('mousemove', (e) => {
-    if (passwordHasValue && !passwordVisible) return;
+    if (passwordVisible) {
+        lookAway();
+        return;
+    }
+
     pupils.forEach(p => {
         const move = (el, eye, mX, mY, max) => {
+            if (!el || !eye) return;
             const r = eye.getBoundingClientRect();
             const dx = mX - (r.left + r.width/2), dy = mY - (r.top + r.height/2);
             const d = Math.min(Math.hypot(dx, dy), max), a = Math.atan2(dy, dx);
@@ -23,47 +34,30 @@ document.addEventListener('mousemove', (e) => {
     });
 });
 
-passwordInput.addEventListener('input', () => {
-    passwordHasValue = passwordInput.value.length > 0;
-    if (passwordHasValue && !passwordVisible) {
-        document.querySelectorAll('.eye-socket').forEach(e => e.classList.add('blink'));
-        trainNavy.classList.add('shy'); trainTeal.classList.add('shy');
-    } else {
-        document.querySelectorAll('.eye-socket').forEach(e => e.classList.remove('blink'));
-        trainNavy.classList.remove('shy'); trainTeal.classList.remove('shy');
-    }
-});
-
 document.getElementById('togglePw').addEventListener('click', () => {
     passwordVisible = !passwordVisible;
     passwordInput.type = passwordVisible ? 'text' : 'password';
+
     const icon = document.getElementById('eyeIcon');
     icon.innerHTML = passwordVisible
-    ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
-    : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
-    passwordInput.dispatchEvent(new Event('input'));
+        ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
+        : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+
+    if (passwordVisible) {
+        lookAway();
+    }
 });
 
 function autoBlink() {
-    if (!trainNavy.classList.contains('shy')) {
-        document.querySelectorAll('.eye-socket').forEach(e => {
-            e.classList.add('blink-anim');
-            setTimeout(() => e.classList.remove('blink-anim'), 150);
-        });
-    }
+    document.querySelectorAll('.eye-socket').forEach(e => {
+        e.classList.add('blink-anim');
+        setTimeout(() => e.classList.remove('blink-anim'), 150);
+    });
     setTimeout(autoBlink, 3000 + Math.random() * 4000);
 }
 
-function openModal() { document.getElementById('boletoModal').style.display = 'flex'; }
-function closeModal() { document.getElementById('boletoModal').style.display = 'none'; }
-
 window.addEventListener('load', () => {
-    if(trainNavy) trainNavy.classList.add('arrive');
-    setTimeout(() => { if(trainTeal) trainTeal.classList.add('arrive'); }, 300);
+    document.getElementById('trainNavy').classList.add('arrive');
+    setTimeout(() => document.getElementById('trainTeal').classList.add('arrive'), 300);
     autoBlink();
 });
-
-window.onclick = function(event) {
-    const modal = document.getElementById('boletoModal');
-    if (event.target == modal) { closeModal(); }
-};

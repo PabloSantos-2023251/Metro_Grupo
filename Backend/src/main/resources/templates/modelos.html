@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos de Metros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/Principal.css}">
+    <link rel="stylesheet" th:href="@{/css/Modelo.css}">
+</head>
+<body data-theme="dark">
+
+<div id="floating-bg"></div>
+
+<nav class="header-nav">
+    <div class="header-left">
+        <a th:href="@{/Principal}" class="btn-regresar">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </a>
+    </div>
+    <div class="header-actions">
+        <button class="btn-theme" id="themeToggleBtn">
+            🌓 <span>Tema</span>
+        </button>
+    </div>
+</nav>
+
+<header class="hero-section" style="min-height: 45vh;">
+    <div class="hero-overlay"></div>
+    <div class="welcome-card" style="padding: 2.5rem;">
+        <i class="fas fa-train-subway icon-hero" style="font-size: 3rem;"></i>
+        <h2>Nuestra Flota</h2>
+        <p>Catálogo visual de las unidades ferroviarias del sistema.</p>
+    </div>
+</header>
+
+<main class="grid-container">
+    <article class="card metro-card">
+        <img src="https://www.trenyrail.com/wp-content/uploads/2020/10/cq5dam.web_.2000.2000.jpeg" alt="Bombardier Movia">
+        <div class="card-content">
+            <h3>Bombardier Movia (ID: 1)</h3>
+            <p>Tren de alta capacidad con tecnología de conducción automática. Optimizado para líneas de alto tráfico.</p>
+            <p><strong>Capacidad:</strong> 1200 pasajeros</p>
+        </div>
+    </article>
+
+    <article class="card metro-card">
+        <img src="https://www.alstom.com/sites/alstom.com/files/styles/560w/public/2023/01/11/Alstom_Metropolis_Santo_Domingo_0.jpg?itok=t7T1lyyH" alt="Alstom Metropolis">
+        <div class="card-content">
+            <h3>Alstom Metropolis (ID: 2)</h3>
+            <p>Líder global en eficiencia energética. Cuenta con sistemas de frenado regenerativo.</p>
+            <p><strong>Capacidad:</strong> 1500 pasajeros</p>
+        </div>
+    </article>
+
+    <article class="card metro-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Serie_6000.jpg/1280px-Serie_6000.jpg" alt="CAF S-6000">
+        <div class="card-content">
+            <h3>CAF S-6000 (ID: 3)</h3>
+            <p>Unidad versátil de fabricación española con sistemas avanzados de tracción.</p>
+            <p><strong>Capacidad:</strong> 1100 pasajeros</p>
+        </div>
+    </article>
+
+    <article class="card metro-card">
+        <img src="https://assets.new.siemens.com/siemens/assets/api/uuid:7b1292ed-329a-48e0-beb8-61a39e54a96f/operation:download/inspiro-keyvisual-station-highres.jpg" alt="Siemens Inspiro">
+        <div class="card-content">
+            <h3>Siemens Inspiro (ID: 4)</h3>
+            <p>Diseño ultraligero y materiales reciclables. Máximo confort con iluminación LED dinámica.</p>
+            <p><strong>Capacidad:</strong> 1300 pasajeros</p>
+        </div>
+    </article>
+
+    <article class="card metro-card">
+        <img src="https://www.mitsubishicorp.com/jp/en/news/release/images/0000046361_img2.jpg" alt="Mitsubishi Metro">
+        <div class="card-content">
+            <h3>Mitsubishi Corp (ID: 5)</h3>
+            <p>Ingeniería japonesa de alta fiabilidad, famosa por su durabilidad extrema.</p>
+            <p><strong>Capacidad:</strong> 1000 pasajeros</p>
+        </div>
+    </article>
+
+    <article class="card metro-card">
+        <img src="https://railway-news.com/wp-content/uploads/2022/11/638041026073755187-scaled.jpg" alt="CRRC Nanjing">
+        <div class="card-content">
+            <h3>CRRC Nanjing (ID: 10)</h3>
+            <p>El modelo más moderno con pantallas 4K y accesibilidad expandida.</p>
+            <p><strong>Capacidad:</strong> 1600 pasajeros</p>
+        </div>
+    </article>
+</main>
+
+<script>
+    const themeBtn = document.getElementById('themeToggleBtn');
+    themeBtn.addEventListener('click', () => {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        document.body.setAttribute('data-theme', isDark ? '' : 'dark');
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.metro-card').forEach(card => observer.observe(card));
+</script>
+</body>
+</html>
