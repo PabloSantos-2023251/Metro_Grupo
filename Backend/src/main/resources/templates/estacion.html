@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estaciones</title>
+    <link rel="stylesheet" th:href="@{/estacion.css}">
+</head>
+
+<body>
+<div class="container">
+
+    <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary">← Volver</a>
+    <h2>Gestión de Estaciones</h2>
+    <hr>
+
+    <div class="card">
+        <form th:action="@{/estaciones}" method="get" class="buscador">
+            <input type="text" name="buscar" placeholder="Buscar por ID">
+            <button type="submit">Buscar</button>
+            <a th:href="@{/estaciones}">Limpiar</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <form th:action="@{/estaciones/guardar}" th:object="${estacion}" method="post">
+            <div class="row">
+
+                <input type="hidden" th:field="*{idEstacion}">
+
+                <div class="col-md-6">
+                    <label class="form-label">Nombre de Estación</label>
+                    <input type="text" class="form-control"
+                           th:field="*{nombre}"
+                           placeholder="Ej: Estación Central" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Zona</label>
+                    <input type="text" class="form-control"
+                           th:field="*{zona}"
+                           placeholder="Ej: Zona 1">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Línea</label>
+                    <select class="form-control"
+                            th:field="*{idLinea}" required>
+                        <option value="">Seleccione una línea</option>
+                        <option value="1">Línea 1</option>
+                        <option value="2">Línea 2</option>
+                        <option value="3">Línea 3</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">
+                        Guardar Estación
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID Estación</th>
+            <th>Nombre</th>
+            <th>Zona</th>
+            <th>Línea</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="e : ${estaciones}">
+            <td th:text="${e.idEstacion}"></td>
+            <td th:text="${e.nombre}"></td>
+            <td th:text="${e.zona}"></td>
+            <td th:text="${e.idLinea}"></td>
+            <td>
+                <a th:href="@{/estaciones/editar/{id}(id=${e.idEstacion})}"
+                   class="btn btn-warning">Editar</a>
+
+                <a th:href="@{/estaciones/eliminar/{id}(id=${e.idEstacion})}"
+                   class="btn btn-danger"
+                   onclick="return confirm('¿Seguro que quieres eliminar esta estación?')">
+                    Borrar
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

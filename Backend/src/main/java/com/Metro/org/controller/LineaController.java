@@ -3,81 +3,69 @@ package com.Metro.org.controller;
 import com.Metro.org.entity.Linea;
 import com.Metro.org.service.LineaService;
 import jakarta.validation.Valid;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import java.util.HashMap;
-import java.util.Map;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping ("/api/linea")
+@Controller
+@RequestMapping("/linea")
 public class LineaController {
 
-    private final LineaService lienaService;
+    private final LineaService lineaService;
 
-    public LineaController (LineaService lineaService){this.lienaService = lineaService;
-
+    public LineaController(LineaService lineaService){
+        this.lineaService = lineaService;
     }
 
     @GetMapping
-    public List<Linea> getAllLinea(){return lienaService .getAllLinea();
+    public String listar(@RequestParam(required = false) String buscar, Model model){
 
-    }
-
-    @PostMapping
-    public ResponseEntity<Object> createLinea(@Valid @RequestBody Linea linea) {
-        try {
-            Linea createLinea = lienaService.saveLinea(linea);
-            return new ResponseEntity<>(createLinea, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        List<Linea> lineas = lineaService.getAllLinea();
+        if (buscar != null && !buscar.isEmpty()) {
+            lineas = lineas.stream()
+                    .filter(l -> l.getIdLinea() != null &&
+                            l.getIdLinea().toString().contains(buscar))
+                    .collect(Collectors.toList());
         }
+
+        model.addAttribute("lineas", lineas);
+        model.addAttribute("linea", new Linea());
+
+        return "linea";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteLinea (@PathVariable Integer id){
-        try{
-            lienaService.deleteLinea(id);
-            return ResponseEntity.noContent().build();
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    @PostMapping("/guardar")
+    public String guardarLinea(@Valid @ModelAttribute("linea") Linea linea,
+                               BindingResult result,
+                               Model model){
+
+        if(result.hasErrors()){
+            model.addAttribute("lineas", lineaService.getAllLinea());
+            return "linea";
         }
+
+        lineaService.saveLinea(linea);
+        return "redirect:/linea";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Linea> updateLinea(
-            @PathVariable Integer id,
-            @Valid @RequestBody Linea linea) {
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model){
 
-        Linea lineaActualizar = lienaService.updateLinea(id, linea);
-        return ResponseEntity.ok(lineaActualizar);
+        Linea linea = lineaService.getLineaById(id);
+
+        model.addAttribute("lineas", lineaService.getAllLinea());
+        model.addAttribute("linea", linea);
+
+        return "linea";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getLineaId(@PathVariable Integer id){
-        try{
-            Linea linea = lienaService.getLineaById(id);
-            return ResponseEntity.ok(linea);
-        }catch (ObjectNotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        lineaService.deleteLinea(id);
+        return "redirect:/linea";
     }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> manejarErroresValidacion(
-            MethodArgumentNotValidException ex) {
-
-        Map<String, String> errores = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errores.put(error.getField(), error.getDefaultMessage())
-        );
-
-        return ResponseEntity.badRequest().body(errores);
-    }
-
-
 }

@@ -2,81 +2,61 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Estaciones;
 import com.Metro.org.service.EstacionesService;
-import jakarta.validation.Valid;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import java.util.HashMap;
-import java.util.Map;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/estaciones")
+@Controller
+@RequestMapping("/estaciones")
 public class EstacionesController {
 
     private final EstacionesService estacionesService;
 
-    public EstacionesController (EstacionesService estacionesService){this.estacionesService = estacionesService;
-
+    public EstacionesController(EstacionesService estacionesService){
+        this.estacionesService = estacionesService;
     }
 
     @GetMapping
-    public List<Estaciones> getAllEstaciones(){return estacionesService.getAllEstaciones();
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
 
-    }
+        List<Estaciones> estaciones = estacionesService.getAllEstaciones();
 
-    @PostMapping
-    public ResponseEntity<Object> createEstaciones(@Valid @RequestBody Estaciones estaciones){
-        try{
-            Estaciones createEstaciones = estacionesService.saveEstaciones(estaciones);
-            return new ResponseEntity<>(createEstaciones,HttpStatus.CREATED);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+        if (buscar != null && !buscar.isEmpty()) {
+            estaciones = estaciones.stream()
+                    .filter(e -> e.getIdEstacion() != null &&
+                            e.getIdEstacion().toString().contains(buscar))
+                    .collect(Collectors.toList());
         }
+
+        model.addAttribute("estaciones", estaciones);
+        model.addAttribute("estacion", new Estaciones());
+
+        return "estacion";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteEstaciones (@PathVariable Integer id){
-        try{
-            estacionesService.deleteEstaciones(id);
-            return ResponseEntity.noContent().build();
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @PostMapping("/guardar")
+    public String guardarEstacion(@ModelAttribute Estaciones estacion){
+        estacionesService.saveEstaciones(estacion);
+        return "redirect:/estaciones";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Estaciones> updateEstaciones(
-            @PathVariable Integer id,
-            @Valid @RequestBody Estaciones estaciones) {
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model){
 
-        Estaciones estacionesActualizar = estacionesService.updateEstaciones(id, estaciones);
-        return ResponseEntity.ok(estacionesActualizar);
+        Estaciones estacion = estacionesService.getEstacionesById(id);
+
+        model.addAttribute("estaciones", estacionesService.getAllEstaciones());
+        model.addAttribute("estacion", estacion);
+
+        return "estacion";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getEstacionesId(@PathVariable Integer id){
-        try{
-            Estaciones estaciones = estacionesService.getEstacionesById(id);
-            return ResponseEntity.ok(estaciones);
-        }catch (ObjectNotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        estacionesService.deleteEstaciones(id);
+        return "redirect:/estaciones";
     }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> manejarErroresValidacion(
-            MethodArgumentNotValidException ex) {
-
-        Map<String, String> errores = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errores.put(error.getField(), error.getDefaultMessage())
-        );
-
-        return ResponseEntity.badRequest().body(errores);
-    }
-
 }
