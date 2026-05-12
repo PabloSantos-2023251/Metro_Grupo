@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Soporte - Metro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/Principal.css}">
+    <link rel="stylesheet" th:href="@{/css/Modelo.css}">
+    <style>
+        .form-container {
+            max-width: 450px;
+            margin: 40px auto 60px auto;
+            position: relative;
+            z-index: 10;
+            background: var(--bg-card);
+            padding: 2.2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            background: rgba(255,255,255,0.1);
+        }
+        .btn-enviar {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        .btn-enviar:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div id="floating-bg"></div>
+
+<nav class="header-nav">
+    <div class="header-left">
+        <a th:href="@{/Principal}" class="btn-regresar">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </a>
+    </div>
+    <div class="header-actions">
+        <button class="btn-theme" id="themeToggleBtn">
+            🌓 <span>Tema</span>
+        </button>
+    </div>
+</nav>
+
+<header class="hero-section" style="min-height: 35vh;">
+    <div class="hero-overlay"></div>
+    <div class="welcome-card" style="padding: 1.5rem; margin-top: -50px;">
+        <i class="fas fa-headset icon-hero" style="font-size: 2.2rem;"></i>
+        <h2>Centro de Ayuda</h2>
+        <p>Soporte técnico del sistema.</p>
+    </div>
+
+    <div class="divider-shape" style="height: 20px;">
+        <svg viewBox="0 0 1440 20" preserveAspectRatio="none" style="height: 20px;">
+            <path fill="var(--bg-body)" d="M0,10 C480,20 960,0 1440,10 L1440,20 L0,20 Z"></path>
+        </svg>
+    </div>
+</header>
+
+<main class="container">
+    <div class="form-container">
+        <div th:if="${param.exito}" class="alert alert-success" style="background: rgba(40, 167, 69, 0.2); color: #28a745; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center; font-size: 0.9rem;">
+            <i class="fas fa-check-circle"></i> ¡Ticket enviado con éxito!
+        </div>
+
+        <form th:action="@{/guardarTicket}" method="post">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Nombre</label>
+                <input type="text" name="nombreCompleto" class="form-control" placeholder="Tu nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" name="email" class="form-control" placeholder="usuario@metro.com" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Motivo</label>
+                <select name="tipoConsulta" class="form-control">
+                    <option value="soporte">Soporte Técnico</option>
+                    <option value="consulta">Información</option>
+                    <option value="sugerencia">Sugerencia</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-comment-alt"></i> Mensaje</label>
+                <textarea name="mensaje" class="form-control" rows="3" placeholder="¿En qué podemos ayudarte?" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-enviar">
+                <i class="fas fa-paper-plane"></i> Enviar Solicitud
+            </button>
+        </form>
+    </div>
+</main>
+
+<script>
+    const themeBtn = document.getElementById('themeToggleBtn');
+    themeBtn.addEventListener('click', () => {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        document.body.setAttribute('data-theme', isDark ? '' : 'dark');
+    });
+</script>
+</body>
+</html>

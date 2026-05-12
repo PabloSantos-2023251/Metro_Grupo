@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "personal")
 public class Personal {
     @Id
+<<<<<<< HEAD
     @Column(name = "id_personal")
     private Integer id_personal;
 
@@ -17,7 +18,16 @@ public class Personal {
     @Column(nullable = false)
     private String password;
 
+=======
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id_personal;
+
+    private String nombre;
+    private String email;
+    private String password;
+>>>>>>> ft-MiguelSantizo2022021
     private String cargo;
+    private String rol;
 
     @Column(nullable = false)
     private String rol;

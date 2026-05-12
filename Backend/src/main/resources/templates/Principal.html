@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Subterráneo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/Principal.css}">
+</head>
+<body>
+
+<div id="floating-bg"></div>
+
+<nav class="header-nav">
+    <div class="header-left" style="display: flex; align-items: center; gap: 15px;">
+        <img th:src="@{/imagenes/LogoOscuro.png}" id="logo-img" alt="Logo" style="height: 45px;">
+        <div class="brand-text">
+            <h1 class="logo" style="margin: 0; font-size: 1.4rem; line-height: 1;">METRO-SUBTERRÁNEO</h1>
+            <p class="user-info" style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.9;">
+                Bienvenido <strong th:text="${session.nombreUsuario}">Usuario</strong>
+            </p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <button id="themeToggleBtn" class="btn-theme">🌓 <span>Tema</span></button>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="welcome-card">
+        <i class="fas fa-train-subway icon-hero"></i>
+        <h2>Bienvenido al Sistema Central</h2>
+        <p>Gestiona la movilidad urbana con la plataforma más avanzada de transporte ferroviario.</p>
+        <a th:href="@{/login}" class="btn-action">
+            <i class="fas fa-door-open"></i> Entra Al Login
+        </a>
+    </div>
+    <div class="divider-shape">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path fill="var(--bg-body)" d="M0,80 C240,100 480,20 720,60 C960,100 1200,20 1440,80 L1440,100 L0,100 Z"></path>
+        </svg>
+    </div>
+</section>
+
+<main class="dashboard-grid">
+    <article class="metro-card">
+        <i class="fas fa-train"></i>
+        <h3>Nuestra Misión</h3>
+        <p>Brindar un servicio seguro, rápido y eficiente, mejorando la movilidad urbana y la calidad de vida.</p>
+    </article>
+
+    <article class="metro-card" style="cursor: pointer;" th:onclick="|window.location.href='@{/modelos}'|">
+        <i class="fas fa-layer-group"></i>
+        <h3>Modelos de Flota</h3>
+        <p>Explora nuestras unidades: desde los clásicos Alstom hasta los modernos CRRC Nanjing.</p>
+        <a th:href="@{/modelos}" style="text-decoration: none;">
+            <span style="color: var(--primary); font-weight: 800; display: inline-block; margin-top: 10px;">Ver catálogo →</span>
+        </a>
+    </article>
+
+    <article class="metro-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Seguridad</h3>
+        <p>Monitoreo constante y protocolos de respuesta inmediata para la tranquilidad de los pasajeros.</p>
+    </article>
+
+    <article class="metro-card" style="cursor: pointer;" th:onclick="|window.location.href='@{/Soporte}'|">
+        <i class="fas fa-comments"></i>
+        <h3>Atención al Usuario</h3>
+        <p>¿Tienes alguna sugerencia o queja? Déjanos tus comentarios para seguir mejorando nuestro servicio.</p>
+        <span style="color: var(--primary); font-weight: 800; display: inline-block; margin-top: 10px;">Escribir reseña →</span>
+    </article>
+</main>
+
+<script th:inline="javascript">
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const logoImg = document.getElementById('logo-img');
+
+    // Rutas resueltas por Thymeleaf para el JS
+    const logoOscuro = /*[[@{/imagenes/LogoOscuro.png}]]*/ '/imagenes/LogoOscuro.png';
+    const logoClaro = /*[[@{/imagenes/Logo.png}]]*/ '/imagenes/Logo.png';
+
+    const updateLogo = (theme) => {
+        if(logoImg) {
+            logoImg.src = theme === 'dark' ? logoOscuro : logoClaro;
+        }
+    };
+
+    themeBtn.addEventListener('click', () => {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? '' : 'dark';
+        document.body.setAttribute('data-theme', newTheme);
+        updateLogo(newTheme);
+        localStorage.setItem('metro-theme', newTheme);
+    });
+
+    const savedTheme = localStorage.getItem('metro-theme');
+    if(savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        updateLogo('dark');
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.metro-card').forEach(card => observer.observe(card));
+</script>
+</body>
+</html>

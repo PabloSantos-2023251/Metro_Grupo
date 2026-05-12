@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     background-color: #f1f1f0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -118,3 +119,176 @@ hr {
 .col-md-3 { flex: 1 1 22%; }
 .col-md-6 { flex: 1 1 48%; }
 .col-12 { flex: 1 1 100%; }
+=======
+:root {
+    --bg-color: #f1f1f0;
+    --text-color: #0f172a;
+    --text-soft: #64748b;
+    --nav-bg: #0f172a;
+    --accent: #3b82f6;
+    --accent-grad: linear-gradient(135deg, #6366f1, #3b82f6);
+    --glass: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-blur: blur(20px);
+}
+
+[data-theme="dark"] {
+    --text-color: #f8fafc;
+    --text-soft: #94a3b8;
+    --nav-bg: #020617;
+    --glass: rgba(15, 23, 42, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    min-height: 100vh;
+}
+
+.video-bg-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: -100;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.video-bg-wrapper video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.5;
+}
+
+.main-container-glass {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 40px auto;
+    background: var(--glass);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+h1, h2 {
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    background: var(--accent-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.table-metro-style {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 20px;
+    border: 1px solid var(--glass-border);
+}
+
+.table-metro-style thead {
+    background: var(--accent-grad);
+    color: white;
+}
+
+.table-metro-style thead th {
+    padding: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    border: none;
+}
+
+.table-metro-style tbody tr {
+    background-color: transparent;
+    transition: 0.3s;
+}
+
+.table-metro-style tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.table-metro-style tbody td {
+    padding: 16px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-color);
+    backdrop-filter: blur(5px);
+}
+
+.btn-metro-main {
+    background: var(--accent-grad);
+    color: white !important;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: 0.3s;
+    box-shadow: 0 8px 15px rgba(59, 130, 246, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-metro-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(59, 130, 246, 0.4);
+}
+
+.btn-sm {
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 600;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    color: white !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    color: white !important;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--text-color);
+    backdrop-filter: blur(5px);
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    color: var(--text-color);
+    outline: none;
+}
+
+::placeholder {
+    color: var(--text-soft);
+    opacity: 0.7;
+}
+>>>>>>> ft-MiguelSantizo2022021

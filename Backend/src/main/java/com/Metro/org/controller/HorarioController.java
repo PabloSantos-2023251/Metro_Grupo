@@ -2,16 +2,14 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Horario;
 import com.Metro.org.service.HorarioService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/horarios")
-@Validated
+@Controller
+@RequestMapping("/horarios")
 public class HorarioController {
 
     private final HorarioService horarioService;
@@ -21,55 +19,55 @@ public class HorarioController {
     }
 
     @GetMapping
-    public List<Horario> getAll() {
-        return horarioService.getAllHorarios();
+    public String listar(@RequestParam(name = "buscarTren", required = false) Integer buscarTren, Model model) {
+        List<Horario> lista = (buscarTren != null) ? horarioService.getHorariosByTren(buscarTren) : horarioService.getAllHorarios();
+        model.addAttribute("horarios", lista);
+        model.addAttribute("horarioObj", new Horario());
+        return "Horario";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getById(@PathVariable Integer id) {
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute Horario horario, RedirectAttributes redirectAttrs) {
+        try {
+            if (horario.getIdHorario() != null && horario.getIdHorario() > 0) {
+                horarioService.updateHorario(horario.getIdHorario(), horario);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Horario actualizado con éxito.");
+            } else {
+                horarioService.saveHorario(horario);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Nuevo horario programado correctamente.");
+            }
+        } catch (RuntimeException e) {
+            redirectAttrs.addFlashAttribute("mensajeError", e.getMessage());
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "Error técnico: " + e.getMessage());
+        }
+        return "redirect:/horarios";
+    }
+
+    @GetMapping("/editar/{id}")
+    public String precargarEdicion(@PathVariable Integer id, Model model) {
         Horario horario = horarioService.getHorarioById(id);
-        if (horario == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Error: El horario con ID " + id + " no existe en la base de datos.");
-        }
-        return ResponseEntity.ok(horario);
+        if (horario == null) return "redirect:/horarios";
+
+        model.addAttribute("horarios", horarioService.getAllHorarios());
+        model.addAttribute("horarioObj", horario);
+        model.addAttribute("editando", true);
+        return "Horario";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Horario horario) {
-        if (horario.getHoraSalida() == null || horario.getHoraLlegada() == null) {
-            return ResponseEntity.badRequest().body("Error: Los campos de hora salida y llegada son obligatorios.");
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
+        if(horarioService.deleteHorario(id)) {
+            redirectAttrs.addFlashAttribute("mensajeExito", "Horario eliminado.");
+        } else {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se pudo eliminar.");
         }
-
-        if (horario.getIdTren() == null || horario.getIdTren() <= 0) {
-            return ResponseEntity.badRequest().body("Error: El ID del tren proporcionado no es válido o no existe.");
-        }
-
-        Horario nuevo = horarioService.saveHorario(horario);
-        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+        return "redirect:/horarios";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable Integer id, @RequestBody Horario horario) {
-        if (horario.getIdTren() == null || horario.getIdTren() <= 0) {
-            return ResponseEntity.badRequest().body("Error: Debe proporcionar un ID de tren válido para actualizar.");
-        }
-
-        Horario updated = horarioService.updateHorario(id, horario);
-        if (updated == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Error: No se pudo actualizar. El horario con ID " + id + " no existe.");
-        }
-        return ResponseEntity.ok(updated);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
-        if (horarioService.getHorarioById(id) == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Error: No se puede eliminar. El horario con ID " + id + " no existe.");
-        }
-        horarioService.deleteHorario(id);
-        return ResponseEntity.ok("Horario eliminado correctamente");
+    @GetMapping("/api/listar")
+    @ResponseBody
+    public List<Horario> getAllApi() {
+        return horarioService.getAllHorarios();
     }
 }

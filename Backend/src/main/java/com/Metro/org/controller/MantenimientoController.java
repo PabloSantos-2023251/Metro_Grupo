@@ -2,16 +2,15 @@ package com.Metro.org.controller;
 
 import com.Metro.org.entity.Mantenimiento;
 import com.Metro.org.service.MantenimientoService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/mantenimientos")
-@Validated
+@Controller
+@RequestMapping("/mantenimientos")
 public class MantenimientoController {
 
     private final MantenimientoService mantenimientoService;
@@ -21,51 +20,57 @@ public class MantenimientoController {
     }
 
     @GetMapping
-    public List<Mantenimiento> getAll() {
-        return mantenimientoService.getAllMantenimientos();
+    public String listar(@RequestParam(name = "buscarTren", required = false) Integer buscarTren, Model model) {
+        List<Mantenimiento> lista = (buscarTren != null) ? mantenimientoService.getMantenimientosByTren(buscarTren) : mantenimientoService.getAllMantenimientos();
+        model.addAttribute("mantenimientos", lista);
+        model.addAttribute("mantenimientoObj", new Mantenimiento());
+        return "Mantenimiento";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getById(@PathVariable Integer id) {
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute Mantenimiento mantenimiento, RedirectAttributes redirectAttrs) {
+        try {
+            if (mantenimiento.getIdMantenimiento() != null && mantenimiento.getIdMantenimiento() > 0) {
+                mantenimientoService.updateMantenimiento(mantenimiento.getIdMantenimiento(), mantenimiento);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Registro actualizado correctamente.");
+            } else {
+                mantenimientoService.saveMantenimiento(mantenimiento);
+                redirectAttrs.addFlashAttribute("mensajeExito", "Mantenimiento guardado con éxito.");
+            }
+        } catch (RuntimeException e) {
+            redirectAttrs.addFlashAttribute("mensajeError", e.getMessage());
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "Error inesperado: " + e.getMessage());
+        }
+        return "redirect:/mantenimientos";
+    }
+
+    @GetMapping("/editar/{id}")
+    public String precargarEdicion(@PathVariable Integer id, Model model) {
         Mantenimiento mantenimiento = mantenimientoService.getMantenimientoById(id);
         if (mantenimiento == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Error: No se encontró registro de mantenimiento con el ID " + id);
+            return "redirect:/mantenimientos";
         }
-        return ResponseEntity.ok(mantenimiento);
+        model.addAttribute("mantenimientos", mantenimientoService.getAllMantenimientos());
+        model.addAttribute("mantenimientoObj", mantenimiento);
+        model.addAttribute("editando", true);
+        return "Mantenimiento";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Mantenimiento mantenimiento) {
-        if (mantenimiento.getDescripcion() == null || mantenimiento.getDescripcion().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Error: La descripción del mantenimiento es obligatoria y no puede estar vacía.");
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
+        try {
+            mantenimientoService.deleteMantenimiento(id);
+            redirectAttrs.addFlashAttribute("mensajeExito", "Mantenimiento eliminado.");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se pudo eliminar el registro.");
         }
-
-        if (mantenimiento.getIdTren() == null || mantenimiento.getIdTren() <= 0) {
-            return ResponseEntity.badRequest().body("Error: El ID del tren debe ser un número positivo y existir en el sistema.");
-        }
-
-        Mantenimiento nuevo = mantenimientoService.saveMantenimiento(mantenimiento);
-        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+        return "redirect:/mantenimientos";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable Integer id, @RequestBody Mantenimiento mantenimiento) {
-        Mantenimiento actualizado = mantenimientoService.updateMantenimiento(id, mantenimiento);
-        if (actualizado == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Error: No se puede editar. El registro de mantenimiento con ID " + id + " no existe.");
-        }
-        return ResponseEntity.ok(actualizado);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
-        if (mantenimientoService.getMantenimientoById(id) == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Error: No se puede eliminar. No existe mantenimiento con el ID " + id);
-        }
-        mantenimientoService.deleteMantenimiento(id);
-        return ResponseEntity.ok("Mantenimiento eliminado exitosamente");
+    @GetMapping("/api/listar")
+    @ResponseBody
+    public List<Mantenimiento> getAllApi() {
+        return mantenimientoService.getAllMantenimientos();
     }
 }

@@ -8,5 +8,6 @@ public interface HorarioService {
     Horario getHorarioById(Integer id);
     Horario saveHorario(Horario horario);
     Horario updateHorario(Integer id, Horario horario);
-    boolean deleteHorario(Integer id); // Cambiado a boolean
+    boolean deleteHorario(Integer id);
+    List<Horario> getHorariosByTren(Integer idTren);
 }
