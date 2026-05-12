@@ -21,8 +21,23 @@ public class LoginController {
         this.pasajeroService = pasajeroService;
     }
 
-    @GetMapping({"/", "/login"})
+    @GetMapping({"/", "/Principal"})
     public String index() {
+        return "Principal";
+    }
+
+    @GetMapping("/modelos")
+    public String mostrarModelos() {
+        return "modelos";
+    }
+
+    @GetMapping("/Soporte")
+    public String mostrarSoporte() {
+        return "Soporte";
+    }
+
+    @GetMapping("/login")
+    public String mostrarLogin() {
         return "login";
     }
 
@@ -56,6 +71,18 @@ public class LoginController {
         return "login";
     }
 
+    @GetMapping("/PaginaPrincipal")
+    public String mostrarPaginaPrincipal(HttpSession session, Model model) {
+        if (session.getAttribute("nombreUsuario") == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
+        model.addAttribute("rol", session.getAttribute("rolUsuario"));
+        model.addAttribute("puesto", session.getAttribute("puestoUsuario"));
+        return "PaginaPrincipal";
+    }
+
     @GetMapping("/registro")
     public String mostrarRegistro(Model model) {
         model.addAttribute("pasajero", new Pasajero());
@@ -68,18 +95,9 @@ public class LoginController {
         return "redirect:/login?success";
     }
 
-    @GetMapping("/PaginaPrincipal")
-    public String mostrarPaginaPrincipal(HttpSession session, Model model) {
-        if (session.getAttribute("nombreUsuario") == null) return "redirect:/login";
-        model.addAttribute("nombre", session.getAttribute("nombreUsuario"));
-        model.addAttribute("rol", session.getAttribute("rolUsuario"));
-        model.addAttribute("puesto", session.getAttribute("puestoUsuario"));
-        return "PaginaPrincipal";
-    }
-
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/Principal";
     }
 }

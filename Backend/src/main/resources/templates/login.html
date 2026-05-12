@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/LoginStyle.css}">
 </head>
 <body>
@@ -60,8 +61,12 @@
 
         <div class="scene-footer">Sistema de Gestión de Transporte Subterráneo</div>
     </div>
-
     <div class="form-panel">
+        <a th:href="@{/Principal}" class="btn-back-home">
+            <i class="bi bi-house-door"></i>
+            <span>Inicio</span>
+        </a>
+
         <div class="form-inner">
             <div class="brand-mark">
                 <div class="brand-icon">
@@ -74,10 +79,6 @@
 
             <h2 class="form-title">Acceso Operadores</h2>
             <p class="form-subtitle">Ingresa tus credenciales para continuar</p>
-
-            <p th:if="${param.boletoListo}" style="color: #ffca28; background: rgba(255,202,40,0.1); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ffca28; margin-bottom: 15px; font-size: 0.9rem;">
-                🎫 ¡Boleto emitido! Puedes recogerlo en taquilla.
-            </p>
 
             <p th:if="${error}" style="color: #ff5252; background: rgba(255,82,82,0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; text-align: center; border: 1px solid #ff5252;" th:text="${error}"></p>
 
@@ -97,11 +98,13 @@
 
                 <div class="field-group">
                     <label class="field-label">Contraseña</label>
+
                     <div class="input-wrap">
                         <svg class="input-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
                             <rect x="3" y="7" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
                             <path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.5"/>
                         </svg>
+
                         <input type="password" name="password" id="password" class="field-input" placeholder="••••••••" required>
                         <button type="button" class="toggle-pw" id="togglePw">
                             <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -114,43 +117,16 @@
                 <button type="submit" class="submit-btn">INGRESAR AL SISTEMA</button>
             </form>
 
-            <div class="register-section" style="margin-top: 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.2rem;">
-                <p style="color: #64b5f6; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8;">¿Eres nuevo operador?</p>
-                <a th:href="@{/registro}" style="color: #4db6ac; text-decoration: none; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;">SOLICITAR REGISTRO</a>
+            <div class="register-section" style="margin-top: 1.5rem; text-align: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 1.2rem;">
+                <p style="color: var(--text-dim); font-size: 0.8rem; margin-bottom: 0.4rem;">¿Eres nuevo operador?</p>
+                <a th:href="@{/registro}" style="color: var(--teal); text-decoration: none; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;">SOLICITAR REGISTRO</a>
             </div>
 
-            <div id="boletoModal" class="modal-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center;">
-                <div class="form-panel" style="max-width: 400px; border: 2px solid #ffca28;">
-                    <h2 class="form-title" style="color: #ffca28;">Emisión de Boleto</h2>
-                    <p class="form-subtitle">Ingresa tus datos para generar el ticket</p>
-
-                    <form th:action="@{/pedir-boleto}" method="post" class="login-form">
-                        <div class="field-group">
-                            <label class="field-label">Nombre completo</label>
-                            <input type="text" name="nombrePasajero" class="field-input" required>
-                        </div>
-                        <div class="field-group">
-                            <label class="field-label">Tipo de Pasajero</label>
-                            <select name="tipoPasajero" class="field-input" style="background: #091d36; color: white;">
-                                <option value="Regular">Regular</option>
-                                <option value="Estudiante">Estudiante</option>
-                                <option value="Tercera Edad">Tercera Edad</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="submit-btn" style="background: #ffca28; color: #000;">GENERAR BOLETO</button>
-                        <button type="button" onclick="closeModal()" style="background: transparent; color: white; border: none; margin-top: 10px; cursor: pointer; width: 100%;">Cancelar</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="form-note-box" style="margin-top: 1.5rem;">
+            <div class="form-note-box" style="margin-top: 2rem;">
                 <svg class="note-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                 </svg>
-                <p class="note-text">
-                    Acceso restringido a personal autorizado del Metro.
-                    <br>Se registrará la dirección IP de cada intento.
-                </p>
+                <p class="note-text">Acceso restringido a personal autorizado del Metro. Se registrará la IP del intento.</p>
             </div>
         </div>
     </div>

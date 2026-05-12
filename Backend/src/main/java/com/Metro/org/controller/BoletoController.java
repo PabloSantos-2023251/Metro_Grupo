@@ -4,7 +4,11 @@ import com.Metro.org.entity.Boleto;
 import com.Metro.org.entity.Pasajero;
 import com.Metro.org.service.BoletoService;
 import com.Metro.org.service.PasajeroService;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Collections;
+import java.time.LocalDate;
+import java.math.BigDecimal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,61 +25,87 @@ public class BoletoController {
         this.pasajeroService = pasajeroService;
     }
 
+    private boolean esAdministrador(HttpSession session) {
+        Object rol = session.getAttribute("rolUsuario");
+        if (rol == null) return false;
+        return rol.toString().equalsIgnoreCase("administrador");
+    }
+
+    private Integer obtenerIdSesion(HttpSession session) {
+        String[] nombresPosibles = {"idUsuario", "idPasajero", "usuarioId", "id"};
+        for (String nombre : nombresPosibles) {
+            Object id = session.getAttribute(nombre);
+            if (id != null) {
+                try {
+                    return Integer.parseInt(id.toString());
+                } catch (Exception e) {
+                    continue;
+                }
+            }
+        }
+        return null;
+    }
+
     @GetMapping
-    public String listar(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model) {
-        List<Boleto> lista = (buscarId != null)
-                ? boletoService.getBoletosByPasajero(buscarId)
-                : boletoService.getAllBoletos();
+    public String listar(HttpSession session, Model model) {
+        Integer idUsuario = obtenerIdSesion(session);
+        List<Boleto> lista;
+
+        if (esAdministrador(session)) {
+            lista = boletoService.getAllBoletos();
+        } else {
+            lista = (idUsuario != null) ? boletoService.getBoletosByPasajero(idUsuario) : Collections.emptyList();
+        }
+
         model.addAttribute("boletos", lista);
         model.addAttribute("boletoForm", new Boleto());
         return "Boletos";
     }
 
-    @GetMapping("/editar/{id}")
-    public String mostrarFormEditar(@PathVariable Integer id, Model model) {
-        Boleto boleto = boletoService.getBoletoById(id);
-        List<Boleto> lista = boletoService.getAllBoletos();
-        model.addAttribute("boletoForm", boleto);
-        model.addAttribute("boletos", lista);
-        return "Boletos";
-    }
-
     @PostMapping("/agregar")
-    public String agregar(@ModelAttribute("boletoForm") Boleto boleto,
-                          @RequestParam("idPasajero") Integer idPasajero,
-                          Model model) {
+    public String agregar(@RequestParam(value = "idPasajero", required = false) Integer idPasajeroForm,
+                          HttpSession session, Model model) {
         try {
-            Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
+            Integer idFinal;
+            if (esAdministrador(session)) {
+                idFinal = idPasajeroForm;
+            } else {
+                idFinal = obtenerIdSesion(session);
+            }
+
+            if (idFinal == null) {
+                throw new RuntimeException("Error: No se pudo recuperar tu ID de usuario.");
+            }
+
+            Pasajero pasajero = pasajeroService.getPasajeroById(idFinal);
+            if (pasajero == null) {
+                throw new RuntimeException("El pasajero con ID " + idFinal + " no existe.");
+            }
+
+            Boleto boleto = new Boleto();
             boleto.setPasajero(pasajero);
+            boleto.setFecha(LocalDate.now());
+
+            String tipo = (pasajero.getTipo() != null) ? pasajero.getTipo() : "General";
+            if (tipo.equalsIgnoreCase("Adulto Mayor") || tipo.equalsIgnoreCase("Discapacitado")) {
+                boleto.setPrecio(BigDecimal.ZERO);
+            } else {
+                boleto.setPrecio(new BigDecimal("10.00"));
+            }
+
             boletoService.saveBoleto(boleto);
             return "redirect:/boletos";
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             model.addAttribute("errorBoleto", e.getMessage());
-            model.addAttribute("boletos", boletoService.getAllBoletos());
-            return "Boletos";
-        }
-    }
-
-    @PostMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id,
-                         @ModelAttribute("boletoForm") Boleto boleto,
-                         @RequestParam("idPasajero") Integer idPasajero,
-                         Model model) {
-        try {
-            Pasajero pasajero = pasajeroService.getPasajeroById(idPasajero);
-            boleto.setPasajero(pasajero);
-            boletoService.updateBoleto(id, boleto);
-            return "redirect:/boletos";
-        } catch (RuntimeException e) {
-            model.addAttribute("errorBoleto", e.getMessage());
-            model.addAttribute("boletos", boletoService.getAllBoletos());
-            return "Boletos";
+            return listar(session, model);
         }
     }
 
     @GetMapping("/borrar/{id}")
-    public String borrar(@PathVariable Integer id) {
-        boletoService.deleteBoleto(id);
+    public String borrar(@PathVariable Integer id, HttpSession session) {
+        if (esAdministrador(session)) {
+            boletoService.deleteBoleto(id);
+        }
         return "redirect:/boletos";
     }
 }

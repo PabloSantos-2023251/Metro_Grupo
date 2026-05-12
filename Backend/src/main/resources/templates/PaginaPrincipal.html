@@ -101,6 +101,17 @@
         <p>Manejo de pasajeros y gestión de viajes.</p>
         <a href="/pasajeros" class="btn-action">Ver pasajeros</a>
     </article>
+
+    <article class="metro-card" th:if="${#strings.equals(session.rolUsuario, 'administrador') or
+                                   #strings.equals(session.puestoUsuario, 'Supervisor') or
+                                   #strings.equals(session.puestoUsuario, 'Mantenimiento') or
+                                   #strings.equals(session.puestoUsuario, 'Atencion Cliente')}">
+        <i class="bi bi-chat-left-text"></i>
+        <h3>Comentarios</h3>
+        <p>Revisión de sugerencias y comentarios del sistema.</p>
+        <a th:href="@{/ComentarioAdmin/admin}" class="btn-action">Ver comentarios</a>
+    </article>
+
 </main>
 
 <script th:src="@{/js/HomeAction.js}"></script>
