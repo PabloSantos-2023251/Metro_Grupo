@@ -21,9 +21,9 @@ public class LoginController {
         this.pasajeroService = pasajeroService;
     }
 
-    @GetMapping({"/", "/Principal"})
+    @GetMapping({"/", "/index"})
     public String index() {
-        return "Principal";
+        return "index";
     }
 
     @GetMapping("/modelos")
