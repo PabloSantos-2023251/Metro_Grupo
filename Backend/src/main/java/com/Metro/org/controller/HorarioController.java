@@ -18,11 +18,13 @@ public class HorarioController {
         this.horarioService = horarioService;
     }
 
-    @GetMapping
+    @GetMapping({"", "/"})
     public String listar(@RequestParam(name = "buscarTren", required = false) Integer buscarTren, Model model) {
         List<Horario> lista = (buscarTren != null) ? horarioService.getHorariosByTren(buscarTren) : horarioService.getAllHorarios();
         model.addAttribute("horarios", lista);
-        model.addAttribute("horarioObj", new Horario());
+        if (!model.containsAttribute("horarioObj")) {
+            model.addAttribute("horarioObj", new Horario());
+        }
         return "Horario";
     }
 
@@ -31,43 +33,31 @@ public class HorarioController {
         try {
             if (horario.getIdHorario() != null && horario.getIdHorario() > 0) {
                 horarioService.updateHorario(horario.getIdHorario(), horario);
-                redirectAttrs.addFlashAttribute("mensajeExito", "Horario actualizado con éxito.");
+                redirectAttrs.addFlashAttribute("mensajeExito", "Horario actualizado.");
             } else {
                 horarioService.saveHorario(horario);
-                redirectAttrs.addFlashAttribute("mensajeExito", "Nuevo horario programado correctamente.");
+                redirectAttrs.addFlashAttribute("mensajeExito", "Horario programado.");
             }
-        } catch (RuntimeException e) {
-            redirectAttrs.addFlashAttribute("mensajeError", e.getMessage());
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("mensajeError", "Error técnico: " + e.getMessage());
+            redirectAttrs.addFlashAttribute("mensajeError", "Error: " + e.getMessage());
         }
-        return "redirect:/horarios";
+        return "redirect:/horarios/";
     }
 
     @GetMapping("/editar/{id}")
-    public String precargarEdicion(@PathVariable Integer id, Model model) {
+    public String precargarEdicion(@PathVariable Integer id, RedirectAttributes ra) {
         Horario horario = horarioService.getHorarioById(id);
-        if (horario == null) return "redirect:/horarios";
-
-        model.addAttribute("horarios", horarioService.getAllHorarios());
-        model.addAttribute("horarioObj", horario);
-        model.addAttribute("editando", true);
-        return "Horario";
+        if (horario != null) {
+            ra.addFlashAttribute("horarioObj", horario);
+            ra.addFlashAttribute("editando", true);
+        }
+        return "redirect:/horarios/";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
-        if(horarioService.deleteHorario(id)) {
-            redirectAttrs.addFlashAttribute("mensajeExito", "Horario eliminado.");
-        } else {
-            redirectAttrs.addFlashAttribute("mensajeError", "No se pudo eliminar.");
-        }
-        return "redirect:/horarios";
-    }
-
-    @GetMapping("/api/listar")
-    @ResponseBody
-    public List<Horario> getAllApi() {
-        return horarioService.getAllHorarios();
+        horarioService.deleteHorario(id);
+        redirectAttrs.addFlashAttribute("mensajeExito", "Horario eliminado.");
+        return "redirect:/horarios/";
     }
 }

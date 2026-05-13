@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 
 @Controller
@@ -19,56 +18,52 @@ public class PasajeroController {
         this.pasajeroService = pasajeroService;
     }
 
-    @GetMapping
+    @GetMapping({"", "/"})
     public String listar(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model) {
         List<Pasajero> lista;
         if (buscarId != null) {
             try {
                 lista = List.of(pasajeroService.getPasajeroById(buscarId));
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 lista = List.of();
-                model.addAttribute("mensajeVacio", "No se encontró ningún pasajero con ID: " + buscarId);
+                model.addAttribute("mensajeError", "No se encontró el ID: " + buscarId);
             }
         } else {
             lista = pasajeroService.getAllPasajeros();
         }
 
         model.addAttribute("pasajeros", lista);
-
-        // Si no viene de un error de validación, creamos un objeto nuevo para el formulario
         if (!model.containsAttribute("pasajeroForm")) {
             model.addAttribute("pasajeroForm", new Pasajero());
         }
         return "Pasajeros";
     }
 
-    @PostMapping("/agregar")
-    public String agregar(@ModelAttribute("pasajeroForm") Pasajero pasajero, RedirectAttributes redirectAttributes) {
-        if (pasajero.getRol() == null) {
-            pasajero.setRol("pasajero");
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute("pasajeroForm") Pasajero pasajero, RedirectAttributes ra) {
+        if (pasajero.getRol() == null) pasajero.setRol("pasajero");
+
+        if (pasajero.getIdPasajero() != null) {
+            pasajeroService.updatePasajero(pasajero.getIdPasajero(), pasajero);
+            ra.addFlashAttribute("mensajeExito", "Pasajero actualizado.");
+        } else {
+            Pasajero guardado = pasajeroService.savePasajero(pasajero);
+            ra.addFlashAttribute("nuevoId", guardado.getIdPasajero());
         }
-        Pasajero guardado = pasajeroService.savePasajero(pasajero);
-        redirectAttributes.addFlashAttribute("nuevoId", guardado.getIdPasajero());
-        return "redirect:/pasajeros";
+        return "redirect:/pasajeros/";
     }
 
     @GetMapping("/editar/{id}")
-    public String editarForm(@PathVariable Integer id, Model model) {
+    public String editar(@PathVariable Integer id, RedirectAttributes ra) {
         Pasajero pasajero = pasajeroService.getPasajeroById(id);
-        model.addAttribute("pasajeros", pasajeroService.getAllPasajeros());
-        model.addAttribute("pasajeroForm", pasajero);
-        return "Pasajeros";
-    }
-
-    @PostMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, @ModelAttribute("pasajeroForm") Pasajero pasajero) {
-        pasajeroService.updatePasajero(id, pasajero);
-        return "redirect:/pasajeros";
+        ra.addFlashAttribute("pasajeroForm", pasajero);
+        return "redirect:/pasajeros/";
     }
 
     @GetMapping("/borrar/{id}")
-    public String borrar(@PathVariable Integer id) {
+    public String borrar(@PathVariable Integer id, RedirectAttributes ra) {
         pasajeroService.deletePasajero(id);
-        return "redirect:/pasajeros";
+        ra.addFlashAttribute("mensajeExito", "Pasajero eliminado.");
+        return "redirect:/pasajeros/";
     }
 }

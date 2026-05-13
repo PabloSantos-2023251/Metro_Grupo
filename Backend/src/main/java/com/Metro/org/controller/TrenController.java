@@ -5,7 +5,7 @@ import com.Metro.org.service.TrenService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
@@ -18,46 +18,41 @@ public class TrenController {
         this.trenService = trenService;
     }
 
-    @GetMapping
-    public String verPagina(@RequestParam(name = "buscarId", required = false) Integer buscarId,
-                            Model model){
-
+    @GetMapping({"", "/"})
+    public String verPagina(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model){
         List<Trenes> lista;
-
         if (buscarId != null) {
             Trenes tren = trenService.getTrenById(buscarId);
-
-            if (tren != null) {
-                lista = List.of(tren);
-            } else {
-                lista = List.of();
-            }
+            lista = (tren != null) ? List.of(tren) : List.of();
         } else {
             lista = trenService.getAllTren();
         }
 
         model.addAttribute("trenes", lista);
-        model.addAttribute("tren", new Trenes());
-
+        if (!model.containsAttribute("tren")) {
+            model.addAttribute("tren", new Trenes());
+        }
         return "Trenes";
     }
 
     @PostMapping("/guardar")
-    public String guardarTren(@ModelAttribute("tren") Trenes tren){
+    public String guardarTren(@ModelAttribute("tren") Trenes tren, RedirectAttributes ra){
         trenService.saveTren(tren);
-        return "redirect:/trenes";
+        ra.addFlashAttribute("mensajeExito", "Tren guardado correctamente.");
+        return "redirect:/trenes/";
     }
 
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model){
-        model.addAttribute("tren", trenService.getTrenById(id));
-        model.addAttribute("trenes", trenService.getAllTren());
-        return "Trenes";
+    public String editar(@PathVariable Integer id, RedirectAttributes ra){
+        Trenes tren = trenService.getTrenById(id);
+        ra.addFlashAttribute("tren", tren);
+        return "redirect:/trenes/";
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id){
+    public String eliminar(@PathVariable Integer id, RedirectAttributes ra){
         trenService.deleteTren(id);
-        return "redirect:/trenes";
+        ra.addFlashAttribute("mensajeExito", "Tren eliminado.");
+        return "redirect:/trenes/";
     }
 }

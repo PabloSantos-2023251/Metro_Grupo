@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
@@ -19,52 +19,36 @@ public class ConductorController {
         this.conductorService = conductorService;
     }
 
-    @GetMapping
-    public String verPagina(@RequestParam(name = "buscarId", required = false) Integer buscarId,
-                            Model model){
-
-        List<Conductores> lista;
-
-        if (buscarId != null) {
-            Conductores conductor = conductorService.getConductoresById(buscarId);
-
-            if (conductor != null) {
-                lista = List.of(conductor);
-            } else {
-                lista = List.of();
-            }
-        } else {
-            lista = conductorService.getAllConductores();
-        }
+    @GetMapping({"", "/"})
+    public String verPagina(@RequestParam(name = "buscarId", required = false) Integer buscarId, Model model){
+        List<Conductores> lista = (buscarId != null) ?
+                List.of(conductorService.getConductoresById(buscarId)) : conductorService.getAllConductores();
 
         model.addAttribute("conductores", lista);
-        model.addAttribute("conductor", new Conductores());
-
+        if (!model.containsAttribute("conductor")) {
+            model.addAttribute("conductor", new Conductores());
+        }
         return "Conductores";
     }
 
     @PostMapping("/guardar")
-    public String guardarConductor(@Valid @ModelAttribute("conductor") Conductores conductor){
+    public String guardarConductor(@Valid @ModelAttribute("conductor") Conductores conductor, RedirectAttributes ra){
         conductorService.saveConductores(conductor);
-        return "redirect:/conductores";
-    }
-
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id){
-        conductorService.deleteConductores(id);
-        return "redirect:/conductores";
+        ra.addFlashAttribute("mensajeExito", "Conductor actualizado/guardado.");
+        return "redirect:/conductores/";
     }
 
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model){
-
+    public String editar(@PathVariable Integer id, RedirectAttributes ra){
         Conductores conductor = conductorService.getConductoresById(id);
+        ra.addFlashAttribute("conductor", conductor);
+        return "redirect:/conductores/";
+    }
 
-        model.addAttribute("conductor", conductor);
-
-        List<Conductores> lista = conductorService.getAllConductores();
-        model.addAttribute("conductores", lista);
-
-        return "Conductores";
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id, RedirectAttributes ra){
+        conductorService.deleteConductores(id);
+        ra.addFlashAttribute("mensajeExito", "Conductor eliminado.");
+        return "redirect:/conductores/";
     }
 }

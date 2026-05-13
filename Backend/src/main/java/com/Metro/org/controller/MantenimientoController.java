@@ -19,11 +19,18 @@ public class MantenimientoController {
         this.mantenimientoService = mantenimientoService;
     }
 
-    @GetMapping
+    @GetMapping({"", "/"})
     public String listar(@RequestParam(name = "buscarTren", required = false) Integer buscarTren, Model model) {
-        List<Mantenimiento> lista = (buscarTren != null) ? mantenimientoService.getMantenimientosByTren(buscarTren) : mantenimientoService.getAllMantenimientos();
+        List<Mantenimiento> lista = (buscarTren != null) ?
+                mantenimientoService.getMantenimientosByTren(buscarTren) :
+                mantenimientoService.getAllMantenimientos();
+
         model.addAttribute("mantenimientos", lista);
-        model.addAttribute("mantenimientoObj", new Mantenimiento());
+
+        if (!model.containsAttribute("mantenimientoObj")) {
+            model.addAttribute("mantenimientoObj", new Mantenimiento());
+        }
+
         return "Mantenimiento";
     }
 
@@ -37,24 +44,22 @@ public class MantenimientoController {
                 mantenimientoService.saveMantenimiento(mantenimiento);
                 redirectAttrs.addFlashAttribute("mensajeExito", "Mantenimiento guardado con éxito.");
             }
-        } catch (RuntimeException e) {
-            redirectAttrs.addFlashAttribute("mensajeError", e.getMessage());
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("mensajeError", "Error inesperado: " + e.getMessage());
+            redirectAttrs.addFlashAttribute("mensajeError", "Error: " + e.getMessage());
         }
-        return "redirect:/mantenimientos";
+        return "redirect:/mantenimientos/";
     }
 
     @GetMapping("/editar/{id}")
-    public String precargarEdicion(@PathVariable Integer id, Model model) {
+    public String precargarEdicion(@PathVariable Integer id, RedirectAttributes ra) {
         Mantenimiento mantenimiento = mantenimientoService.getMantenimientoById(id);
         if (mantenimiento == null) {
-            return "redirect:/mantenimientos";
+            return "redirect:/mantenimientos/";
         }
-        model.addAttribute("mantenimientos", mantenimientoService.getAllMantenimientos());
-        model.addAttribute("mantenimientoObj", mantenimiento);
-        model.addAttribute("editando", true);
-        return "Mantenimiento";
+
+        ra.addFlashAttribute("mantenimientoObj", mantenimiento);
+        ra.addFlashAttribute("editando", true);
+        return "redirect:/mantenimientos/";
     }
 
     @GetMapping("/eliminar/{id}")
@@ -65,12 +70,6 @@ public class MantenimientoController {
         } catch (Exception e) {
             redirectAttrs.addFlashAttribute("mensajeError", "No se pudo eliminar el registro.");
         }
-        return "redirect:/mantenimientos";
-    }
-
-    @GetMapping("/api/listar")
-    @ResponseBody
-    public List<Mantenimiento> getAllApi() {
-        return mantenimientoService.getAllMantenimientos();
+        return "redirect:/mantenimientos/";
     }
 }
