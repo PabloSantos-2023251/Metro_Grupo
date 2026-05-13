@@ -21,8 +21,8 @@ create table personal (
     nombre varchar(100),
     email varchar(150) not null unique,
     password varchar(255) not null,
-    cargo varchar(50),
-    rol enum('administrador', 'empleado') not null default 'empleado'
+    cargo varchar(100),
+    rol varchar(50) not null default 'empleado'
 );
 
 create table pasajeros(
@@ -56,7 +56,7 @@ create table horarios (
 );
 
 create table tickets_soporte (
-    id int AUTO_INCREMENT primary key,
+    id int auto_increment primary key,
     nombre_completo varchar(100) not null,
     email varchar(150) not null,
     tipo_consulta enum('soporte', 'consulta', 'sugerencia') not null,
@@ -343,4 +343,4 @@ call crear_boleto(2.50, '2024-05-02', 8);
 call crear_boleto(5.00, '2024-05-03', 9);
 call crear_boleto(0.00, '2024-05-03', 10);
 
-select * from pasajeros;
+select * from personal; 
