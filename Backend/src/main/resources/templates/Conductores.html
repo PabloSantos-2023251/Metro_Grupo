@@ -18,29 +18,11 @@
 
 <div class="main-container-glass">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a th:href="@{/PaginaPrincipal/}" class="btn btn-secondary" style="background-color: #3a4e7a; border: none;">Volver</a>
-        <h2>Gestión de Conductores</h2>
+        <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary d-inline-flex align-items-center gap-2" style="background-color: #3a4e7a; border: none;">
+            <i class="bi bi-arrow-left-circle"></i> Volver
+        </a>
+        <h2 style="margin: 0; font-weight: 700; color: #091d36;">Gestión de Conductores</h2>
     </div>
-
-    <form th:action="@{/conductores/guardar}" th:object="${conductor}" method="post" class="card p-3 mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
-        <input type="hidden" th:field="*{idConductor}">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <label class="form-label fw-bold">Nombre</label>
-                <input type="text" th:field="*{nombre}" class="form-control" required>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label fw-bold">Licencia</label>
-                <input type="text" th:field="*{licencia}" class="form-control" required>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label fw-bold">Años Experiencia</label>
-                <input type="number" th:field="*{aniosExperiencia}" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary mt-3" style="background-color: #091d36; border: none;">Guardar Conductor</button>
-        </div>
-    </form>
-</div>
 
     <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
 
@@ -62,8 +44,9 @@
                         <input type="number" th:field="*{aniosExperiencia}" class="form-control" placeholder="Ej: 5" required>
                     </div>
                     <div class="col-12 mt-3 text-center">
-                        <button type="submit" class="btn btn-metro-main w-100">
-                            <i class="bi bi-person-badge-fill"></i> Guardar Conductor
+                        <button type="submit" class="btn btn-primary w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2" style="background-color: #091d36; border: none;">
+                            <i class="bi bi-person-badge-fill"></i>
+                            <span th:text="${conductor.idConductor != null} ? 'Actualizar Conductor' : 'Guardar Conductor'"></span>
                         </button>
                     </div>
                 </div>
@@ -75,7 +58,7 @@
         <div class="col-md-5">
             <form th:action="@{/conductores}" method="get" class="d-flex">
                 <input type="number" name="buscarId" class="form-control me-2" placeholder="ID Conductor...">
-                <button type="submit" class="btn btn-metro-main d-inline-flex align-items-center gap-1">
+                <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1" style="background-color: #091d36; border: none;">
                     <i class="bi bi-search"></i>
                 </button>
                 <a th:href="@{/conductores}" class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center">
@@ -85,9 +68,9 @@
         </div>
     </div>
 
-    <div class="table-responsive table-metro-style shadow-sm">
+    <div class="table-responsive table-metro-style shadow-sm" style="background: white; border-radius: 8px;">
         <table class="table table-hover mb-0">
-            <thead>
+            <thead style="background-color: #3a4e7a; color: white;">
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
