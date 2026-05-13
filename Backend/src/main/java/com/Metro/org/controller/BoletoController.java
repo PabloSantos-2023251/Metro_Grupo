@@ -28,7 +28,7 @@ public class BoletoController {
 
     private boolean esAdministrador(HttpSession session) {
         Object rol = session.getAttribute("rolUsuario");
-        return rol != null && rol.toString().equalsIgnoreCase("administrador");
+        return rol != null && (rol.toString().equalsIgnoreCase("administrador") || rol.toString().equalsIgnoreCase("admin"));
     }
 
     private Integer obtenerIdSesion(HttpSession session) {
@@ -43,10 +43,20 @@ public class BoletoController {
     }
 
     @GetMapping({"", "/"})
-    public String listar(HttpSession session, Model model) {
-        Integer idUsuario = obtenerIdSesion(session);
-        List<Boleto> lista = esAdministrador(session) ? boletoService.getAllBoletos() :
-                (idUsuario != null ? boletoService.getBoletosByPasajero(idUsuario) : Collections.emptyList());
+    public String listar(@RequestParam(value = "buscarId", required = false) Integer buscarId,
+                         HttpSession session, Model model) {
+        List<Boleto> lista;
+
+        if (esAdministrador(session)) {
+            if (buscarId != null) {
+                lista = boletoService.getBoletosByPasajero(buscarId);
+            } else {
+                lista = boletoService.getAllBoletos();
+            }
+        } else {
+            Integer idUsuario = obtenerIdSesion(session);
+            lista = (idUsuario != null) ? boletoService.getBoletosByPasajero(idUsuario) : Collections.emptyList();
+        }
 
         model.addAttribute("boletos", lista);
         model.addAttribute("boletoForm", new Boleto());
@@ -66,12 +76,20 @@ public class BoletoController {
             Boleto boleto = new Boleto();
             boleto.setPasajero(pasajero);
             boleto.setFecha(LocalDate.now());
-            boleto.setPrecio(new BigDecimal("10.00"));
+
+            String tipo = pasajero.getTipoPasajero().toLowerCase();
+            if (tipo.contains("mayor") || tipo.contains("discapacitado")) {
+                boleto.setPrecio(BigDecimal.ZERO);
+            } else if (tipo.contains("estudiante")) {
+                boleto.setPrecio(new BigDecimal("5.00"));
+            } else {
+                boleto.setPrecio(new BigDecimal("10.00"));
+            }
 
             boletoService.saveBoleto(boleto);
-            ra.addFlashAttribute("mensajeExito", "Boleto generado.");
+            ra.addFlashAttribute("mensajeExito", "Boleto generado exitosamente.");
         } catch (Exception e) {
-            ra.addFlashAttribute("mensajeError", e.getMessage());
+            ra.addFlashAttribute("mensajeError", "Error: " + e.getMessage());
         }
         return "redirect:/boletos/";
     }
