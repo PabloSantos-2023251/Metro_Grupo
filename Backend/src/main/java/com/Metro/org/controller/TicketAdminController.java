@@ -4,13 +4,13 @@ import com.Metro.org.entity.TicketSoporte;
 import com.Metro.org.service.TicketService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*; // Para GetMapping, PostMapping, etc.
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/ComentarioAdmin")
+@RequestMapping("/comentarioadmin")
 public class TicketAdminController {
 
     private final TicketService ticketService;
@@ -19,12 +19,11 @@ public class TicketAdminController {
         this.ticketService = ticketService;
     }
 
-    @GetMapping("/admin")
+    @GetMapping({"/admin", "/admin/"})
     public String adminList(Model model) {
         model.addAttribute("comentarios", ticketService.getAll());
-        return "comentarioAdmin";
+        return "ComentarioAdmin";
     }
-
 
     @GetMapping("/detalle/{id}")
     public String verDetalle(@PathVariable Integer id, Model model) {
@@ -33,7 +32,7 @@ public class TicketAdminController {
             model.addAttribute("ticket", ticket);
             return "comentarioDetalle";
         }
-        return "redirect:/ComentarioAdmin/admin";
+        return "redirect:/comentarioadmin/admin/";
     }
 
     @PostMapping("/actualizar-estado")
@@ -46,13 +45,13 @@ public class TicketAdminController {
             ticketService.cambiarEstado(id, estado);
             ra.addFlashAttribute("mensajeExito", "Estado actualizado correctamente.");
         } catch (Exception e) {
-            ra.addFlashAttribute("mensajeError", "Error al actualizar el estado: " + e.getMessage());
+            ra.addFlashAttribute("mensajeError", "Error al actualizar: " + e.getMessage());
         }
 
         if ("detalle".equals(origen)) {
-            return "redirect:/ComentarioAdmin/detalle/" + id;
+            return "redirect:/comentarioadmin/detalle/" + id;
         }
-        return "redirect:/ComentarioAdmin/admin";
+        return "redirect:/comentarioadmin/admin/";
     }
 
     @GetMapping("/eliminar/{id}")
@@ -63,6 +62,6 @@ public class TicketAdminController {
         } catch (Exception e) {
             ra.addFlashAttribute("mensajeError", "No se pudo eliminar el ticket.");
         }
-        return "redirect:/ComentarioAdmin/admin";
+        return "redirect:/comentarioadmin/admin/";
     }
 }
