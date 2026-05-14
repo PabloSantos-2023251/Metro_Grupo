@@ -40,38 +40,48 @@
     </div>
 
     <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
-        <div class="card-body">
+        <div class="card-body p-4">
             <form th:action="@{/api/personal/guardar}" th:object="${personalObj}" method="post">
                 <input type="hidden" th:field="*{id_personal}">
+
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label fw-bold" style="color: #3a4e7a;">Nombre Completo</label>
-                        <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Carlos Garcia" required>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-person-vcard text-primary"></i></span>
+                            <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Carlos Garcia" required>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold" style="color: #3a4e7a;">Correo Electrónico</label>
-                        <input type="email" th:field="*{email}" class="form-control" placeholder="carlos@metro.com" required>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Correo Institucional</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-envelope-at text-primary"></i></span>
+                            <input type="email" th:field="*{email}" class="form-control" placeholder="carlos@metro.com" required>
+                        </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label fw-bold" style="color: #3a4e7a;">Contraseña</label>
-                        <input type="password" th:field="*{password}" class="form-control" placeholder="Mínimo 8 caracteres" required>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-shield-lock text-primary"></i></span>
+                            <input type="password" th:field="*{password}" class="form-control" placeholder="Mínimo 8 caracteres" th:required="${personalObj.id_personal == null}">
+                        </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold" style="color: #3a4e7a;">Cargo</label>
                         <select th:field="*{cargo}" class="form-select" required>
                             <option value="Supervisor">Supervisor</option>
                             <option value="Mantenimiento">Mantenimiento</option>
                             <option value="Tecnico">Técnico</option>
                             <option value="Seguridad">Seguridad</option>
-                            <option value="Atencion Cliente">Atencion Cliente</option>
+                            <option value="Atencion Cliente">Atención Cliente</option>
                             <option value="Taquillera">Taquillera</option>
                             <option value="Administrativo">Administrativo</option>
                             <option value="Limpieza">Limpieza</option>
                         </select>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold" style="color: #3a4e7a;">Rol Sistema</label>
                         <select th:field="*{rol}" class="form-select" required>
                             <option value="administrador">Administrador</option>
@@ -79,11 +89,14 @@
                         </select>
                     </div>
 
-                    <div class="col-12 mt-3 text-center">
-                        <button type="submit" class="btn btn-primary w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2" style="background-color: #091d36; border: none;">
-                            <i th:class="${editando} ? 'bi bi-arrow-repeat' : 'bi bi-floppy-fill'"></i>
-                            <span th:text="${editando} ? 'Actualizar Personal' : 'Guardar Personal'"></span>
+                    <div class="col-12 mt-4 text-center">
+                        <button type="submit" class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
+                            <i th:class="${personalObj.id_personal != null} ? 'bi bi-arrow-repeat' : 'bi bi-person-plus-fill'"></i>
+                            <span th:text="${editando} ? 'Actualizar Datos de Personal' : 'Registrar Nuevo Personal'"></span>
                         </button>
+                        <a th:if="${editando}" th:href="@{/api/personal}" class="d-block mt-2 text-decoration-none text-muted small">
+                            <i class="bi bi-x-circle"></i> Cancelar edición
+                        </a>
                     </div>
                 </div>
             </form>
@@ -93,12 +106,12 @@
     <div class="row mb-3">
         <div class="col-md-5">
             <form th:action="@{/api/personal}" method="get" class="d-flex">
-                <input type="text" name="buscar" class="form-control me-2" placeholder="Nombre o email...">
-                <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1" style="background-color: #091d36; border: none;">
-                    <i class="bi bi-search"></i> Buscar
+                <input type="text" name="buscar" class="form-control me-2 shadow-sm" placeholder="Buscar por nombre o email...">
+                <button type="submit" class="btn btn-metro-main d-flex align-items-center gap-1">
+                    <i class="bi bi-search"></i>
                 </button>
-                <a th:href="@{/api/personal}" class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center gap-1">
-                    <i class="bi bi-eraser-fill"></i> Limpiar
+                <a th:href="@{/api/personal}" class="btn btn-outline-secondary ms-2 d-flex align-items-center" title="Limpiar búsqueda">
+                    <i class="bi bi-eraser-fill"></i>
                 </a>
             </form>
         </div>
@@ -120,17 +133,27 @@
             <tr th:each="p : ${personalList}">
                 <td th:text="${p.id_personal}" class="fw-bold"></td>
                 <td th:text="${p.nombre}"></td>
-                <td th:text="${p.email}"></td>
-                <td><span class="badge bg-secondary" th:text="${p.cargo}"></span></td>
-                <td th:text="${p.rol}"></td>
+                <td th:text="${p.email}" class="text-muted small"></td>
+                <td>
+                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-2"
+                          style="font-size: 0.7rem; text-transform: uppercase;" th:text="${p.cargo}">
+                    </span>
+                </td>
+                <td>
+                    <span class="fw-bold" th:style="${p.rol == 'administrador' ? 'color: #091d36;' : 'color: #666;'}"
+                          th:text="${#strings.capitalize(p.rol)}"></span>
+                </td>
                 <td class="text-center">
                     <a th:href="@{/api/personal/editar/{id}(id=${p.id_personal})}" class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
-                        <i class="bi bi-pencil-square"></i> Editar
+                        <i class="bi bi-pencil-square"></i>
                     </a>
-                    <a th:href="@{/api/personal/eliminar/{id}(id=${p.id_personal})}" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" onclick="return confirm('¿Borrar usuario?')">
-                        <i class="bi bi-trash3-fill"></i> Borrar
+                    <a th:href="@{/api/personal/eliminar/{id}(id=${p.id_personal})}" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" onclick="return confirm('¿Deseas dar de baja a este usuario?')">
+                        <i class="bi bi-trash3-fill"></i>
                     </a>
                 </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(personalList)}">
+                <td colspan="6" class="text-center py-4 text-muted">No se encontró personal registrado.</td>
             </tr>
             </tbody>
         </table>

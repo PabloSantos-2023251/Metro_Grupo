@@ -9,25 +9,33 @@
     <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
     <style>
         .select-status-metro {
-            background: rgba(255, 255, 255, 0.9);
+            background: white;
             color: #091d36;
-            border: 1px solid #c2d2e9;
+            border: 2px solid #c2d2e9;
             border-radius: 6px;
-            padding: 4px 8px;
+            padding: 5px 10px;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
+        .select-status-metro:hover {
+            border-color: #3a4e7a;
+            background-color: #f8f9fa;
+        }
+
         .badge-metro {
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: inline-block;
         }
-        .badge-pendiente { background-color: #ffc107; color: #000; }
-        .badge-en_proceso { background-color: #17a2b8; color: #fff; }
-        .badge-resuelto { background-color: #28a745; color: #fff; }
+        .badge-pendiente { background-color: #ffc107; color: #000; box-shadow: 0 2px 4px rgba(255,193,7,0.2); }
+        .badge-en_proceso { background-color: #17a2b8; color: #fff; box-shadow: 0 2px 4px rgba(23,162,184,0.2); }
+        .badge-resuelto { background-color: #28a745; color: #fff; box-shadow: 0 2px 4px rgba(40,167,69,0.2); }
     </style>
 </head>
 <body>
@@ -56,7 +64,7 @@
         </div>
     </div>
 
-    <div class="table-responsive table-metro-style shadow-sm">
+    <div class="table-responsive table-metro-style shadow-sm" style="background: white; border-radius: 8px;">
         <table class="table table-hover mb-0">
             <thead style="background-color: #3a4e7a; color: white;">
             <tr>
@@ -64,21 +72,23 @@
                 <th>Usuario</th>
                 <th>Asunto</th>
                 <th>Mensaje</th>
-                <th>Estado Actual</th>
-                <th>Acción (Actualizar)</th>
-                <th class="text-center">Eliminar</th>
+                <th>Estado</th>
+                <th>Actualizar</th>
+                <th class="text-center">Acciones</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="c : ${comentarios}">
                 <td th:text="${c.id}" class="fw-bold"></td>
                 <td>
-                    <div style="font-weight: 600; color: #091d36;" th:text="${c.nombreCompleto}"></div>
-                    <div style="font-size: 0.8rem; color: #555;" th:text="${c.email}"></div>
+                    <div style="font-weight: 700; color: #091d36;" th:text="${c.nombreCompleto}"></div>
+                    <div style="font-size: 0.75rem; color: #666;" th:text="${c.email}"></div>
                 </td>
-                <td style="text-transform: capitalize;" th:text="${c.tipoConsulta}"></td>
                 <td>
-                    <span th:text="${c.mensaje}" style="max-width: 200px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" th:title="${c.mensaje}"></span>
+                    <span class="badge bg-light text-dark border" style="text-transform: capitalize;" th:text="${c.tipoConsulta}"></span>
+                </td>
+                <td>
+                    <small th:text="${c.mensaje}" style="max-width: 180px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" th:title="${c.mensaje}"></small>
                 </td>
                 <td>
                     <span th:class="'badge-metro badge-' + ${c.estado}"
@@ -89,7 +99,7 @@
                         <input type="hidden" name="id" th:value="${c.id}">
                         <select name="nuevoEstado" class="select-status-metro" onchange="this.form.submit()">
                             <option value="pendiente" th:selected="${c.estado.name() == 'pendiente'}">Pendiente</option>
-                            <option value="en_proceso" th:selected="${c.estado.name() == 'en_proceso'}">En Proceso</option>
+                            <option value="en_proceso" th:selected="${c.estado.name() == 'en_proceso'}">Proceso</option>
                             <option value="resuelto" th:selected="${c.estado.name() == 'resuelto'}">Resuelto</option>
                         </select>
                     </form>
@@ -98,12 +108,14 @@
                     <a th:href="@{/comentarioadmin/eliminar/{id}(id=${c.id})}"
                        class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
                        onclick="return confirm('¿Deseas eliminar este ticket permanentemente?')">
-                        <i class="bi bi-trash3-fill"></i>
+                        <i class="bi bi-trash3-fill"></i> Borrar
                     </a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(comentarios)}">
-                <td colspan="7" class="text-center py-4 text-muted">No hay tickets pendientes en el sistema.</td>
+                <td colspan="7" class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox me-2"></i>No hay tickets pendientes en el sistema.
+                </td>
             </tr>
             </tbody>
         </table>

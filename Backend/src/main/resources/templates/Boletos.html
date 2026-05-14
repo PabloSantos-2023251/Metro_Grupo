@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boletos - Metro</title>
+    <title>Sistema de Boletos - Metro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/GeneralStyle.css}">
@@ -11,7 +11,9 @@
 <body>
 
 <div class="video-bg-wrapper">
-    <video autoplay muted loop playsinline><source th:src="@{/videos/MetroFondo.mp4}" type="video/mp4"></video>
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/MetroFondo.mp4}" type="video/mp4">
+    </video>
 </div>
 
 <div class="main-container-glass">
@@ -19,40 +21,41 @@
         <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary d-inline-flex align-items-center gap-2" style="background-color: #3a4e7a; border: none;">
             <i class="bi bi-arrow-left-circle"></i> Volver
         </a>
-        <h2 style="color: #091d36; font-weight: 700; margin: 0;">Gestión de Boletos</h2>
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;">Emisión de Boletos</h2>
     </div>
 
-    <div th:if="${session.rolUsuario == 'administrador' or session.rolUsuario == 'admin'}" class="row mb-3">
-        <div class="col-md-5">
-            <form th:action="@{/boletos/}" method="get" class="d-flex">
-                <input type="number" name="buscarId" class="form-control me-2" placeholder="Buscar por ID Pasajero..." required>
-                <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1" style="background-color: #091d36; border: none;">
-                    <i class="bi bi-search"></i> Buscar
-                </button>
-                <a th:href="@{/boletos/}" class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center gap-1">
-                    <i class="bi bi-eraser-fill"></i> Limpiar
-                </a>
-            </form>
+    <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
+
+    <div class="container-fluid px-0">
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong th:text="${mensajeExito}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong th:text="${mensajeError}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
-
-    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
 
     <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
         <div class="card-body">
             <form th:action="@{/boletos/agregar}" method="post">
                 <div class="row g-3 align-items-end">
-                    <div class="col-md-8" th:if="${session.rolUsuario == 'administrador' or session.rolUsuario == 'admin'}">
-                        <label class="form-label fw-bold">ID del Pasajero</label>
-                        <input type="number" name="idPasajero" class="form-control" placeholder="Ingrese ID para emitir boleto" required>
+                    <div class="col-md-8" th:if="${session.rolUsuario == 'administrador'}">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">ID del Pasajero</label>
+                        <input type="number" name="idPasajero" class="form-control" placeholder="Ingrese ID del pasajero para emitir boleto" required>
                     </div>
-                    <div class="col-md-8" th:unless="${session.rolUsuario == 'administrador' or session.rolUsuario == 'admin'}">
-                        <p class="mb-0">Generar mi boleto de viaje (El precio se calcula según su perfil).</p>
+
+                    <div class="col-md-8" th:unless="${session.rolUsuario == 'administrador'}">
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Generar nuevo boleto de viaje</label>
+                        <p class="mb-1 text-muted">Se emitirá un boleto a su nombre con la tarifa correspondiente.</p>
                     </div>
+
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary w-100" style="background-color: #091d36; border: none;">
-                            <i class="bi bi-ticket-perforated"></i> Emitir Boleto
+                        <button type="submit" class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
+                            <i class="bi bi-ticket-perforated-fill"></i> Generar Boleto
                         </button>
                     </div>
                 </div>
@@ -66,28 +69,31 @@
             <tr>
                 <th>ID Boleto</th>
                 <th>Pasajero</th>
-                <th>Tipo</th>
-                <th>Fecha</th>
+                <th>Fecha de Emisión</th>
                 <th>Precio</th>
-                <th class="text-center" th:if="${session.rolUsuario == 'administrador' or session.rolUsuario == 'admin'}">Acciones</th>
+                <th class="text-center" th:if="${session.rolUsuario == 'administrador'}">Acciones</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="b : ${boletos}">
                 <td th:text="${b.idBoleto}" class="fw-bold"></td>
                 <td th:text="${b.pasajero.nombrePasajero}"></td>
-                <td><span class="badge bg-secondary" th:text="${b.pasajero.tipoPasajero}"></span></td>
-                <td th:text="${b.fecha}"></td>
-                <td th:text="'Q' + ${b.precio}"></td>
-                <td class="text-center" th:if="${session.rolUsuario == 'administrador' or session.rolUsuario == 'admin'}">
-                    <a th:href="@{/boletos/borrar/{id}(id=${b.idBoleto})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar?')">
-                        <i class="bi bi-trash"></i>
+                <td th:text="${#temporals.format(b.fecha, 'dd/MM/yyyy')}"></td>
+                <td class="fw-bold text-success" th:text="'Q' + ${b.price}"></td>
+                <td class="text-center" th:if="${session.rolUsuario == 'administrador'}">
+                    <a th:href="@{/boletos/borrar/{id}(id=${b.idBoleto})}" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" onclick="return confirm('¿Anular este boleto?')">
+                        <i class="bi bi-trash3-fill"></i> Borrar
                     </a>
                 </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(boletos)}">
+                <td colspan="5" class="text-center py-4 text-muted">No hay boletos registrados en el sistema.</td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

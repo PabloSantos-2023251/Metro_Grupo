@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impacto en Tráfico - Metro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -10,7 +11,9 @@
 <body>
 
 <div class="video-bg-wrapper">
-    <video autoplay muted loop playsinline><source th:src="@{/videos/MetroFondo.mp4}" type="video/mp4"></video>
+    <video autoplay muted loop playsinline>
+        <source th:src="@{/videos/MetroFondo.mp4}" type="video/mp4">
+    </video>
 </div>
 
 <div class="main-container-glass">
@@ -18,7 +21,17 @@
         <a th:href="@{/PaginaPrincipal}" class="btn btn-secondary d-inline-flex align-items-center gap-2" style="background-color: #3a4e7a; border: none;">
             <i class="bi bi-arrow-left-circle"></i> Volver
         </a>
-        <h2 th:text="${editando} ? 'Editar Impacto' : 'Análisis Vial'"></h2>
+        <h2 style="color: #091d36; font-weight: 700; margin: 0;" th:text="${editando} ? 'Modificar Análisis' : 'Análisis de Impacto Vial'"></h2>
+    </div>
+
+    <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
+
+    <div class="container-fluid px-0">
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong th:text="${mensajeExito}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     </div>
 
     <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
@@ -27,44 +40,64 @@
                 <input type="hidden" th:field="*{id_impacto}">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Zona o Área</label>
-                        <input type="text" th:field="*{zona}" class="form-control" required>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Zona o Área de Influencia</label>
+                        <input type="text" th:field="*{zona}" class="form-control" placeholder="Ej. Centro Histórico" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Reducción (%)</label>
-                        <input type="number" step="0.01" th:field="*{reduccionTraficoPorcentaje}" class="form-control" required>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Reducción Estimada (%)</label>
+                        <div class="input-group">
+                            <input type="number" step="0.01" th:field="*{reduccionTraficoPorcentaje}" class="form-control" placeholder="0.00" required>
+                            <span class="input-group-text bg-white"><i class="bi bi-percent text-primary"></i></span>
+                        </div>
                     </div>
-                    <div class="col-12 mt-3">
-                        <button type="submit" class="btn btn-primary w-100" style="background-color: #091d36; border: none;">Guardar</button>
+                    <div class="col-12 mt-3 text-center">
+                        <button type="submit" class="btn btn-metro-main w-100 py-2 d-inline-flex justify-content-center align-items-center gap-2">
+                            <i th:class="${editando} ? 'bi bi-pencil-square' : 'bi bi-graph-down-arrow'"></i>
+                            <span th:text="${editando} ? 'Actualizar Análisis' : 'Registrar Impacto'"></span>
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="table-responsive table-metro-style" style="background: white; border-radius: 8px;">
+    <div class="table-responsive table-metro-style shadow-sm" style="background: white; border-radius: 8px;">
         <table class="table table-hover mb-0">
             <thead style="background-color: #3a4e7a; color: white;">
             <tr>
                 <th>ID</th>
                 <th>Zona</th>
-                <th>Reducción</th>
+                <th>Reducción de Tráfico</th>
                 <th class="text-center">Acciones</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="i : ${impactos}">
-                <td th:text="${i.id_impacto}"></td>
+                <td th:text="${i.id_impacto}" class="fw-bold"></td>
                 <td th:text="${i.zona}"></td>
-                <td th:text="${i.reduccionTraficoPorcentaje + '%'}"></td>
-                <td class="text-center">
-                    <a th:href="@{/api/impacto-trafico/editar/{id}(id=${i.id_impacto})}" class="btn btn-sm btn-warning">Editar</a>
-                    <a th:href="@{/api/impacto-trafico/eliminar/{id}(id=${i.id_impacto})}" class="btn btn-sm btn-danger">Borrar</a>
+                <td>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2" style="font-size: 0.9rem;">
+                        <i class="bi bi-caret-down-fill me-1"></i>
+                        <span th:text="${i.reduccionTraficoPorcentaje + '%'}"></span>
+                    </span>
                 </td>
+                <td class="text-center">
+                    <a th:href="@{/api/impacto-trafico/editar/{id}(id=${i.id_impacto})}" class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a th:href="@{/api/impacto-trafico/eliminar/{id}(id=${i.id_impacto})}" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" onclick="return confirm('¿Deseas eliminar este análisis?')">
+                        <i class="bi bi-trash3-fill"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(impactos)}">
+                <td colspan="4" class="text-center py-4 text-muted">No hay datos de impacto registrados.</td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
