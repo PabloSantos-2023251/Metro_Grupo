@@ -40,17 +40,22 @@
     </div>
 
     <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
-        <div class="card-body">
+        <div class="card-body p-4">
             <form th:action="@{/boletos/agregar}" method="post">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-8" th:if="${session.rolUsuario == 'administrador'}">
-                        <label class="form-label fw-bold" style="color: #3a4e7a;">ID del Pasajero</label>
-                        <input type="number" name="idPasajero" class="form-control" placeholder="Ingrese ID del pasajero para emitir boleto" required>
+                        <label class="form-label fw-bold" style="color: #3a4e7a;">Asignar a Pasajero (ID)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-person-bounding-box text-primary"></i></span>
+                            <input type="number" name="idPasajero" class="form-control" placeholder="Ingrese ID del pasajero" required>
+                        </div>
                     </div>
 
                     <div class="col-md-8" th:unless="${session.rolUsuario == 'administrador'}">
                         <label class="form-label fw-bold" style="color: #3a4e7a;">Generar nuevo boleto de viaje</label>
-                        <p class="mb-1 text-muted">Se emitirá un boleto a su nombre con la tarifa correspondiente.</p>
+                        <div class="p-2 bg-white rounded border border-info-subtle">
+                            <p class="mb-0 text-muted small"><i class="bi bi-info-circle-fill text-info me-2"></i>Se emitirá un boleto electrónico a su nombre con la tarifa vigente según su perfil.</p>
+                        </div>
                     </div>
 
                     <div class="col-md-4">
@@ -59,6 +64,20 @@
                         </button>
                     </div>
                 </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-3" th:if="${session.rolUsuario == 'administrador'}">
+        <div class="col-md-5">
+            <form th:action="@{/boletos/}" method="get" class="d-flex">
+                <input type="number" name="buscarId" class="form-control me-2 shadow-sm" placeholder="Filtrar por ID Pasajero...">
+                <button type="submit" class="btn btn-metro-main d-flex align-items-center">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a th:href="@{/boletos/}" class="btn btn-outline-secondary ms-2 d-flex align-items-center" title="Limpiar">
+                    <i class="bi bi-eraser-fill"></i>
+                </a>
             </form>
         </div>
     </div>
@@ -77,17 +96,27 @@
             <tbody>
             <tr th:each="b : ${boletos}">
                 <td th:text="${b.idBoleto}" class="fw-bold"></td>
-                <td th:text="${b.pasajero.nombrePasajero}"></td>
+                <td>
+                    <i class="bi bi-person-circle me-1 text-secondary"></i>
+                    <span th:text="${b.pasajero.nombrePasajero}"></span>
+                </td>
                 <td th:text="${#temporals.format(b.fecha, 'dd/MM/yyyy')}"></td>
-                <td class="fw-bold text-success" th:text="'Q' + ${b.price}"></td>
+                <td>
+                    <span class="badge bg-success-subtle text-success border border-success px-3 py-2" style="font-size: 0.9rem;">
+                        Q <span th:text="${b.precio}"></span>
+                    </span>
+                </td>
                 <td class="text-center" th:if="${session.rolUsuario == 'administrador'}">
                     <a th:href="@{/boletos/borrar/{id}(id=${b.idBoleto})}" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" onclick="return confirm('¿Anular este boleto?')">
-                        <i class="bi bi-trash3-fill"></i> Borrar
+                        <i class="bi bi-trash3-fill"></i>
                     </a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(boletos)}">
-                <td colspan="5" class="text-center py-4 text-muted">No hay boletos registrados en el sistema.</td>
+                <td colspan="5" class="text-center py-4 text-muted">
+                    <i class="bi bi-ticket-detailed d-block mb-2" style="font-size: 2rem; opacity: 0.3;"></i>
+                    No hay boletos registrados en el sistema.
+                </td>
             </tr>
             </tbody>
         </table>
