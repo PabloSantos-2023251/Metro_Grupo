@@ -43,27 +43,35 @@ public class PasajeroController {
     public String guardar(@ModelAttribute("pasajeroForm") Pasajero pasajero, RedirectAttributes ra) {
         if (pasajero.getRol() == null) pasajero.setRol("pasajero");
 
-        if (pasajero.getIdPasajero() != null) {
-            pasajeroService.updatePasajero(pasajero.getIdPasajero(), pasajero);
-            ra.addFlashAttribute("mensajeExito", "Pasajero actualizado.");
-        } else {
-            Pasajero guardado = pasajeroService.savePasajero(pasajero);
-            ra.addFlashAttribute("nuevoId", guardado.getIdPasajero());
+        try {
+            if (pasajero.getIdPasajero() != null) {
+                pasajeroService.updatePasajero(pasajero.getIdPasajero(), pasajero);
+                ra.addFlashAttribute("mensajeExito", "Pasajero actualizado correctamente.");
+            } else {
+                pasajeroService.savePasajero(pasajero);
+                ra.addFlashAttribute("mensajeExito", "Pasajero registrado exitosamente.");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensajeError", "Error al procesar el pasajero: " + e.getMessage());
         }
-        return "redirect:/pasajeros/";
+        return "redirect:/pasajeros";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, RedirectAttributes ra) {
         Pasajero pasajero = pasajeroService.getPasajeroById(id);
         ra.addFlashAttribute("pasajeroForm", pasajero);
-        return "redirect:/pasajeros/";
+        return "redirect:/pasajeros";
     }
 
     @GetMapping("/borrar/{id}")
     public String borrar(@PathVariable Integer id, RedirectAttributes ra) {
-        pasajeroService.deletePasajero(id);
-        ra.addFlashAttribute("mensajeExito", "Pasajero eliminado.");
-        return "redirect:/pasajeros/";
+        try {
+            pasajeroService.deletePasajero(id);
+            ra.addFlashAttribute("mensajeExito", "Pasajero eliminado.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensajeError", "No se pudo eliminar el pasajero.");
+        }
+        return "redirect:/pasajeros";
     }
 }
