@@ -26,7 +26,7 @@ public class LineaController {
         List<Linea> lineas = lineaService.getAllLinea();
         if (buscar != null && !buscar.isEmpty()) {
             lineas = lineas.stream()
-                    .filter(l -> l.getIdLinea() != null && l.getIdLinea().toString().contains(buscar))
+                    .filter(l -> l.getNombreLinea() != null && l.getNombreLinea().toLowerCase().contains(buscar.toLowerCase()))
                     .collect(Collectors.toList());
         }
 
@@ -40,7 +40,6 @@ public class LineaController {
 
     @PostMapping("/guardar")
     public String guardarLinea(@Valid @ModelAttribute("linea") Linea linea, BindingResult result, RedirectAttributes ra){
-        // 1. Validaciones de anotaciones de la Entidad (@NotBlank, @Size, etc.)
         if(result.hasErrors()){
             ra.addFlashAttribute("org.springframework.validation.BindingResult.linea", result);
             ra.addFlashAttribute("linea", linea);
@@ -52,9 +51,8 @@ public class LineaController {
             lineaService.saveLinea(linea);
             ra.addFlashAttribute("mensajeExito", "Línea guardada correctamente.");
         } catch (Exception e){
-            // Si la base de datos falla, devolvemos el objeto y el error sin tumbar la app
             ra.addFlashAttribute("linea", linea);
-            ra.addFlashAttribute("mensajeError", "Error al guardar en la base de datos: " + e.getMessage());
+            ra.addFlashAttribute("mensajeError", "No se pudo procesar: " + e.getMessage());
         }
 
         return "redirect:/linea";
@@ -78,7 +76,7 @@ public class LineaController {
             lineaService.deleteLinea(id);
             ra.addFlashAttribute("mensajeExito", "Línea eliminada correctamente.");
         } catch (Exception e) {
-            ra.addFlashAttribute("mensajeError", "No se puede eliminar esta línea porque está asociada a otros registros.");
+            ra.addFlashAttribute("mensajeError", "No se puede eliminar esta línea porque está asociada a otros registros de la red.");
         }
         return "redirect:/linea";
     }

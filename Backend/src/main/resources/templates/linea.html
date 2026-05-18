@@ -26,6 +26,19 @@
 
     <hr style="border-top: 2px solid #c2d2e9; opacity: 1; margin-bottom: 25px;">
 
+    <div class="container-fluid px-0">
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong th:text="${mensajeExito}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong th:text="${mensajeError}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
     <div class="card mb-4 border-0 shadow-sm" style="background: rgba(241, 241, 240, 0.8);">
         <div class="card-body p-4">
             <form th:action="@{/linea/guardar}" th:object="${linea}" method="post">
@@ -65,12 +78,12 @@
 
     <div class="row mb-3">
         <div class="col-md-5">
-            <form th:action="@{/linea/}" method="get" class="d-flex">
+            <form th:action="@{/linea}" method="get" class="d-flex">
                 <input type="text" name="buscar" class="form-control me-2 shadow-sm" placeholder="Buscar por nombre de línea...">
                 <button type="submit" class="btn btn-metro-main d-inline-flex align-items-center gap-1">
                     <i class="bi bi-search"></i>
                 </button>
-                <a th:href="@{/linea/}" class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center" title="Limpiar">
+                <a th:href="@{/linea}" class="btn btn-outline-secondary ms-2 d-inline-flex align-items-center" title="Limpiar">
                     <i class="bi bi-eraser-fill"></i>
                 </a>
             </form>
