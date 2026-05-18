@@ -29,7 +29,9 @@ public class LineaController {
                     .filter(l -> l.getIdLinea() != null && l.getIdLinea().toString().contains(buscar))
                     .collect(Collectors.toList());
         }
+
         model.addAttribute("lineas", lineas);
+
         if (!model.containsAttribute("linea")) {
             model.addAttribute("linea", new Linea());
         }
@@ -38,28 +40,46 @@ public class LineaController {
 
     @PostMapping("/guardar")
     public String guardarLinea(@Valid @ModelAttribute("linea") Linea linea, BindingResult result, RedirectAttributes ra){
+        // 1. Validaciones de anotaciones de la Entidad (@NotBlank, @Size, etc.)
         if(result.hasErrors()){
             ra.addFlashAttribute("org.springframework.validation.BindingResult.linea", result);
             ra.addFlashAttribute("linea", linea);
-            return "redirect:/linea/";
+            ra.addFlashAttribute("mensajeError", "Por favor, corrija los errores en el formulario.");
+            return "redirect:/linea";
         }
-        lineaService.saveLinea(linea);
-        ra.addFlashAttribute("mensajeExito", "Línea guardada correctamente.");
-        return "redirect:/linea/";
+
+        try {
+            lineaService.saveLinea(linea);
+            ra.addFlashAttribute("mensajeExito", "Línea guardada correctamente.");
+        } catch (Exception e){
+            // Si la base de datos falla, devolvemos el objeto y el error sin tumbar la app
+            ra.addFlashAttribute("linea", linea);
+            ra.addFlashAttribute("mensajeError", "Error al guardar en la base de datos: " + e.getMessage());
+        }
+
+        return "redirect:/linea";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, RedirectAttributes ra){
-        Linea linea = lineaService.getLineaById(id);
-        ra.addFlashAttribute("linea", linea);
-        ra.addFlashAttribute("editando", true);
-        return "redirect:/linea/";
+        try {
+            Linea linea = lineaService.getLineaById(id);
+            ra.addFlashAttribute("linea", linea);
+            ra.addFlashAttribute("editando", true);
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensajeError", "No se pudo cargar la línea para editar.");
+        }
+        return "redirect:/linea";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id, RedirectAttributes ra){
-        lineaService.deleteLinea(id);
-        ra.addFlashAttribute("mensajeExito", "Línea eliminada.");
-        return "redirect:/linea/";
+        try {
+            lineaService.deleteLinea(id);
+            ra.addFlashAttribute("mensajeExito", "Línea eliminada correctamente.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensajeError", "No se puede eliminar esta línea porque está asociada a otros registros.");
+        }
+        return "redirect:/linea";
     }
 }
